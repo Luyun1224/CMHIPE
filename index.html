@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇美醫院跨領域全人照護討論會</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts - Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入 icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 使用 Noto Sans TC 作為預設字體 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc; /* 使用柔和的背景色 */
+        }
+        /* Modal 淡入淡出效果 */
+        .modal-hidden {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-visible {
+            display: flex;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#schedule" class="text-gray-600 hover:text-teal-600 transition duration-300">會議時程</a>
+                <a href="#announcements" class="text-gray-600 hover:text-teal-600 transition duration-300">最新公告</a>
+                <a href="#portals" class="text-gray-600 hover:text-teal-600 transition duration-300">身分入口</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden">
+                <i class="fas fa-bars text-2xl text-teal-700"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
+            <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
+            <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
+            <a href="#portals" class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">促進合作，提升照護品質</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">我們致力於搭建一個跨專業領域的溝通平台，透過案例討論與經驗分享，共同探索全人照護的最佳實踐。</p>
+        </section>
+
+        <!-- Schedule & Announcements Section -->
+        <div class="grid md:grid-cols-2 gap-12 mb-16">
+            
+            <!-- 近期會議時程 -->
+            <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold text-teal-800">2025年7月15日 (二) 14:00 - 16:00</p>
+                        <p class="text-gray-600 ml-4">- 議題：高齡病患的出院準備服務整合</p>
+                        <p class="text-gray-600 ml-4">- 地點：奇美醫院 第五會議室</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-teal-800">2025年8月5日 (二) 14:00 - 16:00</p>
+                        <p class="text-gray-600 ml-4">- 議題：兒童罕見疾病的家庭心理支持</p>
+                        <p class="text-gray-600 ml-4">- 地點：奇美醫院 第七會議室</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最新公告 -->
+            <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="font-semibold text-amber-800">【重要】下一次會議預告</p>
+                        <p class="text-gray-600 ml-4">下一次跨領域討論會預計於 <span class="font-bold text-red-600">2025年9月2日</span> 舉行，主題將圍繞「社區安寧照護資源連結」，歡迎各位同仁預留時間。詳細議程將於一週前公佈。</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-amber-800">【通知】教師資料上傳</p>
+                        <p class="text-gray-600 ml-4">請負責分享案例的教師們，於會議前三日將簡報資料上傳至系統，以利與會者預習。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portals Section -->
+        <div id="portals" class="pt-8 pb-12">
+            <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- 學員入口 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center flex flex-col items-center hover:transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">學員入口</h3>
+                    <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
+                    <button onclick="openStudentModal()" class="bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors duration-300">學員進入</button>
+                </div>
+
+                <!-- 教師入口 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center flex flex-col items-center hover:transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">教師入口</h3>
+                    <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、上傳分享內容，或管理您的學員名單。</p>
+                    <button onclick="openLoginModal('教師')" class="bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors duration-300">教師登入</button>
+                </div>
+
+                <!-- 管理者入口 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg text-center flex flex-col items-center hover:transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
+                    <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理、發布公告、以及維護系統使用者權限。</p>
+                    <button onclick="openLoginModal('管理者')" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors duration-300">管理者登入</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 奇美醫院跨領域全人照護討論會. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">本網站為示範頁面，登入功能僅為前端介面展示。</p>
+        </div>
+    </footer>
+
+    <!-- Student Modal (No Password) -->
+    <div id="student-modal" class="modal-hidden fixed inset-0 bg-black bg-opacity-60 z-50 justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
+            <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            
+            <div id="student-entry-view">
+                <h2 class="text-2xl font-bold text-center mb-8">學員入口</h2>
+                <form id="student-form">
+                    <div class="mb-6">
+                        <label for="student-name" class="block text-gray-700 text-sm font-bold mb-2">姓名</label>
+                        <input type="text" id="student-name" name="student-name" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="請輸入您的姓名" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-full transition-colors duration-300">
+                            進入
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="student-links-view" class="hidden text-center">
+                 <div class="text-5xl text-green-500 mb-4"><i class="fas fa-check-circle"></i></div>
+                 <h2 id="welcome-message" class="text-2xl font-bold mb-6">歡迎！</h2>
+                 <p class="text-gray-600 mb-8">您已成功進入。相關表單將於會後開放。</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Login Modal (For Teacher and Admin) -->
+    <div id="login-modal" class="modal-hidden fixed inset-0 bg-black bg-opacity-60 z-50 justify-center items-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            <h2 id="modal-title" class="text-2xl font-bold text-center mb-8">登入</h2>
+            <form id="login-form">
+                <div class="mb-6">
+                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">帳號</label>
+                    <input type="text" id="username" name="username" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="請輸入您的帳號" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">密碼</label>
+                    <input type="password" id="password" name="password" class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="請輸入您的密碼" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-full transition-colors duration-300">
+                        登入
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- Elements ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const loginModal = document.getElementById('login-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const loginForm = document.getElementById('login-form');
+        const studentModal = document.getElementById('student-modal');
+        const studentForm = document.getElementById('student-form');
+        const studentEntryView = document.getElementById('student-entry-view');
+        const studentLinksView = document.getElementById('student-links-view');
+        const welcomeMessage = document.getElementById('welcome-message');
+
+
+        // --- Mobile Menu Toggle ---
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Teacher/Admin Login Modal Logic ---
+        function openLoginModal(role) {
+            modalTitle.innerText = `${role}登入`;
+            loginModal.classList.remove('modal-hidden');
+            loginModal.classList.add('modal-visible');
+        }
+
+        function closeLoginModal() {
+            loginModal.classList.add('modal-hidden');
+            loginModal.classList.remove('modal-visible');
+        }
+
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) {
+                closeLoginModal();
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('這是一個示範登入，沒有實際驗證功能。當 ' + modalTitle.innerText + ' 後，會導向對應的後台頁面。');
+            closeLoginModal();
+            loginForm.reset();
+        });
+
+        // --- Student Portal Modal Logic ---
+        function openStudentModal() {
+            studentModal.classList.remove('modal-hidden');
+            studentModal.classList.add('modal-visible');
+        }
+
+        function closeStudentModal() {
+            studentModal.classList.add('modal-hidden');
+            studentModal.classList.remove('modal-visible');
+            // Reset modal to initial state when closing
+            setTimeout(() => {
+                studentEntryView.classList.remove('hidden');
+                studentLinksView.classList.add('hidden');
+                studentForm.reset();
+            }, 300); // Delay to match transition
+        }
+
+        studentModal.addEventListener('click', (event) => {
+            if (event.target === studentModal) {
+                closeStudentModal();
+            }
+        });
+
+        studentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentNameInput = document.getElementById('student-name');
+            const studentName = studentNameInput.value.trim();
+            
+            if (studentName) {
+                welcomeMessage.innerText = `歡迎, ${studentName}！`;
+                studentEntryView.classList.add('hidden');
+                studentLinksView.classList.remove('hidden');
+            } else {
+                alert('請輸入您的姓名。');
+            }
+        });
+
+    </script>
+
+</body>
+</html>
