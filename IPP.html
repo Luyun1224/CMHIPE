@@ -266,6 +266,9 @@
                 </button>
             </div>
         </form>
+        
+        <!-- Hidden link for redirection -->
+        <a id="redirect-link" href="https://luyun1224.github.io/CMHIPE/form" target="_top" style="display:none;"></a>
     </div>
 
     <script>
@@ -297,11 +300,10 @@
                     return; // Stop the function if validation fails.
                 }
 
-                // If validation passes, redirect the page to the specified URL.
-                // Note: The form data itself is not being sent anywhere with this action.
-                // To save the data, an AJAX/fetch call to a server endpoint would be
-                // needed here before redirecting.
-                window.location.href = 'https://luyun1224.github.io/CMHIPE/form';
+                // **FIXED**: Programmatically click the hidden link.
+                // This is a workaround for security restrictions in iframes that prevent
+                // direct manipulation of `window.top.location`.
+                document.getElementById('redirect-link').click();
             });
         });
     </script>
