@@ -238,9 +238,17 @@
         } else {
           alert('帳號或密碼錯誤。');
         }
+      } else if (role.includes('管理者')) {
+        // 管理者登入驗證
+        if (username === 'B20401' && password === 'B20401') {
+            // 登入成功，直接導向管理者頁面
+            window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
+        } else {
+            alert('帳號或密碼錯誤。');
+        }
       } else {
-        // 管理者或其他角色登入
-        alert('示範登入：無後端驗證。');
+        // 其他未知角色
+        alert('未知的登入角色。');
         closeLoginModal();
       }
       document.getElementById('login-form').reset();
