@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨領域全人討論會 - IPP 表單</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .form-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+        .form-textarea {
+            min-height: 120px;
+        }
+        .info-box {
+            background-color: #eef2ff;
+            border-left: 4px solid #6366f1;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.25rem;
+            color: #4338ca;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .checkbox-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">跨領域全人討論會</h1>
+            <p class="text-lg text-gray-600 mt-2">學員IPP表單</p>
+        </header>
+
+        <form id="ipp-main-form">
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">基本資料</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="participant-name" class="form-label">姓名</label>
+                        <input type="text" id="participant-name" class="form-input" required>
+                    </div>
+                    <div>
+                        <label for="participant-unit" class="form-label">單位</label>
+                        <input type="text" id="participant-unit" class="form-input" required>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <label for="session-name" class="form-label">會議場次/個案名稱</label>
+                    <input type="text" id="session-name" class="form-input" placeholder="請填寫您參與的會議或討論的個案" required>
+                </div>
+            </div>
+
+            <!-- Definitions -->
+            <div class="form-section">
+                 <div class="info-box">
+                    <p><strong>SIP Tea:</strong> Sense(察覺需求)；Initiate(啟動團隊)；Patient-centered(目標設定)；Team work(團隊合作)</p>
+                </div>
+                <div class="info-box">
+                    <p><strong>TIPs:</strong> What I can help to team? What help I need from team? (我可以對團隊提供什麼專業支援？我需要從團隊獲得什麼專業支援？)</p>
+                </div>
+            </div>
+
+            <!-- IPP Form Sections -->
+            <div class="form-section">
+                <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">IPP 表單內容</h2>
+                
+                <div class="mb-6">
+                    <label for="care-needs" class="form-label">1. 照護需求 (Sense)</label>
+                    <textarea id="care-needs" class="form-textarea" placeholder="請說明您察覺到的個案照護需求..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="form-label">2. 參與職類 (Team)</label>
+                    <div class="checkbox-grid p-4 border rounded-lg bg-gray-50">
+                        <!-- Checkbox options for different professions -->
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>西醫</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>護理</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>藥劑</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>營養</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>醫檢</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>放射</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>社工</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>職能治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>物理治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>語言治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>臨床心理</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>呼吸治療</span></label>
+                        <div class="col-span-2 md:col-span-4 flex items-center space-x-2">
+                           <input type="checkbox" id="other-profession-checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                           <label for="other-profession-checkbox">其他:</label>
+                           <input type="text" id="other-profession-text" class="form-input !w-auto flex-grow" placeholder="請填寫其他職類">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="goal-setting" class="form-label">3. 目標設定 (Patient-centered)</label>
+                    <textarea id="goal-setting" class="form-textarea" placeholder="請說明以個案為中心的具體照護目標..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                     <label class="form-label">4. 團隊合作 (IPP Team work)</label>
+                     <div class="space-y-4">
+                        <div>
+                             <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
+                             <textarea id="teamwork-strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
+                        </div>
+                        <div>
+                            <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
+                            <textarea id="teamwork-details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
+                        </div>
+                     </div>
+                </div>
+
+                 <div>
+                    <label class="form-label">5. 潛在可能成為IPE內容 (CC-KAS)</label>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border border-gray-200 text-center">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 border">分類</th>
+                                    <th class="p-3 border">Core-KAS (核心的知識、態度、技能)</th>
+                                    <th class="p-3 border">Contextualized-KAS (情境下的知識、態度、技能)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">知識</td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="核心知識"></textarea></td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="情境知識"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">態度</td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="核心態度"></textarea></td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="情境態度"></textarea></td>
+                                </tr>
+                                 <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">技能</td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="核心技能"></textarea></td>
+                                    <td class="p-2 border"><textarea class="form-textarea !min-h-[80px]" placeholder="情境技能"></textarea></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist Section -->
+            <div class="form-section">
+                <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">跨領域團隊合作照護查檢表</h2>
+                <p class="mb-6 text-gray-600">此次教學活動，是否有討論到以下有關 <strong>全人醫療</strong> 的面向？</p>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">1. 生理 (Body)</h3>
+                        <div class="mt-2 pl-4">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">身體及疾病的照護，以期恢復身體的健康及生活功能 (包含：疾病之檢查、診斷與治療、復健、健康生活型態等)。</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">2. 心理 (Mind)</h3>
+                        <div class="mt-2 pl-4 space-y-3">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">疾病相關知識的再強化，以期提升心情愉悅及生活品質 (包含：強化疾病認知、自我照護技能與態度、醫病溝通等)。</span>
+                            </label>
+                             <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">健康促進、疾病預防 (包含：健康促進、疾病防治、病友團體活動等)。</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">3. 靈性 (Spirit)</h3>
+                        <div class="mt-2 pl-4">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">強化心靈及精神上的支持 (包含：信仰、心靈關懷及精神上的支持與安慰)。</span>
+                            </label>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="font-bold text-lg text-indigo-700">4. 社會 (Social Support)</h3>
+                        <div class="mt-2 pl-4 space-y-3">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">強化人際支持力及家庭支持力 (包含：家人的協助、轉介服務、出院準備、病友團體等)。</span>
+                            </label>
+                             <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">長照 (包含：居家照護、社區長照、急性後期整合照護)。</span>
+                            </label>
+                             <label class="flex items-start space-x-3">
+                                <input type="checkbox" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">安寧 (包含：安寧議題、病人自主、預立醫療決定、DNR)。</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Review Section -->
+            <div class="form-section">
+                <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">教師審核</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="teacher-name" class="form-label">教師姓名</label>
+                        <input type="text" id="teacher-name" class="form-input" placeholder="請填寫審核教師姓名">
+                    </div>
+                    <div>
+                        <label for="teacher-id" class="form-label">人事號</label>
+                        <input type="text" id="teacher-id" class="form-input" placeholder="請填寫人事號">
+                    </div>
+                    <div>
+                        <label for="teacher-email" class="form-label">信箱</label>
+                        <input type="email" id="teacher-email" class="form-input" placeholder="請填寫信箱">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-8 text-center">
+                <button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-300">
+                    提交表單
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Message Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="bg-white rounded-lg px-8 pt-6 pb-8 m-4 max-w-sm w-full text-center transform transition-all" id="success-modal-content">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">提交成功！</h3>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">感謝您的填寫，表單將送交審核。</p>
+            </div>
+            <div class="mt-5">
+                <button type="button" id="close-modal-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    關閉
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ipp-main-form');
+            const successModal = document.getElementById('success-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            
+            // Handle 'Other' profession checkbox
+            const otherCheckbox = document.getElementById('other-profession-checkbox');
+            const otherTextInput = document.getElementById('other-profession-text');
+            otherTextInput.disabled = true;
+
+            otherCheckbox.addEventListener('change', () => {
+                otherTextInput.disabled = !otherCheckbox.checked;
+                if (!otherCheckbox.checked) {
+                    otherTextInput.value = '';
+                }
+                otherTextInput.focus();
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent actual form submission
+                
+                // Simple validation check
+                const name = document.getElementById('participant-name').value;
+                const unit = document.getElementById('participant-unit').value;
+                if (!name || !unit) {
+                    alert('請填寫姓名與單位！');
+                    return;
+                }
+
+                // Show the success modal
+                successModal.classList.remove('hidden');
+                
+                // You would typically send form data to a server here.
+                // For example:
+                // const formData = new FormData(form);
+                // fetch('/your-api-endpoint', { method: 'POST', body: formData });
+                
+                console.log('表單已提交 (模擬)');
+            });
+
+            // Handle modal closing
+            const closeModal = () => {
+                successModal.classList.add('hidden');
+                form.reset(); // Reset the form after successful submission
+                otherTextInput.disabled = true; // Also disable the 'other' text input again
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            successModal.addEventListener('click', function(e) {
+                if (e.target === successModal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
