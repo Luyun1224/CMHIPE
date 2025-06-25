@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPP 系統 - 老師審核</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .diff-container del {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            text-decoration: line-through;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .diff-container ins {
+            background-color: #dcfce7;
+            color: #166534;
+            text-decoration: none;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        fieldset {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        legend {
+            font-size: 1.125rem;
+            font-weight: 600;
+            padding: 0 0.5rem;
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Firestore & App ID Placeholders (Will be populated by the environment) -->
+    <script>
+        const __app_id = "teacher-portal-demo"; // Fallback App ID
+        const __firebase_config = '{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'; // Placeholder
+        const __initial_auth_token = undefined; // Placeholder
+    </script>
+    
+    <div id="app" class="min-h-screen flex flex-col items-center justify-center p-4">
+        
+        <div id="edit-form-page" class="w-full max-w-6xl">
+            <div class="card p-8">
+                 <div class="flex justify-between items-center mb-6">
+                    <div>
+                         <h1 class="text-3xl font-bold">審核 IPP 表單</h1>
+                         <p class="text-gray-500 mt-2" id="form-subtitle">學員: 王小明 | 審核老師: admin@gmail.com</p>
+                    </div>
+                     <button id="reset-view-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+                        <i class="fas fa-undo mr-2"></i>還原修改
+                    </button>
+                </div>
+                
+                <div id="form-content" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Form Inputs -->
+                    <div id="form-inputs-container" class="space-y-6">
+                        <h2 class="text-2xl font-bold border-b pb-3">表單內容 (可修改)</h2>
+                        
+                        <div>
+                            <label for="careNeeds" class="block text-lg font-semibold text-gray-800 mb-2">照護需求 (Sense)</label>
+                            <textarea id="careNeeds" rows="4" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">個案因中風後導致右側偏癱，影響日常活動能力及語言表達。家屬希望能提升個案自我照顧能力，減輕照顧負擔。</textarea>
+                        </div>
+
+                        <fieldset>
+                            <legend>參與職類 (Team)</legend>
+                            <div id="team-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                <!-- Checkboxes will be injected by JS -->
+                            </div>
+                        </fieldset>
+
+                        <div>
+                            <label for="goalSetting" class="block text-lg font-semibold text-gray-800 mb-2">目標設定 (Patient-centered)</label>
+                            <textarea id="goalSetting" rows="4" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">1. 短期：三個月內，個案能使用輔具獨立步行10公尺。
+2. 長期：半年內，個案能自行完成進食、盥洗等基本日常活動。</textarea>
+                        </div>
+                        
+                        <fieldset>
+                            <legend>團隊合作 (IPP Team work重點)</legend>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="strategy" class="block text-md font-medium text-gray-700 mb-1">具體策略</label>
+                                    <textarea id="strategy" rows="3" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg">物理治療：強化右側肢體肌力與平衡訓練。
+職能治療：日常生活功能訓練及輔具評估。
+語言治療：發音及語言理解訓練。</textarea>
+                                </div>
+                                <div>
+                                    <label for="team" class="block text-md font-medium text-gray-700 mb-1">團隊</label>
+                                    <textarea id="team" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg">物理治療師、職能治療師、語言治療師、營養師</textarea>
+                                </div>
+                                <div>
+                                    <label for="execution" class="block text-md font-medium text-gray-700 mb-1">執行細節</label>
+                                    <textarea id="execution" rows="3" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg">每週召開團隊會議，追蹤個案進度，並共同討論調整治療計畫。營養師提供飲食建議，以配合復健需求。</textarea>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                             <legend>潛在可能成為IPE內容 (CC-KAS)</legend>
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-center text-gray-600">Core-KAS (核心)</h4>
+                                    <div>
+                                       <label for="core_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label>
+                                       <textarea id="core_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                    <div>
+                                       <label for="core_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label>
+                                       <textarea id="core_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                     <div>
+                                       <label for="core_skills" class="block text-md font-medium text-gray-700 mb-1">技能</label>
+                                       <textarea id="core_skills" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                </div>
+                                 <div class="space-y-4 mt-6 md:mt-0">
+                                    <h4 class="font-semibold text-center text-gray-600">Contextualized-KAS (情境)</h4>
+                                     <div>
+                                       <label for="context_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label>
+                                       <textarea id="context_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                    <div>
+                                       <label for="context_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label>
+                                       <textarea id="context_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                     <div>
+                                       <label for="context_skills" class="block text-md font-medium text-gray-700 mb-1">技能</label>
+                                       <textarea id="context_skills" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                                    </div>
+                                </div>
+                             </div>
+                        </fieldset>
+                    </div>
+                    
+                    <!-- Diff View -->
+                    <div class="bg-gray-50 p-6 rounded-lg sticky top-4 max-h-[90vh] overflow-y-auto">
+                        <h2 class="text-2xl font-bold border-b pb-3 mb-4">修改痕跡預覽</h2>
+                        <div id="diff-container" class="space-y-4 prose max-w-none">
+                            <p class="text-gray-500">修改內容後，此處將會顯示修改前後的對比。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="submission-success" class="hidden text-center py-12 bg-green-50 rounded-lg">
+                     <i class="fas fa-check-circle text-5xl text-green-500"></i>
+                     <h2 class="mt-4 text-2xl font-bold text-green-700">審核完成！</h2>
+                     <p class="text-gray-600 mt-2">表單已成功送出給管理者。</p>
+                </div>
+                
+                <div id="form-actions" class="mt-8 text-right space-x-4">
+                    <button id="submit-form-btn" class="btn-primary" disabled>
+                        <i class="fas fa-paper-plane mr-2"></i>送出給管理者
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for notifications -->
+    <div id="modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <p id="modal-message"></p>
+            <button id="modal-close-btn" class="mt-4 btn-primary">關閉</button>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Firebase 11.6.1
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- DOM Elements ---
+        const diffContainer = document.getElementById('diff-container');
+        const submitFormBtn = document.getElementById('submit-form-btn');
+        const formActions = document.getElementById('form-actions');
+        const submissionSuccess = document.getElementById('submission-success');
+        const resetViewBtn = document.getElementById('reset-view-btn');
+        const modal = document.getElementById('modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const teamCheckboxesContainer = document.getElementById('team-checkboxes');
+        
+        // --- App State ---
+        let db;
+        let originalFormData = {};
+        const professions = [
+            "西醫", "護理", "藥劑", "營養", "醫檢", "放射", "社工", 
+            "職能治療", "物理治療", "語言治療", "臨床心理", "呼吸治療", "其他"
+        ];
+        
+        // --- Firebase Initialization ---
+        async function initializeFirebase() {
+            try {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+            } catch (error) {
+                console.error("Firebase 初始化失敗:", error);
+                showModal("系統初始化失敗，請檢查主控台錯誤訊息。");
+            }
+        }
+        
+        // --- Core Logic ---
+        function setupForm() {
+            // 1. Create checkboxes
+            teamCheckboxesContainer.innerHTML = '';
+            professions.forEach(prof => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `prof-${prof}`;
+                checkbox.value = prof;
+                checkbox.className = 'form-input h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500';
+                const label = document.createElement('label');
+                label.htmlFor = `prof-${prof}`;
+                label.textContent = prof;
+                label.className = 'ml-2 block text-sm text-gray-900';
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                teamCheckboxesContainer.appendChild(div);
+            });
+
+            // 2. Set initial values and state
+            resetForm();
+        }
+
+        function resetForm() {
+            // Restore initial text data
+            document.getElementById('careNeeds').value = '個案因中風後導致右側偏癱，影響日常活動能力及語言表達。家屬希望能提升個案自我照顧能力，減輕照顧負擔。';
+            document.getElementById('goalSetting').value = '1. 短期：三個月內，個案能使用輔具獨立步行10公尺。\n2. 長期：半年內，個案能自行完成進食、盥洗等基本日常活動。';
+            document.getElementById('strategy').value = '物理治療：強化右側肢體肌力與平衡訓練。\n職能治療：日常生活功能訓練及輔具評估。\n語言治療：發音及語言理解訓練。';
+            document.getElementById('team').value = '物理治療師、職能治療師、語言治療師、營養師';
+            document.getElementById('execution').value = '每週召開團隊會議，追蹤個案進度，並共同討論調整治療計畫。營養師提供飲食建議，以配合復健需求。';
+            ['core_knowledge', 'core_attitude', 'core_skills', 'context_knowledge', 'context_attitude', 'context_skills'].forEach(id => {
+                 document.getElementById(id).value = '';
+            });
+
+            // Restore initial checkbox data
+            const initialProfessions = ["物理治療", "職能治療", "語言治療", "營養"];
+            professions.forEach(prof => {
+                const checkbox = document.getElementById(`prof-${prof}`);
+                checkbox.checked = initialProfessions.includes(prof);
+            });
+
+            // 3. Initialize form state and UI
+            initializeFormState();
+            
+            submissionSuccess.classList.add('hidden');
+            document.getElementById('form-content').classList.remove('hidden');
+            formActions.classList.remove('hidden');
+        }
+        
+        function initializeFormState() {
+            originalFormData = getCurrentFormData();
+            updateDiffView(); 
+        }
+
+        // --- Rendering ---
+        function updateDiffView() {
+            diffContainer.innerHTML = '';
+            const currentData = getCurrentFormData();
+            let hasChanges = false;
+            
+            const fieldLabels = {
+                careNeeds: "照護需求 (Sense)",
+                team: "參與職類 (Team)",
+                goalSetting: "目標設定 (Patient-centered)",
+                strategy: "具體策略",
+                teamDescription: "團隊",
+                execution: "執行細節",
+                core_knowledge: "核心知識",
+                core_attitude: "核心態度",
+                core_skills: "核心技能",
+                context_knowledge: "情境知識",
+                context_attitude: "情境態度",
+                context_skills: "情境技能",
+            };
+            
+            // Text fields comparison
+            Object.keys(currentData).forEach(key => {
+                if (key === 'team') return; // Skip checkbox array for this loop
+
+                const originalText = originalFormData[key] || '';
+                const newText = currentData[key] || '';
+                
+                if (originalText !== newText) {
+                    hasChanges = true;
+                    renderDiff(fieldLabels[key] || key, originalText, newText);
+                }
+            });
+
+            // Checkbox comparison
+            const oldTeam = JSON.stringify(originalFormData.team.sort());
+            const newTeam = JSON.stringify(currentData.team.sort());
+            if(oldTeam !== newTeam) {
+                hasChanges = true;
+                renderDiff(fieldLabels['team'], originalFormData.team.join(', ') || '(無)', currentData.team.join(', ') || '(無)');
+            }
+            
+            if (!hasChanges) {
+                diffContainer.innerHTML = '<p class="text-gray-500">目前沒有任何修改。</p>';
+            }
+            submitFormBtn.disabled = !hasChanges;
+        }
+
+        function renderDiff(label, oldText, newText) {
+            const diff = Diff.diffChars(oldText, newText);
+            const fragment = document.createDocumentFragment();
+            
+            const fieldHeader = document.createElement('h4');
+            fieldHeader.className = 'font-semibold text-md text-gray-700';
+            fieldHeader.textContent = `欄位: ${label}`;
+            fragment.appendChild(fieldHeader);
+
+            const diffResult = document.createElement('div');
+            diffResult.className = 'text-sm bg-white p-3 rounded-md border whitespace-pre-wrap';
+
+            diff.forEach(part => {
+                const tag = part.added ? 'ins' : part.removed ? 'del' : 'span';
+                const node = document.createElement(tag);
+                node.appendChild(document.createTextNode(part.value));
+                diffResult.appendChild(node);
+            });
+            
+            fragment.appendChild(diffResult);
+            diffContainer.appendChild(fragment);
+        }
+
+        function getCurrentFormData() {
+            const data = {};
+            // Get textarea values
+            document.querySelectorAll('textarea.form-input').forEach(input => {
+                data[input.id] = input.value;
+            });
+            // Workaround for 'team' textarea clashing with checkbox 'team' property
+            data.teamDescription = document.getElementById('team').value;
+
+            // Get checkbox values
+            data.team = [];
+            document.querySelectorAll('#team-checkboxes input[type="checkbox"]:checked').forEach(checkbox => {
+                data.team.push(checkbox.value);
+            });
+            return data;
+        }
+        
+        // --- Form Submission ---
+        async function submitForm() {
+            if (!db) {
+                showModal("資料庫連線錯誤，無法送出。請重新整理頁面再試。");
+                return;
+            }
+            
+            submitFormBtn.disabled = true;
+            submitFormBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>送出中...';
+            
+            const editedContent = getCurrentFormData();
+            const formId = `form_submitted_${Date.now()}`;
+            const meetingId = `meeting_submitted_${Date.now()}`;
+
+            try {
+                const formRef = doc(db, `artifacts/${__app_id}/public/data/forms`, formId);
+                await setDoc(formRef, { 
+                    studentId: "王小明",
+                    originalContent: originalFormData,
+                    editedContent: editedContent
+                });
+
+                const meetingRef = doc(db, `artifacts/${__app_id}/public/data/meetings`, meetingId);
+                await setDoc(meetingRef, { 
+                    studentName: "王小明",
+                    meetingDate: Timestamp.fromDate(new Date()),
+                    assignedTeacher: 'admin@gmail.com',
+                    status: 'reviewed_by_teacher',
+                    formId: formId
+                });
+                
+                document.getElementById('form-content').classList.add('hidden');
+                formActions.classList.add('hidden');
+                submissionSuccess.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("送出表單失敗: ", error);
+                showModal("送出表單失敗，請稍後再試。");
+            } finally {
+                submitFormBtn.disabled = false;
+                submitFormBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>送出給管理者';
+            }
+        }
+
+        // --- Modal ---
+        function showModal(message) {
+            modalMessage.textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+        }
+
+        // --- Event Listeners ---
+        document.body.addEventListener('input', (event) => {
+            if (event.target.classList.contains('form-input')) {
+                updateDiffView();
+            }
+        });
+        
+        submitFormBtn.addEventListener('click', submitForm);
+        resetViewBtn.addEventListener('click', resetForm);
+        modalCloseBtn.addEventListener('click', hideModal);
+        
+        // --- App Initialization ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeFirebase();
+            setupForm();
+        });
+
+    </script>
+</body>
+</html>
