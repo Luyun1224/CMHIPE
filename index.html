@@ -182,10 +182,14 @@
                  placeholder="請輸入帳號" required />
         </div>
         <div class="mb-6">
-          <label for="password" class="block text-gray-700 font-bold mb-2">密碼</label>
-          <input id="password" name="password" type="password"
-                 class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                 placeholder="請輸入密碼" required />
+          <label for="login-password" class="block text-gray-700 font-bold mb-2">密碼</label>
+          <!-- 密碼容器，用於定位眼睛圖示 -->
+          <div class="relative">
+            <input id="login-password" name="password" type="password"
+                   class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                   placeholder="請輸入密碼" required />
+            <i id="toggle-password-icon" class="fas fa-eye absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"></i>
+          </div>
         </div>
         <button type="submit"
                 class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-full">
@@ -220,19 +224,17 @@
     function closeLoginModal(){   toggle(loginModal, false); }
     loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
     
-    // --- 更新登入表單提交邏輯 ---
     document.getElementById('login-form').addEventListener('submit', e=>{
       e.preventDefault();
       const role = modalTitle.innerText;
       const username = e.target.username.value;
-      const password = e.target.password.value;
+      const password = document.getElementById('login-password').value;
 
       if (role.includes('教師')) {
         // 教師登入驗證
-        if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-          alert('教師登入成功！');
-          // 實際應用中，這裡會導向教師後台
-          closeLoginModal();
+        if (username === 'admin@gmail.com' && password === 'password123') {
+          // 登入成功，直接導向教師頁面
+          window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
         } else {
           alert('帳號或密碼錯誤。');
         }
@@ -242,6 +244,20 @@
         closeLoginModal();
       }
       document.getElementById('login-form').reset();
+    });
+
+    /* ---------- Password Visibility Toggle ---------- */
+    const togglePasswordIcon = document.getElementById('toggle-password-icon');
+    const loginPasswordInput = document.getElementById('login-password');
+
+    togglePasswordIcon.addEventListener('click', function() {
+        // 切換 input 的 type 屬性
+        const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        loginPasswordInput.setAttribute('type', type);
+        
+        // 切換眼睛圖示
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
     });
 
     /* ---------- Student Modal ---------- */
