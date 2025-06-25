@@ -268,31 +268,9 @@
         </form>
     </div>
 
-    <!-- Success Message Modal -->
-    <div id="success-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="bg-white rounded-lg px-8 pt-6 pb-8 m-4 max-w-sm w-full text-center transform transition-all" id="success-modal-content">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-            </div>
-            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">提交成功！</h3>
-            <div class="mt-2">
-                <p class="text-sm text-gray-500">感謝您的填寫，表單將送交審核。</p>
-            </div>
-            <div class="mt-5">
-                <button type="button" id="close-modal-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    關閉
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('ipp-main-form');
-            const successModal = document.getElementById('success-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
             
             // Handle 'Other' profession checkbox
             const otherCheckbox = document.getElementById('other-profession-checkbox');
@@ -309,39 +287,21 @@
 
             // Handle form submission
             form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent actual form submission
+                e.preventDefault(); // Prevent default submission to run validation first.
                 
-                // Simple validation check
+                // Simple validation check for required fields.
                 const name = document.getElementById('participant-name').value;
                 const unit = document.getElementById('participant-unit').value;
-                if (!name || !unit) {
-                    alert('請填寫姓名與單位！');
-                    return;
+                if (!name.trim() || !unit.trim()) {
+                    alert('請填寫「姓名」與「單位」欄位！');
+                    return; // Stop the function if validation fails.
                 }
 
-                // Show the success modal
-                successModal.classList.remove('hidden');
-                
-                // You would typically send form data to a server here.
-                // For example:
-                // const formData = new FormData(form);
-                // fetch('/your-api-endpoint', { method: 'POST', body: formData });
-                
-                console.log('表單已提交 (模擬)');
-            });
-
-            // Handle modal closing
-            const closeModal = () => {
-                successModal.classList.add('hidden');
-                form.reset(); // Reset the form after successful submission
-                otherTextInput.disabled = true; // Also disable the 'other' text input again
-            };
-
-            closeModalBtn.addEventListener('click', closeModal);
-            successModal.addEventListener('click', function(e) {
-                if (e.target === successModal) {
-                    closeModal();
-                }
+                // If validation passes, redirect the page to the specified URL.
+                // Note: The form data itself is not being sent anywhere with this action.
+                // To save the data, an AJAX/fetch call to a server endpoint would be
+                // needed here before redirecting.
+                window.location.href = 'https://luyun1224.github.io/CMHIPE/form';
             });
         });
     </script>
