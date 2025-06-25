@@ -219,8 +219,29 @@
     function openLoginModal(role){ modalTitle.innerText = `${role}登入`; toggle(loginModal, true); }
     function closeLoginModal(){   toggle(loginModal, false); }
     loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
+    
+    // --- 更新登入表單提交邏輯 ---
     document.getElementById('login-form').addEventListener('submit', e=>{
-      e.preventDefault(); alert('示範登入：無後端驗證。'); closeLoginModal();
+      e.preventDefault();
+      const role = modalTitle.innerText;
+      const username = e.target.username.value;
+      const password = e.target.password.value;
+
+      if (role.includes('教師')) {
+        // 教師登入驗證
+        if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+          alert('教師登入成功！');
+          // 實際應用中，這裡會導向教師後台
+          closeLoginModal();
+        } else {
+          alert('帳號或密碼錯誤。');
+        }
+      } else {
+        // 管理者或其他角色登入
+        alert('示範登入：無後端驗證。');
+        closeLoginModal();
+      }
+      document.getElementById('login-form').reset();
     });
 
     /* ---------- Student Modal ---------- */
@@ -234,7 +255,7 @@
     const ippContainer = document.getElementById('ipp-container');
     const ippFrame     = document.getElementById('ipp-frame');
     function closeIPP(){
-      ippFrame.src = '';                       // 停止載入
+      ippFrame.src = '';                  // 停止載入
       toggle(ippContainer, false);
     }
 
@@ -255,5 +276,5 @@
       toggle(ippContainer, true);
     });
   </script>
-</body>d
+</body>
 </html>
