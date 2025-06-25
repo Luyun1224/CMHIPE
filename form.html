@@ -172,11 +172,10 @@
                             <p class="text-sm text-gray-500">
                                 感謝您的填寫，表單已成功提交。
                             </p>
-                            <p class="text-xs text-gray-400 mt-2">此視窗將在 2 秒後自動關閉。</p>
                         </div>
                         <div class="items-center px-4 py-3">
-                            <button id="closeModal" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
-                                立即關閉
+                            <button type="button" id="closeModalButton" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
+                                關閉
                             </button>
                         </div>
                     </div>
@@ -197,7 +196,7 @@
             const tableBodyAfter = document.getElementById('after-training-body');
             const dateInput = document.getElementById('date');
             const successMessage = document.getElementById('successMessage');
-            const closeModalButton = document.getElementById('closeModal');
+            const closeModalButton = document.getElementById('closeModalButton');
             
             // --- Data and Constants ---
             const storageKey = 'satisfactionFormDraft';
@@ -292,14 +291,14 @@
             function clearDraft() {
                  localStorage.removeItem(storageKey);
             }
-            
+
             /**
-             * Closes the current browser window/tab.
+             * Hides the success modal and resets the form for the next entry.
              */
-            function closePage() {
-                // Note: This may not work in all browsers due to security restrictions.
-                // It typically only works for windows opened by script (window.open()).
-                window.close();
+            function closeModalAndReset() {
+                successMessage.classList.add('hidden');
+                form.reset();
+                dateInput.valueAsDate = new Date();
             }
 
             // --- Event Listeners ---
@@ -319,13 +318,10 @@
 
                 clearDraft();
                 successMessage.classList.remove('hidden');
-
-                // Automatically close the page after 2 seconds
-                setTimeout(closePage, 2000); 
             });
             
-            // Close modal button also closes the page
-            closeModalButton.addEventListener('click', closePage);
+            // The close button in the modal will hide the modal and reset the form.
+            closeModalButton.addEventListener('click', closeModalAndReset);
 
             // --- Initialisation ---
             
