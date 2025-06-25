@@ -72,19 +72,19 @@
                 <fieldset class="mb-8">
                     <legend class="text-xl font-semibold text-gray-700 mb-4 border-l-4 border-blue-600 pl-3">一、基本資料</legend>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                        <div>
+                        <div class="border border-gray-200 rounded-lg p-3">
                             <label for="name" class="block text-sm font-medium text-gray-600">姓名</label>
                             <input type="text" id="name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
                         </div>
-                        <div>
-                            <label for="date" class="block text-sm font-medium text-gray-600">填表日期</label>
+                        <div class="border border-gray-200 rounded-lg p-3">
+                            <label for="date" class="block text-sm font-medium text-gray-600">會議日期</label>
                             <input type="date" id="date" name="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
                         </div>
-                        <div>
+                        <div class="border border-gray-200 rounded-lg p-3">
                             <label for="unit" class="block text-sm font-medium text-gray-600">單位</label>
                             <input type="text" id="unit" name="unit" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
                         </div>
-                        <div>
+                        <div class="border border-gray-200 rounded-lg p-3">
                             <label for="rank" class="block text-sm font-medium text-gray-600">職級</label>
                             <input type="text" id="rank" name="rank" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
                         </div>
@@ -172,10 +172,11 @@
                             <p class="text-sm text-gray-500">
                                 感謝您的填寫，表單已成功提交。
                             </p>
+                            <p class="text-xs text-gray-400 mt-2">此視窗將在 2 秒後自動關閉。</p>
                         </div>
                         <div class="items-center px-4 py-3">
                             <button id="closeModal" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
-                                關閉
+                                立即關閉
                             </button>
                         </div>
                     </div>
@@ -236,7 +237,6 @@
                         radioInput.name = `q${index}-${period}`;
                         radioInput.value = i;
                         radioInput.className = 'mx-auto';
-                        // Radio buttons for 'before' are required, 'after' might be filled later.
                         if (period === 'before') {
                              radioInput.required = true;
                         }
@@ -255,11 +255,10 @@
                 const data = Object.fromEntries(formData.entries());
                 localStorage.setItem(storageKey, JSON.stringify(data));
                 
-                // Show feedback to the user
                 saveStatus.style.opacity = '1';
                 setTimeout(() => {
                     saveStatus.style.opacity = '0';
-                }, 2000); // Fade out after 2 seconds
+                }, 2000);
             }
 
             /**
@@ -273,7 +272,6 @@
                 for (const [key, value] of Object.entries(data)) {
                     const element = form.elements[key];
                     if (element) {
-                        // Check if it's a RadioNodeList
                         if (element.constructor.name === 'RadioNodeList') {
                             for (const radio of element) {
                                 if (radio.value === value) {
@@ -281,7 +279,7 @@
                                     break;
                                 }
                             }
-                        } else { // For text, date, textarea
+                        } else {
                             element.value = value;
                         }
                     }
@@ -294,48 +292,50 @@
             function clearDraft() {
                  localStorage.removeItem(storageKey);
             }
+            
+            /**
+             * Closes the current browser window/tab.
+             */
+            function closePage() {
+                // Note: This may not work in all browsers due to security restrictions.
+                // It typically only works for windows opened by script (window.open()).
+                window.close();
+            }
 
             // --- Event Listeners ---
 
-            // Back button goes to the previous page in history
             backButton.addEventListener('click', () => {
                 window.history.back();
             });
             
-            // Save draft button
             saveDraftButton.addEventListener('click', saveDraft);
 
-            // Form submission
             form.addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent page reload
+                event.preventDefault(); 
 
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
                 console.log('Form Data Submitted:', JSON.stringify(data, null, 2));
 
-                clearDraft(); // Clear the draft upon successful submission
+                clearDraft();
                 successMessage.classList.remove('hidden');
+
+                // Automatically close the page after 2 seconds
+                setTimeout(closePage, 2000); 
             });
             
-            // Close modal button
-            closeModalButton.addEventListener('click', () => {
-                 successMessage.classList.add('hidden');
-                 form.reset();
-                 dateInput.valueAsDate = new Date(); // Reset date to today
-            });
+            // Close modal button also closes the page
+            closeModalButton.addEventListener('click', closePage);
 
             // --- Initialisation ---
             
-            // Set today's date as default
             if (!dateInput.value) {
                 dateInput.valueAsDate = new Date();
             }
 
-            // Populate both assessment tables
             populateTable(tableBodyBefore, 'before');
             populateTable(tableBodyAfter, 'after');
 
-            // Load any saved draft from previous sessions
             loadDraft();
         });
     </script>
