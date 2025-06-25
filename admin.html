@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者後台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        .main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        /* Custom modal styles */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .active-link {
+            background-color: #374151; /* bg-gray-700 */
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar fixed z-30 inset-y-0 left-0 w-64 bg-gray-800 text-white p-6 transform md:transform-none -translate-x-full md:relative md:-translate-x-0">
+            <div class="flex items-center justify-between mb-10">
+                <a href="#" class="text-2xl font-bold text-white">跨領域後台</a>
+                <button id="close-sidebar-btn" class="md:hidden text-white">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <nav>
+                <a href="#meetings" class="nav-link active-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
+                    <i data-lucide="calendar-days" class="w-5 h-5 mr-3"></i> 會議時程管理
+                </a>
+                <a href="#announcements" class="nav-link flex items-center mt-3 px-4 py-3 rounded-lg hover:bg-gray-700">
+                    <i data-lucide="megaphone" class="w-5 h-5 mr-3"></i> 最新公告管理
+                </a>
+                <a href="#users" class="nav-link flex items-center mt-3 px-4 py-3 rounded-lg hover:bg-gray-700">
+                    <i data-lucide="users" class="w-5 h-5 mr-3"></i> 使用者管理
+                </a>
+                <a href="#submissions" class="nav-link flex items-center mt-3 px-4 py-3 rounded-lg hover:bg-gray-700">
+                    <i data-lucide="file-check-2" class="w-5 h-5 mr-3"></i> 查看表單提交
+                </a>
+            </nav>
+            <div class="absolute bottom-6 left-6 right-6">
+                 <a href="#" class="flex items-center w-full px-4 py-3 text-left rounded-lg hover:bg-gray-700">
+                    <i data-lucide="log-out" class="w-5 h-5 mr-3"></i> 登出
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="main-content flex-1 flex flex-col overflow-hidden">
+            <header class="flex items-center justify-between p-6 bg-white border-b">
+                 <button id="open-sidebar-btn" class="md:hidden text-gray-600">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 id="page-title" class="text-2xl font-semibold text-gray-800">會議時程管理</h1>
+                 <div>
+                    <span class="text-gray-600">歡迎，管理者</span>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+                <!-- Meetings Content -->
+                <div id="meetings-content" class="page-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">會議時程管理</h2>
+                        <button onclick="openModal('meeting-modal')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                           <i data-lucide="plus" class="w-5 h-5 mr-2"></i> 新增會議
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期 & 時間</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">主題</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地點</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/07/15 (二) 14:00-16:00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">高齡病患的出院準備服務整合</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">奇美醫院 第五會議室</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
+                                        <button class="text-red-600 hover:text-red-900">刪除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/08/05 (二) 14:00-16:00</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">兒童罕見疾病的家庭心理支持</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">奇美醫院 第七會議室</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
+                                        <button class="text-red-600 hover:text-red-900">刪除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Announcements Content -->
+                <div id="announcements-content" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">最新公告管理</h2>
+                        <button onclick="openModal('announcement-modal')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                            <i data-lucide="plus" class="w-5 h-5 mr-2"></i> 新增公告
+                        </button>
+                    </div>
+                     <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">標題</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">發布日期</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                             <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">[重要] 下一次會議預告</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/06/20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已發布</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
+                                        <button class="text-red-600 hover:text-red-900">刪除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">[通知] 教師資料上傳</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/06/18</td>
+                                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">已發布</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
+                                        <button class="text-red-600 hover:text-red-900">刪除</button>
+                                    </td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Content -->
+                <div id="users-content" class="page-content hidden">
+                     <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">使用者管理</h2>
+                        <button onclick="openModal('user-modal')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center">
+                            <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i> 新增使用者
+                        </button>
+                    </div>
+                     <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">單位</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">信箱</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                                </tr>
+                            </thead>
+                             <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">王大明</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">資訊部</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">wang.da.ming@chimei.org.tw</td>
+                                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">管理者</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-red-600 hover:text-red-900">移除</button>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">陳美麗</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">護理部</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">chen.mei.li@chimei.org.tw</td>
+                                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">教師</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button class="text-red-600 hover:text-red-900">移除</button>
+                                    </td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Submissions Content -->
+                <div id="submissions-content" class="page-content hidden">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">查看表單提交</h2>
+                     <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">會議主題</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">會議日期</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">已提交數量</th>
+                                    <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">查看表單</th>
+                                </tr>
+                            </thead>
+                             <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">高齡病患的出院準備服務整合</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/07/15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">5 / 10</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto" onclick="openModal('submission-detail-modal')">
+                                            <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">兒童罕見疾病的家庭心理支持</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2025/08/05</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">2 / 8</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                         <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto" onclick="openModal('submission-detail-modal')">
+                                            <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
+                                        </button>
+                                    </td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Meeting Modal -->
+    <div id="meeting-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">新增/編輯 會議</h3>
+            <form>
+                <div class="mb-4">
+                    <label for="meeting-date" class="block text-gray-700 text-sm font-bold mb-2">日期 & 時間</label>
+                    <input type="datetime-local" id="meeting-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-4">
+                    <label for="meeting-title" class="block text-gray-700 text-sm font-bold mb-2">主題</label>
+                    <input type="text" id="meeting-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入會議主題">
+                </div>
+                <div class="mb-6">
+                    <label for="meeting-location" class="block text-gray-700 text-sm font-bold mb-2">地點</label>
+                    <input type="text" id="meeting-location" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入會議地點">
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" onclick="closeModal('meeting-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div id="announcement-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">新增/編輯 公告</h3>
+            <form>
+                <div class="mb-4">
+                    <label for="announcement-title" class="block text-gray-700 text-sm font-bold mb-2">標題</label>
+                    <input type="text" id="announcement-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入公告標題">
+                </div>
+                <div class="mb-4">
+                    <label for="announcement-content" class="block text-gray-700 text-sm font-bold mb-2">內容</label>
+                    <textarea id="announcement-content" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入公告內容"></textarea>
+                </div>
+                 <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">狀態</label>
+                    <div class="relative">
+                        <select class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option>草稿</option>
+                            <option>發布</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" onclick="closeModal('announcement-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- User Modal -->
+    <div id="user-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">新增使用者</h3>
+            <p class="text-sm text-gray-600 mb-4">新增後，系統將寄送登入通知至該使用者信箱。</p>
+            <form>
+                 <div class="mb-4">
+                    <label for="user-dept" class="block text-gray-700 text-sm font-bold mb-2">單位</label>
+                    <input type="text" id="user-dept" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="例如：護理部、教學部">
+                </div>
+                <div class="mb-4">
+                    <label for="user-name" class="block text-gray-700 text-sm font-bold mb-2">姓名</label>
+                    <input type="text" id="user-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入姓名">
+                </div>
+                <div class="mb-4">
+                    <label for="user-email" class="block text-gray-700 text-sm font-bold mb-2">信箱</label>
+                    <input type="email" id="user-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="使用者將以此信箱登入">
+                </div>
+                 <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">角色</label>
+                    <div class="relative">
+                        <select class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option>教師</option>
+                            <option>管理者</option>
+                        </select>
+                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end">
+                    <button type="button" onclick="closeModal('user-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">新增</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+     <!-- Submission Detail Modal -->
+    <div id="submission-detail-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 p-8 transform scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                     <h3 class="text-2xl font-bold text-gray-800">提交詳情</h3>
+                     <p class="text-gray-600">會議：高齡病患的出院準備服務整合</p>
+                </div>
+                 <button type="button" onclick="closeModal('submission-detail-modal')" class="text-gray-500 hover:text-gray-700">&times;</button>
+            </div>
+            
+             <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提交者</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">單位</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提交時間</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">檔案下載</th>
+                        </tr>
+                    </thead>
+                     <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">張小美</td>
+                            <td class="px-6 py-4 whitespace-nowrap">教學部</td>
+                            <td class="px-6 py-4 whitespace-nowrap">2025/07/10 09:30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
+                                <button class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-lg text-xs inline-flex items-center">
+                                    <i data-lucide="download" class="w-4 h-4 mr-1"></i> IPP
+                                </button>
+                                 <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold p-2 rounded-lg text-xs inline-flex items-center">
+                                    <i data-lucide="download" class="w-4 h-4 mr-1"></i> 自評表
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">李大文</td>
+                            <td class="px-6 py-4 whitespace-nowrap">內科部</td>
+                            <td class="px-6 py-4 whitespace-nowrap">2025/07/11 14:00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center space-x-2">
+                               <button class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-lg text-xs inline-flex items-center">
+                                    <i data-lucide="download" class="w-4 h-4 mr-1"></i> IPP
+                                </button>
+                                 <button class="bg-orange-500 hover:bg-orange-600 text-white font-bold p-2 rounded-lg text-xs inline-flex items-center">
+                                    <i data-lucide="download" class="w-4 h-4 mr-1"></i> 自評表
+                                </button>
+                            </td>
+                        </tr>
+                     </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-end mt-8">
+                <button type="button" onclick="closeModal('submission-detail-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">關閉</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Lucide Icons
+        lucide.createIcons();
+
+        // Page navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pageContents = document.querySelectorAll('.page-content');
+        const pageTitle = document.getElementById('page-title');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active-link'));
+                link.classList.add('active-link');
+                
+                // Show correct content
+                const targetId = link.getAttribute('href').substring(1) + '-content';
+                pageContents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+
+                // Update page title
+                pageTitle.textContent = link.textContent.trim();
+                
+                // Close sidebar on mobile after click
+                if (window.innerWidth < 768) {
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                }
+            });
+        });
+
+        // Modal handling
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalContent = modal.querySelector('.modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('modal-backdrop');
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalContent = modal.querySelector('.modal');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.remove('modal-backdrop');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Close modal on backdrop click
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal-backdrop')) {
+                const modalId = event.target.id;
+                if(modalId) {
+                    closeModal(modalId);
+                }
+            }
+        });
+        
+        // Sidebar toggle for mobile
+        const openSidebarBtn = document.getElementById('open-sidebar-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        openSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+        });
+
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+        });
+
+    </script>
+</body>
+</html>
