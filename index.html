@@ -117,7 +117,7 @@
   <footer class="bg-gray-800 text-white">
     <div class="container mx-auto px-6 py-8 text-center">
       <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
-      <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作。</p>
+      <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作</p>
     </div>
   </footer>
 
@@ -205,9 +205,24 @@
     document.getElementById('login-form').addEventListener('submit', e=>{
       e.preventDefault();
       const role = modalTitle.innerText;
-      // 顯示提示訊息，告知此為示範功能
-      alert(`此為${role}示範登入，無實際後端驗證功能。`);
-      closeLoginModal();
+      const username = e.target.username.value;
+      const password = document.getElementById('login-password').value;
+
+      if (role.includes('管理者')) {
+        // 管理者登入驗證
+        if (username === 'admin' && password === 'admin') {
+          alert('管理者登入成功！');
+          // 實際應用中，您可以在此處加入跳轉到管理者後台的程式碼
+          // 例如: window.location.href = '/admin-dashboard';
+          closeLoginModal();
+        } else {
+          alert('帳號或密碼錯誤。');
+        }
+      } else {
+        // 其他角色（如教師）的示範登入
+        alert(`此為${role}示範登入，無實際後端驗證功能。`);
+        closeLoginModal();
+      }
       document.getElementById('login-form').reset();
     });
 
