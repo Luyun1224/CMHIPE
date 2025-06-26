@@ -203,7 +203,8 @@
         ? JSON.parse(__firebase_config)
         : { apiKey: "DEMO_API_KEY", authDomain: "DEMO_AUTH_DOMAIN", projectId: "DEMO_PROJECT_ID" }; // Demo config
         
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // FIXED: Use the correct project ID to build the path.
+    const projectId = "chimei-crossteam-collab-prod";
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -266,8 +267,8 @@
                 await signInAnonymously(auth);
                 console.log("Firebase: Signed in anonymously.");
 
-                // Set up real-time listener for meetings
-                const meetingsCol = collection(db, `/artifacts/${appId}/public/data/meetings`);
+                // Set up real-time listener for meetings with the correct path
+                const meetingsCol = collection(db, `data/${projectId}/meetings`);
                 onSnapshot(meetingsCol, (snapshot) => {
                     const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date()).sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -293,11 +294,11 @@
                     }
                 }, (error) => {
                     console.error("Error listening to meetings:", error);
-                    meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。</p>';
+                    meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。請確認 Firebase 安全規則是否已更新。</p>';
                 });
 
-                // Set up real-time listener for announcements
-                const announcementsCol = collection(db, `/artifacts/${appId}/public/data/announcements`);
+                // Set up real-time listener for announcements with the correct path
+                const announcementsCol = collection(db, `data/${projectId}/announcements`);
                 onSnapshot(announcementsCol, (snapshot) => {
                     const storedAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布').sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
@@ -319,7 +320,7 @@
                     }
                 }, (error) => {
                     console.error("Error listening to announcements:", error);
-                    announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告時發生錯誤。</p>';
+                    announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告時發生錯誤。請確認 Firebase 安全規則是否已更新。</p>';
                 });
 
             } catch (error) {
@@ -344,7 +345,7 @@
         const openStudentModal = () => {
             meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
             toggle(studentModal, true);
-            const meetingsCol = collection(db, `/artifacts/${appId}/public/data/meetings`);
+            const meetingsCol = collection(db, `data/${projectId}/meetings`);
             onSnapshot(meetingsCol, (snapshot) => {
                 const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.start) - new Date(a.start));
                 meetingListContainer.innerHTML = '';
