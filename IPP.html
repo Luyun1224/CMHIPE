@@ -83,9 +83,15 @@
                         <input type="text" id="participant-unit" class="form-input" required>
                     </div>
                 </div>
-                <div class="mt-6">
-                    <label for="session-name" class="form-label">會議場次/個案名稱</label>
-                    <input type="text" id="session-name" class="form-input" placeholder="請填寫您參與的會議或討論的個案" required>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                     <div>
+                        <label for="discussion-date" class="form-label">討論日期</label>
+                        <input type="date" id="discussion-date" class="form-input" required>
+                    </div>
+                     <div>
+                        <label for="session-name" class="form-label">個案主題</label>
+                        <input type="text" id="session-name" class="form-input" placeholder="請填寫您討論的個案主題內容" required>
+                    </div>
                 </div>
             </div>
 
@@ -295,12 +301,15 @@
                 // Simple validation check for required fields.
                 const name = document.getElementById('participant-name').value;
                 const unit = document.getElementById('participant-unit').value;
-                if (!name.trim() || !unit.trim()) {
-                    alert('請填寫「姓名」與「單位」欄位！');
+                const date = document.getElementById('discussion-date').value;
+                const topic = document.getElementById('session-name').value;
+
+                if (!name.trim() || !unit.trim() || !date.trim() || !topic.trim()) {
+                    alert('請填寫所有基本資料欄位（姓名、單位、討論日期、個案主題）！');
                     return; // Stop the function if validation fails.
                 }
 
-                // **FIXED**: Programmatically click the hidden link.
+                // Programmatically click the hidden link.
                 // This is a workaround for security restrictions in iframes that prevent
                 // direct manipulation of `window.top.location`.
                 document.getElementById('redirect-link').click();
