@@ -98,13 +98,13 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                      <div>
-                         <label for="discussion-date" class="form-label">討論日期</label>
-                         <input type="date" id="discussion-date" name="discussion_date" class="form-input" required>
-                     </div>
+                        <label for="discussion-date" class="form-label">討論日期</label>
+                        <input type="date" id="discussion-date" name="discussion_date" class="form-input" required>
+                    </div>
                      <div>
-                         <label for="session-name" class="form-label">個案主題</label>
-                         <input type="text" id="session-name" name="session_name" class="form-input" placeholder="請填寫您討論的個案主題內容" required>
-                     </div>
+                        <label for="session-name" class="form-label">個案主題</label>
+                        <input type="text" id="session-name" name="session_name" class="form-input" placeholder="請填寫您討論的個案主題內容" required>
+                    </div>
                 </div>
             </div>
 
@@ -156,47 +156,47 @@
                 <div class="mb-6">
                      <label class="form-label">4. 團隊合作 (IPP Team work)</label>
                      <div class="space-y-4">
-                         <div>
-                              <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
-                              <textarea id="teamwork-strategy" name="teamwork_strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
-                         </div>
-                         <div>
-                             <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
-                             <textarea id="teamwork-details" name="teamwork_details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
-                         </div>
+                        <div>
+                             <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
+                             <textarea id="teamwork-strategy" name="teamwork_strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
+                        </div>
+                        <div>
+                            <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
+                            <textarea id="teamwork-details" name="teamwork_details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
+                        </div>
                      </div>
                 </div>
 
                  <div>
-                     <label class="form-label">5. 潛在可能成為IPE內容 (CC-KAS)</label>
-                     <div class="overflow-x-auto">
-                         <table class="w-full border border-gray-200 text-center">
-                             <thead class="bg-gray-100">
+                    <label class="form-label">5. 潛在可能成為IPE內容 (CC-KAS)</label>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border border-gray-200 text-center">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 border">分類</th>
+                                    <th class="p-3 border">Core-KAS (核心的知識、態度、技能)</th>
+                                    <th class="p-3 border">Contextualized-KAS (情境下的知識、態度、技能)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">知識</td>
+                                    <td class="p-2 border"><textarea name="core_knowledge" class="form-textarea !min-h-[80px]" placeholder="核心知識"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_knowledge" class="form-textarea !min-h-[80px]" placeholder="情境知識"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">態度</td>
+                                    <td class="p-2 border"><textarea name="core_attitude" class="form-textarea !min-h-[80px]" placeholder="核心態度"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_attitude" class="form-textarea !min-h-[80px]" placeholder="情境態度"></textarea></td>
+                                </tr>
                                  <tr>
-                                     <th class="p-3 border">分類</th>
-                                     <th class="p-3 border">Core-KAS (核心的知識、態度、技能)</th>
-                                     <th class="p-3 border">Contextualized-KAS (情境下的知識、態度、技能)</th>
-                                 </tr>
-                             </thead>
-                             <tbody>
-                                 <tr>
-                                     <td class="p-2 border font-semibold bg-gray-50">知識</td>
-                                     <td class="p-2 border"><textarea name="core_knowledge" class="form-textarea !min-h-[80px]" placeholder="核心知識"></textarea></td>
-                                     <td class="p-2 border"><textarea name="contextualized_knowledge" class="form-textarea !min-h-[80px]" placeholder="情境知識"></textarea></td>
-                                 </tr>
-                                 <tr>
-                                     <td class="p-2 border font-semibold bg-gray-50">態度</td>
-                                     <td class="p-2 border"><textarea name="core_attitude" class="form-textarea !min-h-[80px]" placeholder="核心態度"></textarea></td>
-                                     <td class="p-2 border"><textarea name="contextualized_attitude" class="form-textarea !min-h-[80px]" placeholder="情境態度"></textarea></td>
-                                 </tr>
-                                  <tr>
-                                     <td class="p-2 border font-semibold bg-gray-50">技能</td>
-                                     <td class="p-2 border"><textarea name="core_skill" class="form-textarea !min-h-[80px]" placeholder="核心技能"></textarea></td>
-                                     <td class="p-2 border"><textarea name="contextualized_skill" class="form-textarea !min-h-[80px]" placeholder="情境技能"></textarea></td>
-                                 </tr>
-                             </tbody>
-                         </table>
-                     </div>
+                                    <td class="p-2 border font-semibold bg-gray-50">技能</td>
+                                    <td class="p-2 border"><textarea name="core_skill" class="form-textarea !min-h-[80px]" placeholder="核心技能"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_skill" class="form-textarea !min-h-[80px]" placeholder="情境技能"></textarea></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                  </div>
             </div>
 
@@ -221,8 +221,8 @@
                                 <span class="text-gray-700">疾病相關知識的再強化，以期提升心情愉悅及生活品質 (包含：強化疾病認知、自我照護技能與態度、醫病溝通等)。</span>
                             </label>
                              <label class="flex items-start space-x-3">
-                                 <input type="checkbox" name="checklist_mind_health" value="心理-健康促進" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                 <span class="text-gray-700">健康促進、疾病預防 (包含：健康促進、疾病防治、病友團體活動等)。</span>
+                                <input type="checkbox" name="checklist_mind_health" value="心理-健康促進" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">健康促進、疾病預防 (包含：健康促進、疾病防治、病友團體活動等)。</span>
                              </label>
                         </div>
                     </div>
@@ -236,21 +236,21 @@
                         </div>
                     </div>
                      <div>
-                         <h3 class="font-bold text-lg text-indigo-700">4. 社會 (Social Support)</h3>
-                         <div class="mt-2 pl-4 space-y-3">
+                        <h3 class="font-bold text-lg text-indigo-700">4. 社會 (Social Support)</h3>
+                        <div class="mt-2 pl-4 space-y-3">
                              <label class="flex items-start space-x-3">
-                                 <input type="checkbox" name="checklist_social_family" value="社會-人際" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                 <span class="text-gray-700">強化人際支持力及家庭支持力 (包含：家人的協助、轉介服務、出院準備、病友團體等)。</span>
+                                <input type="checkbox" name="checklist_social_family" value="社會-人際" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">強化人際支持力及家庭支持力 (包含：家人的協助、轉介服務、出院準備、病友團體等)。</span>
                              </label>
                               <label class="flex items-start space-x-3">
-                                  <input type="checkbox" name="checklist_social_longterm" value="社會-長照" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                  <span class="text-gray-700">長照 (包含：居家照護、社區長照、急性後期整合照護)。</span>
+                                <input type="checkbox" name="checklist_social_longterm" value="社會-長照" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">長照 (包含：居家照護、社區長照、急性後期整合照護)。</span>
                               </label>
                               <label class="flex items-start space-x-3">
-                                  <input type="checkbox" name="checklist_social_hospice" value="社會-安寧" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                  <span class="text-gray-700">安寧 (包含：安寧議題、病人自主、預立醫療決定、DNR)。</span>
+                                <input type="checkbox" name="checklist_social_hospice" value="社會-安寧" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">安寧 (包含：安寧議題、病人自主、預立醫療決定、DNR)。</span>
                               </label>
-                         </div>
+                        </div>
                      </div>
                 </div>
             </div>
@@ -315,8 +315,6 @@
                 return; // Stop the function if validation fails.
             }
 
-            // --- 關鍵修改：收集所有資料並儲存到 localStorage ---
-            // 這裡使用了 try...catch 區塊，防止在找不到某些欄位時程式停止運行
             try {
                 const ippFormData = {
                     // 基本資料
@@ -361,14 +359,9 @@
                 // 將收集到的資料儲存到瀏覽器的 localStorage 中
                 localStorage.setItem('ippFormData', JSON.stringify(ippFormData));
 
-                // 執行頁面跳轉到下一頁
-                const redirectLink = document.getElementById('redirect-link');
-                if (redirectLink && redirectLink.href) {
-                    window.location.href = redirectLink.href;
-                } else {
-                    // Fallback to the hardcoded URL if the link is not found
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/form'; 
-                }
+                // **FIXED**: Programmatically click the hidden link to trigger redirection.
+                document.getElementById('redirect-link').click();
+
             } catch (error) {
                 console.error("在收集資料時發生錯誤：", error);
                 alert("抱歉，收集表單資料時發生錯誤。請檢查瀏覽器主控台 (Console) 以了解詳情。");
