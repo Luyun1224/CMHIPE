@@ -65,7 +65,7 @@
       <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <div id="meetings-container" class="space-y-6">
-          <p class="text-gray-500">目前尚無排定的會議。</p>
+          <p class="text-gray-500">正在讀取會議資料...</p>
         </div>
       </div>
 
@@ -73,7 +73,7 @@
       <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <div id="announcements-container" class="space-y-4">
-          <p class="text-gray-500">目前沒有最新公告。</p>
+          <p class="text-gray-500">正在讀取最新公告...</p>
         </div>
       </div>
     </div>
@@ -192,9 +192,45 @@
   </div>
 
   <!-- ========= Scripts ========= -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- DATA LOADING LOGIC ---
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // This configuration will be automatically provided in the environment.
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+        ? JSON.parse(__firebase_config)
+        : { apiKey: "DEMO_API_KEY", authDomain: "DEMO_AUTH_DOMAIN", projectId: "DEMO_PROJECT_ID" }; // Demo config
+        
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app); // Initialize Auth
+
+    // The main execution starts after DOM is loaded.
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- AUTHENTICATION AND INITIAL DATA LOAD ---
+        try {
+            // Sign in anonymously to get permission to read public data
+            await signInAnonymously(auth);
+            console.log("Firebase: Signed in anonymously.");
+            
+            // Once signed in, load the public data
+            await loadPublicData();
+            
+        } catch (error) {
+            console.error("Firebase Authentication or Initial Data Load failed:", error);
+            const meetingsContainer = document.getElementById('meetings-container');
+            const announcementsContainer = document.getElementById('announcements-container');
+            meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料失敗，請檢查您的網路連線。</p>';
+            announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告失敗，請檢查您的網路連線。</p>';
+            return; // Stop execution if critical init fails
+        }
+        
+        // --- DATA LOADING LOGIC (NOW FROM FIRESTORE) ---
         function formatDisplayDate(dateString) {
             if (!dateString) return '';
             try {
@@ -217,66 +253,70 @@
             } catch (error) { return ''; }
         }
 
-        function loadPublicData() {
+        async function loadPublicData() {
             const meetingsContainer = document.getElementById('meetings-container');
-            const storedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
-            
-            // Filter for meetings with a start time in the future
-            const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date());
-            
-            // Sort the upcoming meetings so the one happening soonest is first
-            upcomingMeetings.sort((a, b) => new Date(a.start) - new Date(b.start));
-            
-            // Get only the top 3 to display
-            const meetingsToShow = upcomingMeetings.slice(0, 3);
-
-            if (meetingsToShow.length > 0) {
-                meetingsContainer.innerHTML = '';
-                meetingsToShow.forEach((meeting, index) => {
-                    const meetingElement = document.createElement('div');
-                    // Add a "NEW" tag only for the first meeting in the list (the soonest one)
-                    const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
-
-                    meetingElement.innerHTML = `
-                        <div class="pb-4 border-b border-gray-200 last:border-b-0">
-                            <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                            <div class="flex items-center mt-1">
-                                <p class="text-gray-700 font-semibold">${meeting.title}</p>
-                                ${newTag}
-                            </div>
-                            <p class="text-sm text-gray-500">地點：${meeting.location}</p>
-                        </div>
-                    `;
-                    meetingsContainer.appendChild(meetingElement);
-                });
-            } else {
-                 meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
-            }
-
             const announcementsContainer = document.getElementById('announcements-container');
-            const storedAnnouncements = JSON.parse(localStorage.getItem('announcements')) || [];
-            const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布');
-            publishedAnnouncements.sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
-            if (publishedAnnouncements.length > 0) {
-                announcementsContainer.innerHTML = '';
-                publishedAnnouncements.forEach(ann => {
-                    const announcementElement = document.createElement('div');
-                    announcementElement.innerHTML = `
-                        <div class="pb-3 border-b border-gray-200 last:border-b-0">
-                            <p class="font-bold text-amber-600">${ann.title}</p>
-                            <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
-                            <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
-                        </div>
-                    `;
-                    announcementsContainer.appendChild(announcementElement);
-                });
-            } else {
-                announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
+
+            try {
+                // Fetch Meetings from Firestore
+                const meetingsSnapshot = await getDocs(collection(db, `/artifacts/${appId}/public/data/meetings`));
+                const storedMeetings = meetingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date());
+                upcomingMeetings.sort((a, b) => new Date(a.start) - new Date(b.start));
+                const meetingsToShow = upcomingMeetings.slice(0, 3);
+
+                if (meetingsToShow.length > 0) {
+                    meetingsContainer.innerHTML = '';
+                    meetingsToShow.forEach((meeting, index) => {
+                        const meetingElement = document.createElement('div');
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+                        meetingElement.innerHTML = `
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0">
+                                <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                <div class="flex items-center mt-1">
+                                    <p class="text-gray-700 font-semibold">${meeting.title}</p>
+                                    ${newTag}
+                                </div>
+                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
+                            </div>
+                        `;
+                        meetingsContainer.appendChild(meetingElement);
+                    });
+                } else {
+                     meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
+                }
+
+                // Fetch Announcements from Firestore
+                const announcementsSnapshot = await getDocs(collection(db, `/artifacts/${appId}/public/data/announcements`));
+                const storedAnnouncements = announcementsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布');
+                publishedAnnouncements.sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
+                if (publishedAnnouncements.length > 0) {
+                    announcementsContainer.innerHTML = '';
+                    publishedAnnouncements.forEach(ann => {
+                        const announcementElement = document.createElement('div');
+                        announcementElement.innerHTML = `
+                            <div class="pb-3 border-b border-gray-200 last:border-b-0">
+                                <p class="font-bold text-amber-600">${ann.title}</p>
+                                <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
+                                <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
+                            </div>
+                        `;
+                        announcementsContainer.appendChild(announcementElement);
+                    });
+                } else {
+                    announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
+                }
+
+            } catch (error) {
+                console.error("Error loading data from Firestore:", error);
+                meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料失敗。</p>';
+                announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告失敗。</p>';
             }
         }
         
-        loadPublicData();
-
         // --- GENERAL UI LOGIC ---
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -345,33 +385,48 @@
         const meetingListContainer = document.getElementById('meeting-list-container');
         const studentNextBtn = document.getElementById('student-next-button');
 
-        window.openStudentModal = () => {
-            const storedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
-            const allMeetings = storedMeetings
-                .sort((a,b) => new Date(b.start) - new Date(a.start));
-
-            meetingListContainer.innerHTML = '';
-            
-            if (allMeetings.length > 0) {
-                allMeetings.forEach((meeting, index) => {
-                    const meetingId = `meeting-${index}`;
-                    const meetingCard = document.createElement('label');
-                    meetingCard.htmlFor = meetingId;
-                    meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer';
-                    meetingCard.innerHTML = `
-                      <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
-                      <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p>
-                      <p class="text-sm text-gray-500 pointer-events-none">${formatDisplayDate(meeting.start)}</p>
-                    `;
-                    meetingListContainer.appendChild(meetingCard);
-                });
-                meetingListContainer.addEventListener('change', () => {
-                    studentNextBtn.disabled = false;
-                });
-            } else {
-                meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
-            }
+        window.openStudentModal = async () => {
+            meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
             toggle(studentModal, true);
+            
+            try {
+                const meetingsSnapshot = await getDocs(collection(db, `/artifacts/${appId}/public/data/meetings`));
+                const storedMeetings = meetingsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Sort all meetings by start date, newest first
+                storedMeetings.sort((a,b) => new Date(b.start) - new Date(a.start));
+
+                meetingListContainer.innerHTML = '';
+                
+                if (storedMeetings.length > 0) {
+                    storedMeetings.forEach((meeting, index) => {
+                        const meetingId = `meeting-${index}`;
+                        const meetingCard = document.createElement('label');
+                        meetingCard.htmlFor = meetingId;
+                        meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer';
+                        
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+
+                        meetingCard.innerHTML = `
+                          <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
+                          <div class="flex items-center">
+                             <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p>
+                             ${newTag}
+                          </div>
+                          <p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>
+                        `;
+                        meetingListContainer.appendChild(meetingCard);
+                    });
+                    meetingListContainer.addEventListener('change', () => {
+                        studentNextBtn.disabled = false;
+                    });
+                } else {
+                    meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
+                }
+            } catch (error) {
+                console.error("Error loading meetings for student modal:", error);
+                meetingListContainer.innerHTML = '<p class="text-red-500 text-center">讀取會議列表失敗。</p>';
+            }
         };
 
         window.closeStudentModal = () => {
