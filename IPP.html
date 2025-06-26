@@ -283,77 +283,79 @@
         <a id="redirect-link" href="https://luyun1224.github.io/CMHIPE/form" target="_top" style="display:none;"></a>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('ipp-main-form');
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('ipp-main-form');
+        
+        // Handle 'Other' profession checkbox
+        const otherCheckbox = document.getElementById('other-profession-checkbox');
+        const otherTextInput = document.getElementById('other-profession-text');
+        otherTextInput.disabled = true;
+
+        otherCheckbox.addEventListener('change', () => {
+            otherTextInput.disabled = !otherCheckbox.checked;
+            if (!otherCheckbox.checked) {
+                otherTextInput.value = '';
+            }
+            otherTextInput.focus();
+        });
+
+        // Handle form submission and data storage
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default submission to run validation and data collection first.
             
-            // Handle 'Other' profession checkbox
-            const otherCheckbox = document.getElementById('other-profession-checkbox');
-            const otherTextInput = document.getElementById('other-profession-text');
-            otherTextInput.disabled = true;
+            // Simple validation check for required fields.
+            const name = document.getElementById('participant-name').value;
+            const unit = document.getElementById('participant-unit').value;
+            const date = document.getElementById('discussion-date').value;
+            const topic = document.getElementById('session-name').value;
 
-            otherCheckbox.addEventListener('change', () => {
-                otherTextInput.disabled = !otherCheckbox.checked;
-                if (!otherCheckbox.checked) {
-                    otherTextInput.value = '';
-                }
-                otherTextInput.focus();
-            });
+            if (!name.trim() || !unit.trim() || !date.trim() || !topic.trim()) {
+                alert('請填寫所有基本資料欄位（姓名、單位、討論日期、個案主題）！');
+                return; // Stop the function if validation fails.
+            }
 
-            // Handle form submission and data storage
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent default submission to run validation and data collection first.
-                
-                // Simple validation check for required fields.
-                const name = document.getElementById('participant-name').value;
-                const unit = document.getElementById('participant-unit').value;
-                const date = document.getElementById('discussion-date').value;
-                const topic = document.getElementById('session-name').value;
-
-                if (!name.trim() || !unit.trim() || !date.trim() || !topic.trim()) {
-                    alert('請填寫所有基本資料欄位（姓名、單位、討論日期、個案主題）！');
-                    return; // Stop the function if validation fails.
-                }
-
-                // --- 關鍵修改：收集所有資料並儲存到 localStorage ---
+            // --- 關鍵修改：收集所有資料並儲存到 localStorage ---
+            // 這裡使用了 try...catch 區塊，防止在找不到某些欄位時程式停止運行
+            try {
                 const ippFormData = {
                     // 基本資料
-                    participant_name: document.getElementById('participant-name').value,
-                    participant_unit: document.getElementById('participant-unit').value,
-                    discussion_date: document.getElementById('discussion-date').value,
-                    session_name: document.getElementById('session-name').value,
+                    participant_name: document.getElementById('participant-name')?.value || '',
+                    participant_unit: document.getElementById('participant-unit')?.value || '',
+                    discussion_date: document.getElementById('discussion-date')?.value || '',
+                    session_name: document.getElementById('session-name')?.value || '',
                     
                     // IPP 內容
-                    care_needs: document.getElementById('care-needs').value,
-                    goal_setting: document.getElementById('goal-setting').value,
-                    teamwork_strategy: document.getElementById('teamwork-strategy').value,
-                    teamwork_details: document.getElementById('teamwork-details').value,
+                    care_needs: document.getElementById('care-needs')?.value || '',
+                    goal_setting: document.getElementById('goal-setting')?.value || '',
+                    teamwork_strategy: document.getElementById('teamwork-strategy')?.value || '',
+                    teamwork_details: document.getElementById('teamwork-details')?.value || '',
 
                     // 參與職類 (勾選框) - 收集所有勾選的值
                     professions: Array.from(document.querySelectorAll('input[name^="profession_"]:checked')).map(cb => cb.value),
-                    other_profession_text: document.getElementById('other-profession-text').value,
+                    other_profession_text: document.getElementById('other-profession-text')?.value || '',
                     
-                    // IPE 內容 (CC-KAS 表格)
-                    core_knowledge: document.querySelector('textarea[name="core_knowledge"]').value,
-                    contextualized_knowledge: document.querySelector('textarea[name="contextualized_knowledge"]').value,
-                    core_attitude: document.querySelector('textarea[name="core_attitude"]').value,
-                    contextualized_attitude: document.querySelector('textarea[name="contextualized_attitude"]').value,
-                    core_skill: document.querySelector('textarea[name="core_skill"]').value,
-                    contextualized_skill: document.querySelector('textarea[name="contextualized_skill"]').value,
+                    // IPE 內容 (CC-KAS 表格) - 使用更穩定的選擇器
+                    core_knowledge: document.querySelector('textarea[name="core_knowledge"]')?.value || '',
+                    contextualized_knowledge: document.querySelector('textarea[name="contextualized_knowledge"]')?.value || '',
+                    core_attitude: document.querySelector('textarea[name="core_attitude"]')?.value || '',
+                    contextualized_attitude: document.querySelector('textarea[name="contextualized_attitude"]')?.value || '',
+                    core_skill: document.querySelector('textarea[name="core_skill"]')?.value || '',
+                    contextualized_skill: document.querySelector('textarea[name="contextualized_skill"]')?.value || '',
 
                     // 照護查檢表 (Checklist) - 檢查是否勾選
-                    checklist_body: document.querySelector('input[name="checklist_body"]').checked,
-                    checklist_mind_knowledge: document.querySelector('input[name="checklist_mind_knowledge"]').checked,
-                    checklist_mind_health: document.querySelector('input[name="checklist_mind_health"]').checked,
-                    checklist_spirit: document.querySelector('input[name="checklist_spirit"]').checked,
-                    checklist_social_family: document.querySelector('input[name="checklist_social_family"]').checked,
-                    checklist_social_longterm: document.querySelector('input[name="checklist_social_longterm"]').checked,
-                    checklist_social_hospice: document.querySelector('input[name="checklist_social_hospice"]').checked,
+                    checklist_body: document.querySelector('input[name="checklist_body"]')?.checked || false,
+                    checklist_mind_knowledge: document.querySelector('input[name="checklist_mind_knowledge"]')?.checked || false,
+                    checklist_mind_health: document.querySelector('input[name="checklist_mind_health"]')?.checked || false,
+                    checklist_spirit: document.querySelector('input[name="checklist_spirit"]')?.checked || false,
+                    checklist_social_family: document.querySelector('input[name="checklist_social_family"]')?.checked || false,
+                    checklist_social_longterm: document.querySelector('input[name="checklist_social_longterm"]')?.checked || false,
+                    checklist_social_hospice: document.querySelector('input[name="checklist_social_hospice"]')?.checked || false,
 
                     // 教師審核 (學員填寫階段通常為空)
-                    teacher_name: document.getElementById('teacher-name').value,
-                    teacher_id: document.getElementById('teacher-id').value,
-                    teacher_email: document.getElementById('teacher-email').value
+                    teacher_name: document.getElementById('teacher-name')?.value || '',
+                    teacher_id: document.getElementById('teacher-id')?.value || '',
+                    teacher_email: document.getElementById('teacher-email')?.value || ''
                 };
                 
                 // 將收集到的資料儲存到瀏覽器的 localStorage 中
@@ -367,8 +369,12 @@
                     // Fallback to the hardcoded URL if the link is not found
                     window.location.href = 'https://luyun1224.github.io/CMHIPE/form'; 
                 }
-            });
+            } catch (error) {
+                console.error("在收集資料時發生錯誤：", error);
+                alert("抱歉，收集表單資料時發生錯誤。請檢查瀏覽器主控台 (Console) 以了解詳情。");
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>
