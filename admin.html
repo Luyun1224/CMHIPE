@@ -16,6 +16,18 @@
         .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
         .modal { transition: opacity 0.3s ease, transform 0.3s ease; }
         .active-link { background-color: #374151; }
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -30,6 +42,11 @@
                 </a>
             </div>
         </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast" class="hidden fixed top-5 right-5 bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300">
+        <p id="notification-message"></p>
     </div>
 
     <div class="flex h-screen bg-gray-100">
@@ -183,8 +200,11 @@
                     <input type="text" id="meeting-location" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入會議地點" required>
                 </div>
                 <div class="flex items-center justify-end">
-                    <button type="button" onclick="closeModal('meeting-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">儲存</button>
+                    <button type="button" onclick="closeModal('meeting-modal')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex justify-center items-center w-24">
+                        <span class="btn-text">儲存</span>
+                        <div class="spinner hidden ml-2"></div>
+                    </button>
                 </div>
             </form>
         </div>
@@ -216,8 +236,11 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-end">
-                    <button type="button" onclick="closeModal('announcement-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">儲存</button>
+                    <button type="button" onclick="closeModal('announcement-modal')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex justify-center items-center w-24">
+                        <span class="btn-text">儲存</span>
+                        <div class="spinner hidden ml-2"></div>
+                    </button>
                 </div>
             </form>
         </div>
@@ -253,10 +276,25 @@
                     </div>
                 </div>
                 <div class="flex items-center justify-end">
-                    <button type="button" onclick="closeModal('user-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
-                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">新增</button>
+                    <button type="button" onclick="closeModal('user-modal')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg mr-2">取消</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex justify-center items-center w-24">
+                        <span class="btn-text">新增</span>
+                        <div class="spinner hidden ml-2"></div>
+                    </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:max-w-md p-8 transform opacity-0 scale-95">
+             <h3 class="text-xl font-bold text-gray-900">確認操作</h3>
+             <p id="confirm-message" class="mt-2 text-gray-600">您確定要執行此操作嗎？</p>
+             <div class="mt-8 flex justify-end space-x-4">
+                 <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">取消</button>
+                 <button id="confirm-ok-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">確定</button>
+             </div>
         </div>
     </div>
 
@@ -264,14 +302,14 @@
         async function main() {
             const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js");
             const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js");
-            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js");
+            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, getDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js");
             const { getAnalytics } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js");
 
             const firebaseConfig = {
               apiKey: "AIzaSyDcG2ycz9Uih6luKNf06owebG1OJxHxAco",
               authDomain: "cmhipe-761f5.firebaseapp.com",
               projectId: "cmhipe-761f5",
-              storageBucket: "cmhipe-761f5.appspot.com", // Corrected format
+              storageBucket: "cmhipe-761f5.appspot.com",
               messagingSenderId: "282621579528",
               appId: "1:282621579528:web:c581d14089af1793365cbd",
               measurementId: "G-DGGSW2JXBY"
@@ -303,9 +341,6 @@
                 return; 
             }
 
-            let allMeetings = [];
-            let allAnnouncements = [];
-
             const meetingsCol = collection(db, `data/${dataScopeId}/meetings`);
             const announcementsCol = collection(db, `data/${dataScopeId}/announcements`);
             const usersCol = collection(db, `data/${dataScopeId}/users`);
@@ -320,14 +355,12 @@
             const formatTime = (datetime) => datetime ? new Date(datetime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) : '';
 
             onSnapshot(meetingsCol, (snapshot) => {
-                allMeetings = []; 
-                snapshot.forEach((doc) => allMeetings.push({ ...doc.data(), id: doc.id }));
-                
                 meetingsTbody.innerHTML = '';
-                if (allMeetings.length === 0) {
+                const meetingDocs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+                if (meetingDocs.length === 0) {
                     meetingsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有會議</td></tr>`;
                 } else {
-                    allMeetings.forEach(meeting => {
+                    meetingDocs.forEach(meeting => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td class="px-6 py-4 whitespace-nowrap">${formatDateTime(meeting.start)} - ${formatTime(meeting.end)}</td>
@@ -335,24 +368,22 @@
                             <td class="px-6 py-4 whitespace-nowrap">${meeting.location}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button class="edit-meeting-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${meeting.id}">編輯</button>
-                                <button class="delete-meeting-btn text-red-600 hover:text-red-900" data-id="${meeting.id}">刪除</button>
+                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="meetings" data-id="${meeting.id}" data-message="您確定要刪除這個會議嗎？">刪除</button>
                             </td>
                         `;
                         meetingsTbody.appendChild(row);
                     });
                 }
-                renderSubmissions(allMeetings);
+                renderSubmissions(meetingDocs);
             });
 
             onSnapshot(announcementsCol, (snapshot) => {
-                allAnnouncements = [];
-                snapshot.forEach((doc) => allAnnouncements.push({ ...doc.data(), id: doc.id }));
-
                 announcementsTbody.innerHTML = '';
-                if (allAnnouncements.length === 0) {
+                const announcementDocs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+                if (announcementDocs.length === 0) {
                     announcementsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有公告</td></tr>`;
                 } else {
-                    allAnnouncements.forEach(ann => {
+                    announcementDocs.forEach(ann => {
                         const statusColor = ann.status === '已發布' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -361,7 +392,7 @@
                             <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${ann.status}</span></td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button class="edit-announcement-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${ann.id}">編輯</button>
-                                <button class="delete-announcement-btn text-red-600 hover:text-red-900" data-id="${ann.id}">刪除</button>
+                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="announcements" data-id="${ann.id}" data-message="您確定要刪除這個公告嗎？">刪除</button>
                             </td>
                         `;
                         announcementsTbody.appendChild(row);
@@ -384,7 +415,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
                             <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColor}">${user.role}</span></td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">移除</button>
+                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="users" data-id="${user.id}" data-message="您確定要移除這位使用者嗎？">移除</button>
                             </td>
                         `;
                         usersTbody.appendChild(row);
@@ -415,8 +446,38 @@
                 lucide.createIcons();
             }
 
+            const toggleSavingState = (form, isSaving) => {
+                const button = form.querySelector('button[type="submit"]');
+                if (!button) return;
+                const btnText = button.querySelector('.btn-text');
+                const spinner = button.querySelector('.spinner');
+                button.disabled = isSaving;
+                if (btnText) btnText.classList.toggle('hidden', isSaving);
+                if (spinner) spinner.classList.toggle('hidden', !isSaving);
+            };
+
+            const showNotification = (message, isSuccess = true) => {
+                const toast = document.getElementById('notification-toast');
+                const messageEl = document.getElementById('notification-message');
+                if(!toast || !messageEl) return;
+                
+                messageEl.textContent = message;
+                toast.className = `fixed top-5 right-5 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform transition-transform duration-300 ${isSuccess ? 'bg-green-500' : 'bg-red-500'}`;
+                
+                toast.classList.remove('hidden', 'translate-x-full');
+                toast.classList.add('translate-x-0');
+
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-0');
+                    toast.classList.add('translate-x-full');
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 3000);
+            };
+
             document.getElementById('meeting-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const form = e.target;
+                toggleSavingState(form, true);
                 const id = document.getElementById('meeting-id').value;
                 const data = {
                     start: document.getElementById('meeting-start-date').value,
@@ -425,14 +486,25 @@
                     location: document.getElementById('meeting-location').value,
                 };
                 try {
-                    if (id) await setDoc(doc(meetingsCol, id), data);
-                    else await addDoc(meetingsCol, data);
+                    if (id) {
+                        await setDoc(doc(meetingsCol, id), data);
+                        showNotification('會議更新成功！');
+                    } else {
+                        await addDoc(meetingsCol, data);
+                        showNotification('會議新增成功！');
+                    }
                     closeModal('meeting-modal');
-                } catch (error) { console.error("Error saving meeting:", error); alert("儲存會議失敗！"); }
+                } catch (error) { 
+                    console.error("Error saving meeting:", error); 
+                    showNotification('儲存會議失敗！', false);
+                }
+                finally { toggleSavingState(form, false); }
             });
 
             document.getElementById('announcement-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const form = e.target;
+                toggleSavingState(form, true);
                 const id = document.getElementById('announcement-id').value;
                 const data = {
                     title: document.getElementById('announcement-title').value,
@@ -441,14 +513,25 @@
                     publishDate: new Date().toISOString(),
                 };
                 try {
-                    if (id) await setDoc(doc(announcementsCol, id), data);
-                    else await addDoc(announcementsCol, data);
+                    if (id) {
+                        await setDoc(doc(announcementsCol, id), data);
+                        showNotification('公告更新成功！');
+                    } else {
+                        await addDoc(announcementsCol, data);
+                        showNotification('公告新增成功！');
+                    }
                     closeModal('announcement-modal');
-                } catch (error) { console.error("Error saving announcement:", error); alert("儲存公告失敗！"); }
+                } catch (error) { 
+                    console.error("Error saving announcement:", error); 
+                    showNotification('儲存公告失敗！', false);
+                }
+                finally { toggleSavingState(form, false); }
             });
 
             document.getElementById('user-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                const form = e.target;
+                toggleSavingState(form, true);
                 const data = {
                     name: document.getElementById('user-name').value,
                     dept: document.getElementById('user-dept').value,
@@ -457,26 +540,49 @@
                 };
                  try {
                     await addDoc(usersCol, data);
+                    showNotification('使用者新增成功！');
                     closeModal('user-modal');
-                } catch (error) { console.error("Error adding user:", error); alert("新增使用者失敗！"); }
+                } catch (error) { 
+                    console.error("Error adding user:", error); 
+                    showNotification('新增使用者失敗！', false);
+                }
+                finally { toggleSavingState(form, false); }
             });
             
             document.body.addEventListener('click', async (e) => {
-                if (e.target.matches('.delete-meeting-btn')) await deleteDoc(doc(meetingsCol, e.target.dataset.id));
-                if (e.target.matches('.delete-announcement-btn')) await deleteDoc(doc(announcementsCol, e.target.dataset.id));
-                if (e.target.matches('.delete-user-btn')) await deleteDoc(doc(usersCol, e.target.dataset.id));
-                if (e.target.matches('.edit-meeting-btn')) {
-                    const meetingDoc = allMeetings.find(m => m.id === e.target.dataset.id);
-                    if(meetingDoc) openEditMeetingModal(meetingDoc);
+                const target = e.target.closest('button');
+                if (!target) return;
+
+                if (target.matches('.delete-btn')) {
+                    const collectionName = target.dataset.collection;
+                    const docId = target.dataset.id;
+                    const message = target.dataset.message || "您確定要刪除嗎？";
+                    
+                    openConfirmModal(message, async () => {
+                        let colRef;
+                        if (collectionName === 'meetings') colRef = meetingsCol;
+                        else if (collectionName === 'announcements') colRef = announcementsCol;
+                        else if (collectionName === 'users') colRef = usersCol;
+                        
+                        if (colRef) {
+                            await deleteDoc(doc(colRef, docId));
+                            showNotification('刪除成功！');
+                        }
+                    });
                 }
-                if (e.target.matches('.edit-announcement-btn')) {
-                     const annDoc = allAnnouncements.find(a => a.id === e.target.dataset.id);
-                    if(annDoc) openEditAnnouncementModal(annDoc);
+                
+                if (target.matches('.edit-meeting-btn')) {
+                    const docSnap = await getDoc(doc(meetingsCol, target.dataset.id));
+                    if(docSnap.exists()) openEditMeetingModal({ ...docSnap.data(), id: docSnap.id });
+                }
+                if (target.matches('.edit-announcement-btn')) {
+                    const docSnap = await getDoc(doc(announcementsCol, target.dataset.id));
+                    if(docSnap.exists()) openEditAnnouncementModal({ ...docSnap.data(), id: docSnap.id });
                 }
             });
 
             const modals = {};
-            ['meeting-modal', 'announcement-modal', 'user-modal'].forEach(id => modals[id] = document.getElementById(id));
+            ['meeting-modal', 'announcement-modal', 'user-modal', 'confirm-modal'].forEach(id => modals[id] = document.getElementById(id));
 
             const openModal = (id) => {
                 modals[id].classList.remove('hidden');
@@ -490,6 +596,26 @@
                     if (form) form.reset();
                 }, 300);
             };
+            
+            const confirmOkBtn = document.getElementById('confirm-ok-btn');
+            const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+            const confirmMessage = document.getElementById('confirm-message');
+            let onConfirmCallback = null;
+            
+            const openConfirmModal = (message, callback) => {
+                confirmMessage.textContent = message;
+                onConfirmCallback = callback;
+                openModal('confirm-modal');
+            };
+            
+            confirmOkBtn.addEventListener('click', async () => {
+                if (typeof onConfirmCallback === 'function') {
+                    await onConfirmCallback();
+                }
+                closeModal('confirm-modal');
+            });
+
+            confirmCancelBtn.addEventListener('click', () => closeModal('confirm-modal'));
             
             window.openAddMeetingModal = () => {
                 document.getElementById('meeting-form').reset();
