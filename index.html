@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>奇美醫院跨領域全人照護討論會</title>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Font：Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
   <style>
@@ -22,7 +19,6 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- ========= Header ========= -->
   <header class="bg-white shadow-md sticky top-0 z-40">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
@@ -36,7 +32,6 @@
       </button>
     </div>
 
-    <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
       <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
       <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
@@ -44,9 +39,7 @@
     </div>
   </header>
 
-  <!-- ========= Main ========= -->
   <main class="container mx-auto px-6 py-12">
-    <!-- Hero -->
     <section class="text-center mb-16">
       <h2 class="text-4xl font-bold mb-4">促進合作，提升照護品質</h2>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -54,9 +47,7 @@
       </p>
     </section>
 
-    <!-- Schedule + Announcements -->
     <div class="grid md:grid-cols-2 gap-12 mb-16">
-      <!-- Schedule -->
       <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <div id="meetings-container" class="space-y-6">
@@ -64,7 +55,6 @@
         </div>
       </div>
 
-      <!-- Announcements -->
       <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <div id="announcements-container" class="space-y-4">
@@ -73,11 +63,9 @@
       </div>
     </div>
 
-    <!-- Portals -->
     <div id="portals" class="pb-12">
       <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <!-- 學員 -->
         <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
           <h3 class="text-2xl font-bold mb-4">學員入口</h3>
@@ -88,7 +76,6 @@
           </button>
         </div>
 
-        <!-- 教師 -->
         <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
@@ -98,7 +85,6 @@
           </button>
         </div>
 
-        <!-- 管理者 -->
         <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
           <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
@@ -111,7 +97,6 @@
     </div>
   </main>
 
-  <!-- ========= Footer ========= -->
   <footer class="bg-gray-800 text-white">
     <div class="container mx-auto px-6 py-8 text-center">
       <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
@@ -119,7 +104,6 @@
     </div>
   </footer>
 
-  <!-- ========= Student Modal ========= -->
   <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
       <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
@@ -142,7 +126,6 @@
     </div>
   </div>
 
-  <!-- ========= Login Modal (教師 / 管理者) ========= -->
   <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
@@ -174,7 +157,6 @@
     </div>
   </div>
 
-  <!-- ========= IPP iframe Modal ========= -->
   <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="relative w-full max-w-3xl h-[90vh]">
       <button onclick="closeIPP()"
@@ -185,7 +167,6 @@
     </div>
   </div>
 
-  <!-- ========= Scripts ========= -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- DATA LOADING LOGIC ---
@@ -257,7 +238,7 @@
         function toggle(el, show) {
             if (show) {
                 el.classList.remove('hidden');
-                el.classList.add('flex'); // Use flex for centering
+                el.classList.add('flex');
             } else {
                 el.classList.add('hidden');
                 el.classList.remove('flex');
@@ -279,17 +260,44 @@
             const role = modalTitle.innerText;
             const username = e.target.username.value;
             const password = document.getElementById('login-password').value;
+
+            // --- UPDATED LOGIN LOGIC ---
             if (role.includes('教師')) {
-                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+                const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                const foundTeacher = storedUsers.find(user => 
+                    user.role === '教師' && 
+                    user.email === username && 
+                    user.email === password
+                );
+
+                if (foundTeacher) {
+                    // Login successful
+                    alert(`教師 ${foundTeacher.name}，登入成功！`);
                     window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
                 } else {
+                    // Login failed
                     alert('帳號或密碼錯誤。');
                 }
             } else if (role.includes('管理者')) {
-                if (username === 'B20401' && password === 'B20401') {
+                // Admin login logic (can also be updated to use the 'users' list)
+                const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                const foundAdmin = storedUsers.find(user => 
+                    user.role === '管理者' && 
+                    user.email === username && 
+                    user.email === password
+                );
+
+                if (foundAdmin) {
+                     alert(`管理者 ${foundAdmin.name}，登入成功！`);
                     window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
                 } else {
-                    alert('帳號或密碼錯誤。');
+                    // Fallback for default admin if no users are set
+                    if (username === 'B20401' && password === 'B20401') {
+                        alert('預設管理者登入成功！');
+                        window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
+                    } else {
+                        alert('帳號或密碼錯誤。');
+                    }
                 }
             } else {
                 alert('未知的登入角色。');
