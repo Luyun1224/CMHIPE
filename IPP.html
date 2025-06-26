@@ -94,8 +94,22 @@
             </div>
 
             <div class="form-section">
+                <div class="info-box">
+                    <p><strong>SIP Tea:</strong> Sense(察覺需求)；Initiate(啟動團隊)；Patient-centered(目標設定)；Team work(團隊合作)</p>
+                </div>
+                <div class="info-box">
+                    <p><strong>TIPs:</strong> What I can help to team? What help I need from team? (我可以對團隊提供什麼專業支援？我需要從團隊獲得什麼專業支援？)</p>
+                </div>
+            </div>
+
+            <div class="form-section">
                 <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">IPP 表單內容</h2>
                 
+                <div class="mb-6">
+                    <label for="care-needs" class="form-label">1. 照護需求 (Sense)</label>
+                    <textarea id="care-needs" name="care_needs" class="form-textarea" placeholder="請說明您察覺到的個案照護需求..."></textarea>
+                </div>
+
                 <div class="mb-6">
                     <label class="form-label">2. 參與職類 (Team)</label>
                     <div class="checkbox-grid p-4 border rounded-lg bg-gray-50">
@@ -117,6 +131,112 @@
                              <input type="text" id="other-profession-text" name="other_profession_text" class="form-input !w-auto flex-grow" placeholder="請填寫其他職類">
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="goal-setting" class="form-label">3. 目標設定 (Patient-centered)</label>
+                    <textarea id="goal-setting" name="goal_setting" class="form-textarea" placeholder="請說明以個案為中心的具體照護目標..."></textarea>
+                </div>
+
+                <div class="mb-6">
+                      <label class="form-label">4. 團隊合作 (IPP Team work)</label>
+                      <div class="space-y-4">
+                            <div>
+                                 <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
+                                 <textarea id="teamwork-strategy" name="teamwork_strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
+                            </div>
+                            <div>
+                               <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
+                               <textarea id="teamwork-details" name="teamwork_details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
+                            </div>
+                      </div>
+                </div>
+
+                 <div>
+                    <label class="form-label">5. 潛在可能成為IPE內容 (CC-KAS)</label>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border border-gray-200 text-center">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 border">分類</th>
+                                    <th class="p-3 border">Core-KAS (核心的知識、態度、技能)</th>
+                                    <th class="p-3 border">Contextualized-KAS (情境下的知識、態度、技能)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">知識</td>
+                                    <td class="p-2 border"><textarea name="core_knowledge" class="form-textarea !min-h-[80px]" placeholder="核心知識"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_knowledge" class="form-textarea !min-h-[80px]" placeholder="情境知識"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">態度</td>
+                                    <td class="p-2 border"><textarea name="core_attitude" class="form-textarea !min-h-[80px]" placeholder="核心態度"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_attitude" class="form-textarea !min-h-[80px]" placeholder="情境態度"></textarea></td>
+                                </tr>
+                                 <tr>
+                                    <td class="p-2 border font-semibold bg-gray-50">技能</td>
+                                    <td class="p-2 border"><textarea name="core_skill" class="form-textarea !min-h-[80px]" placeholder="核心技能"></textarea></td>
+                                    <td class="p-2 border"><textarea name="contextualized_skill" class="form-textarea !min-h-[80px]" placeholder="情境技能"></textarea></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">跨領域團隊合作照護查檢表</h2>
+                <p class="mb-6 text-gray-600">此次教學活動，是否有討論到以下有關 <strong>全人醫療</strong> 的面向？</p>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">1. 生理 (Body)</h3>
+                        <div class="mt-2 pl-4">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_body" value="生理" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">身體及疾病的照護，以期恢復身體的健康及生活功能 (包含：疾病之檢查、診斷與治療、復健、健康生活型態等)。</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">2. 心理 (Mind)</h3>
+                        <div class="mt-2 pl-4 space-y-3">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_mind_knowledge" value="心理-知識" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">疾病相關知識的再強化，以期提升心情愉悅及生活品質 (包含：強化疾病認知、自我照護技能與態度、醫病溝通等)。</span>
+                            </label>
+                             <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_mind_health" value="心理-健康促進" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">健康促進、疾病預防 (包含：健康促進、疾病防治、病友團體活動等)。</span>
+                             </label>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-indigo-700">3. 靈性 (Spirit)</h3>
+                        <div class="mt-2 pl-4">
+                            <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_spirit" value="靈性" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">強化心靈及精神上的支持 (包含：信仰、心靈關懷及精神上的支持與安慰)。</span>
+                            </label>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="font-bold text-lg text-indigo-700">4. 社會 (Social Support)</h3>
+                        <div class="mt-2 pl-4 space-y-3">
+                             <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_social_family" value="社會-人際" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">強化人際支持力及家庭支持力 (包含：家人的協助、轉介服務、出院準備、病友團體等)。</span>
+                             </label>
+                              <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_social_longterm" value="社會-長照" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">長照 (包含：居家照護、社區長照、急性後期整合照護)。</span>
+                              </label>
+                              <label class="flex items-start space-x-3">
+                                <input type="checkbox" name="checklist_social_hospice" value="社會-安寧" class="h-5 w-5 mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-700">安寧 (包含：安寧議題、病人自主、預立醫療決定、DNR)。</span>
+                              </label>
+                        </div>
+                     </div>
                 </div>
             </div>
 
@@ -152,6 +272,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('ipp-main-form');
         
+        // Handle 'Other' profession checkbox
         const otherCheckbox = document.getElementById('other-profession-checkbox');
         const otherTextInput = document.getElementById('other-profession-text');
         otherTextInput.disabled = true;
@@ -164,9 +285,11 @@
             otherTextInput.focus();
         });
 
+        // Handle form submission and data storage
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent default submission
             
+            // Simple validation check for required fields.
             const name = document.getElementById('participant-name').value;
             const unit = document.getElementById('participant-unit').value;
             const date = document.getElementById('discussion-date').value;
@@ -174,26 +297,54 @@
 
             if (!name.trim() || !unit.trim() || !date.trim() || !topic.trim()) {
                 alert('請填寫所有基本資料欄位（姓名、單位、討論日期、個案主題）！');
-                return;
+                return; // Stop the function if validation fails.
             }
 
             try {
                 const ippFormData = {
+                    // 基本資料
                     participant_name: document.getElementById('participant-name')?.value || '',
                     participant_unit: document.getElementById('participant-unit')?.value || '',
                     discussion_date: document.getElementById('discussion-date')?.value || '',
                     session_name: document.getElementById('session-name')?.value || '',
+                    
+                    // IPP 內容
+                    care_needs: document.getElementById('care-needs')?.value || '',
+                    goal_setting: document.getElementById('goal-setting')?.value || '',
+                    teamwork_strategy: document.getElementById('teamwork-strategy')?.value || '',
+                    teamwork_details: document.getElementById('teamwork-details')?.value || '',
+
+                    // 參與職類 (勾選框) - 收集所有勾選的值
                     professions: Array.from(document.querySelectorAll('input[name="professions"]:checked')).map(cb => cb.value),
                     other_profession_text: document.getElementById('other-profession-text')?.value || '',
-                    teacher_name: document.getElementById('teacher-name')?.checked || false,
-                    teacher_id: document.getElementById('teacher-id')?.checked || false,
-                    teacher_email: document.getElementById('teacher-email')?.checked || false
+                    
+                    // IPE 內容 (CC-KAS 表格)
+                    core_knowledge: document.querySelector('textarea[name="core_knowledge"]')?.value || '',
+                    contextualized_knowledge: document.querySelector('textarea[name="contextualized_knowledge"]')?.value || '',
+                    core_attitude: document.querySelector('textarea[name="core_attitude"]')?.value || '',
+                    contextualized_attitude: document.querySelector('textarea[name="contextualized_attitude"]')?.value || '',
+                    core_skill: document.querySelector('textarea[name="core_skill"]')?.value || '',
+                    contextualized_skill: document.querySelector('textarea[name="contextualized_skill"]')?.value || '',
+
+                    // 照護查檢表 (Checklist) - 檢查是否勾選
+                    checklist_body: document.querySelector('input[name="checklist_body"]')?.checked || false,
+                    checklist_mind_knowledge: document.querySelector('input[name="checklist_mind_knowledge"]')?.checked || false,
+                    checklist_mind_health: document.querySelector('input[name="checklist_mind_health"]')?.checked || false,
+                    checklist_spirit: document.querySelector('input[name="checklist_spirit"]')?.checked || false,
+                    checklist_social_family: document.querySelector('input[name="checklist_social_family"]')?.checked || false,
+                    checklist_social_longterm: document.querySelector('input[name="checklist_social_longterm"]')?.checked || false,
+                    checklist_social_hospice: document.querySelector('input[name="checklist_social_hospice"]')?.checked || false,
+
+                    // 教師審核
+                    teacher_name: document.getElementById('teacher-name')?.value || '',
+                    teacher_id: document.getElementById('teacher-id')?.value || '',
+                    teacher_email: document.getElementById('teacher-email')?.value || ''
                 };
                 
-                // --- DEBUG: 在此加入偵錯碼 ---
-                console.log('準備存入 localStorage 的資料:', ippFormData);
-
+                // 將收集到的資料儲存到瀏覽器的 localStorage 中
                 localStorage.setItem('ippFormData', JSON.stringify(ippFormData));
+
+                // Programmatically click the hidden link to trigger redirection.
                 document.getElementById('redirect-link').click();
 
             } catch (error) {
