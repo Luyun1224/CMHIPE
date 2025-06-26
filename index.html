@@ -264,6 +264,8 @@
             // --- UPDATED LOGIN LOGIC ---
             if (role.includes('教師')) {
                 const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                // DEBUGGING LINE ADDED:
+                console.log('正在驗證的教師列表:', storedUsers);
                 const foundTeacher = storedUsers.find(user => 
                     user.role === '教師' && 
                     user.email === username && 
@@ -271,16 +273,15 @@
                 );
 
                 if (foundTeacher) {
-                    // Login successful
                     alert(`教師 ${foundTeacher.name}，登入成功！`);
                     window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
                 } else {
-                    // Login failed
                     alert('帳號或密碼錯誤。');
                 }
             } else if (role.includes('管理者')) {
-                // Admin login logic (can also be updated to use the 'users' list)
                 const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+                // DEBUGGING LINE ADDED:
+                 console.log('正在驗證的管理員列表:', storedUsers);
                 const foundAdmin = storedUsers.find(user => 
                     user.role === '管理者' && 
                     user.email === username && 
@@ -291,7 +292,6 @@
                      alert(`管理者 ${foundAdmin.name}，登入成功！`);
                     window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
                 } else {
-                    // Fallback for default admin if no users are set
                     if (username === 'B20401' && password === 'B20401') {
                         alert('預設管理者登入成功！');
                         window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
@@ -337,7 +337,6 @@
             toggle(ippContainer, true);
         });
         
-        // --- FIX: Expose functions to global scope for onclick attributes ---
         window.openLoginModal = openLoginModal;
         window.closeLoginModal = closeLoginModal;
         window.openStudentModal = openStudentModal;
