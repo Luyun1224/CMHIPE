@@ -62,16 +62,7 @@
       <div id="schedule" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <div class="space-y-6">
-          <div>
-            <p class="font-semibold text-teal-800">2025/07/15 (二) 14:00-16:00</p>
-            <p class="text-gray-600 ml-4">- 高齡病患的出院準備服務整合</p>
-            <p class="text-gray-600 ml-4">- 地點：奇美醫院 第五會議室</p>
-          </div>
-          <div>
-            <p class="font-semibold text-teal-800">2025/08/05 (二) 14:00-16:00</p>
-            <p class="text-gray-600 ml-4">- 兒童罕見疾病的家庭心理支持</p>
-            <p class="text-gray-600 ml-4">- 地點：奇美醫院 第七會議室</p>
-          </div>
+          <p class="text-gray-500">目前尚無排定的會議。</p>
         </div>
       </div>
 
@@ -79,20 +70,7 @@
       <div id="announcements" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <div class="space-y-4">
-          <div>
-            <p class="font-semibold text-amber-800">【重要】下一次會議預告</p>
-            <p class="text-gray-600 ml-4">
-              下一次跨領域討論會預計於
-              <span class="font-bold text-red-600">2025/09/02</span>
-              舉行，主題為「社區安寧照護資源連結」，敬請各位同仁預留時間。
-            </p>
-          </div>
-          <div>
-            <p class="font-semibold text-amber-800">【通知】教師資料上傳</p>
-            <p class="text-gray-600 ml-4">
-              請負責分享案例的教師於會議前三日將簡報上傳至系統，以利與會者預習。
-            </p>
-          </div>
+          <p class="text-gray-500">目前沒有最新公告。</p>
         </div>
       </div>
     </div>
@@ -227,30 +205,9 @@
     document.getElementById('login-form').addEventListener('submit', e=>{
       e.preventDefault();
       const role = modalTitle.innerText;
-      const username = e.target.username.value;
-      const password = document.getElementById('login-password').value;
-
-      if (role.includes('教師')) {
-        // 教師登入驗證
-        if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-          // 登入成功，直接導向教師頁面
-          window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
-        } else {
-          alert('帳號或密碼錯誤。');
-        }
-      } else if (role.includes('管理者')) {
-        // 管理者登入驗證
-        if (username === 'B20401' && password === 'B20401') {
-            // 登入成功，直接導向管理者頁面
-            window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
-        } else {
-            alert('帳號或密碼錯誤。');
-        }
-      } else {
-        // 其他未知角色
-        alert('未知的登入角色。');
-        closeLoginModal();
-      }
+      // 顯示提示訊息，告知此為示範功能
+      alert(`此為${role}示範登入，無實際後端驗證功能。`);
+      closeLoginModal();
       document.getElementById('login-form').reset();
     });
 
@@ -294,10 +251,9 @@
       e.preventDefault();
       const name = document.getElementById('student-name').value.trim();
       if(!name){ alert('請輸入姓名'); return; }
-      localStorage.setItem('username', name);
-      ippFrame.src = 'https://luyun1224.github.io/CMHIPE/IPP.html';
+      // 僅顯示歡迎訊息，不進行跳轉
+      alert(`歡迎，${name}！此為學員進入示範。`);
       closeStudentModal();
-      toggle(ippContainer, true);
     });
   </script>
 </body>
