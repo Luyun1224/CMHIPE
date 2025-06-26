@@ -220,15 +220,30 @@
         function loadPublicData() {
             const meetingsContainer = document.getElementById('meetings-container');
             const storedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
-            if (storedMeetings.length > 0) {
+            
+            // Filter for meetings with a start time in the future
+            const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date());
+            
+            // Sort the upcoming meetings so the one happening soonest is first
+            upcomingMeetings.sort((a, b) => new Date(a.start) - new Date(b.start));
+            
+            // Get only the top 3 to display
+            const meetingsToShow = upcomingMeetings.slice(0, 3);
+
+            if (meetingsToShow.length > 0) {
                 meetingsContainer.innerHTML = '';
-                storedMeetings.sort((a, b) => new Date(b.start) - new Date(a.start));
-                storedMeetings.forEach(meeting => {
+                meetingsToShow.forEach((meeting, index) => {
                     const meetingElement = document.createElement('div');
+                    // Add a "NEW" tag only for the first meeting in the list (the soonest one)
+                    const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+
                     meetingElement.innerHTML = `
                         <div class="pb-4 border-b border-gray-200 last:border-b-0">
                             <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                            <p class="text-gray-700 mt-1 font-semibold">${meeting.title}</p>
+                            <div class="flex items-center mt-1">
+                                <p class="text-gray-700 font-semibold">${meeting.title}</p>
+                                ${newTag}
+                            </div>
                             <p class="text-sm text-gray-500">地點：${meeting.location}</p>
                         </div>
                     `;
@@ -332,14 +347,13 @@
 
         window.openStudentModal = () => {
             const storedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
-            const upcomingMeetings = storedMeetings
-                .filter(m => new Date(m.end) > new Date())
-                .sort((a,b) => new Date(a.start) - new Date(b.start));
+            const allMeetings = storedMeetings
+                .sort((a,b) => new Date(b.start) - new Date(a.start));
 
             meetingListContainer.innerHTML = '';
             
-            if (upcomingMeetings.length > 0) {
-                upcomingMeetings.forEach((meeting, index) => {
+            if (allMeetings.length > 0) {
+                allMeetings.forEach((meeting, index) => {
                     const meetingId = `meeting-${index}`;
                     const meetingCard = document.createElement('label');
                     meetingCard.htmlFor = meetingId;
