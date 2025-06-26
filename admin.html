@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <style>
         body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
         .sidebar { transition: transform 0.3s ease-in-out; }
@@ -17,6 +19,19 @@
     </style>
 </head>
 <body>
+    <!-- Config Error Overlay -->
+    <div id="config-error-overlay" class="hidden fixed inset-0 bg-black/80 z-50 flex justify-center items-center text-white text-center p-8">
+        <div>
+            <h2 class="text-3xl font-bold text-red-500 mb-4">資料庫連接失敗</h2>
+            <p id="config-error-message" class="text-lg">無法連接到 Firebase 資料庫。</p>
+            <div class="mt-6">
+                <a href="https://console.firebase.google.com/" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-block">
+                    前往 Firebase 控制台
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="flex h-screen bg-gray-100">
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar fixed z-30 inset-y-0 left-0 w-64 bg-gray-800 text-white p-6 transform md:transform-none -translate-x-full md:relative md:-translate-x-0">
@@ -246,57 +261,66 @@
     </div>
 
     <script type="module">
-        // Wrap all code in an async function to allow top-level await and return
         async function main() {
-            // Import Firebase modules
-            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
-            const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js");
+            const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js");
+            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js");
+            const { getAnalytics } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js");
 
-            // --- Firebase Initialization ---
-            const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = {
+              apiKey: "AIzaSyDcG2ycz9Uih6luKNf06owebG1OJxHxAco",
+              authDomain: "cmhipe-761f5.firebaseapp.com",
+              projectId: "cmhipe-761f5",
+              storageBucket: "cmhipe-761f5.appspot.com", // Corrected format
+              messagingSenderId: "282621579528",
+              appId: "1:282621579528:web:c581d14089af1793365cbd",
+              measurementId: "G-DGGSW2JXBY"
+            };
             
-            let db, auth;
+            const dataScopeId = "chimei-crossteam-collab-prod";
+            
+            let db;
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
-                auth = getAuth(app);
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                const auth = getAuth(app);
+                await signInAnonymously(auth);
+                const analytics = getAnalytics(app);
                 console.log("Firebase initialized and authenticated successfully.");
             } catch (e) {
                 console.error("Firebase initialization failed:", e);
-                alert("資料庫連接失敗，請稍後再試。");
-                return; // This is now a valid return
+                const errorOverlay = document.getElementById('config-error-overlay');
+                const errorMessage = document.getElementById('config-error-message');
+                
+                if (errorOverlay && errorMessage) {
+                    if (e.code === 'auth/configuration-not-found') {
+                        errorMessage.innerHTML = `請在 Firebase 控制台啟用「匿名登入」。<br><span class="text-sm text-gray-400 mt-2 block">路徑：Authentication → Sign-in method → Anonymous → 啟用</span>`;
+                    } else {
+                        errorMessage.innerHTML = `請確認您的 Firebase 設定是否正確，或聯繫管理員。<br><span class="text-sm text-gray-400 mt-2 block">錯誤碼：${e.code}</span>`
+                    }
+                    errorOverlay.classList.remove('hidden');
+                }
+                return; 
             }
 
-            // --- Local Data Cache ---
             let allMeetings = [];
             let allAnnouncements = [];
 
-            // --- Collections ---
-            const meetingsCol = collection(db, `/artifacts/${appId}/public/data/meetings`);
-            const announcementsCol = collection(db, `/artifacts/${appId}/public/data/announcements`);
-            const usersCol = collection(db, `/artifacts/${appId}/public/data/users`);
+            const meetingsCol = collection(db, `data/${dataScopeId}/meetings`);
+            const announcementsCol = collection(db, `data/${dataScopeId}/announcements`);
+            const usersCol = collection(db, `data/${dataScopeId}/users`);
 
-            // --- DOM Elements ---
             const meetingsTbody = document.getElementById('meetings-tbody');
             const announcementsTbody = document.getElementById('announcements-tbody');
             const usersTbody = document.getElementById('users-tbody');
             const submissionsTbody = document.getElementById('submissions-tbody');
 
-            // --- Utility ---
             const formatDateTime = (datetime) => datetime ? new Date(datetime).toLocaleString('zh-TW', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-') : '';
             const formatDate = (date) => date ? new Date(date).toLocaleDateString('sv-SE') : '';
             const formatTime = (datetime) => datetime ? new Date(datetime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) : '';
 
-            // --- Real-time Listeners & Renders ---
             onSnapshot(meetingsCol, (snapshot) => {
-                allMeetings = []; // Clear local cache
+                allMeetings = []; 
                 snapshot.forEach((doc) => allMeetings.push({ ...doc.data(), id: doc.id }));
                 
                 meetingsTbody.innerHTML = '';
@@ -321,7 +345,7 @@
             });
 
             onSnapshot(announcementsCol, (snapshot) => {
-                allAnnouncements = []; // Clear local cache
+                allAnnouncements = [];
                 snapshot.forEach((doc) => allAnnouncements.push({ ...doc.data(), id: doc.id }));
 
                 announcementsTbody.innerHTML = '';
@@ -391,7 +415,6 @@
                 lucide.createIcons();
             }
 
-            // --- Event Handlers ---
             document.getElementById('meeting-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const id = document.getElementById('meeting-id').value;
@@ -452,7 +475,6 @@
                 }
             });
 
-            // --- Modal Functions ---
             const modals = {};
             ['meeting-modal', 'announcement-modal', 'user-modal'].forEach(id => modals[id] = document.getElementById(id));
 
@@ -464,13 +486,13 @@
                 modals[id].querySelector('.modal').classList.add('opacity-0', 'scale-95');
                 setTimeout(() => {
                     modals[id].classList.add('hidden');
-                    // Reset form after closing
                     const form = modals[id].querySelector('form');
                     if (form) form.reset();
                 }, 300);
             };
             
             window.openAddMeetingModal = () => {
+                document.getElementById('meeting-form').reset();
                 document.getElementById('meeting-id').value = '';
                 document.getElementById('meeting-modal-title').innerText = '新增會議';
                 openModal('meeting-modal');
@@ -486,6 +508,7 @@
             };
 
             window.openAddAnnouncementModal = () => {
+                document.getElementById('announcement-form').reset();
                 document.getElementById('announcement-id').value = '';
                 document.getElementById('announcement-modal-title').innerText = '新增公告';
                 openModal('announcement-modal');
@@ -506,12 +529,10 @@
             window.closeModal = closeModal;
             lucide.createIcons();
 
-            // --- Sidebar Logic ---
             const sidebar = document.getElementById('sidebar');
             document.getElementById('open-sidebar-btn').addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
             document.getElementById('close-sidebar-btn').addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
             
-            // --- Page Navigation ---
             const navLinks = document.querySelectorAll('.nav-link');
             const pageContents = document.querySelectorAll('.page-content');
             const pageTitle = document.getElementById('page-title');
@@ -528,7 +549,6 @@
             });
         }
 
-        // Run the main async function
         main().catch(console.error);
     </script>
 </body>
