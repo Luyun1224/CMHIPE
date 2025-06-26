@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全人照護跨領域教學討論滿意度自評表</title>
-    <!-- Include Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Inter font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -42,9 +40,9 @@
         #saveStatus {
             transition: opacity 0.5s ease-in-out;
         }
-        /* Style for the success message modal */
-        #successMessage {
-            display: none; /* Hidden by default */
+
+        /* MODIFIED: Simplified modal styles, positioning is handled by Tailwind classes */
+        #successMessage, #errorMessage {
             position: fixed;
             inset: 0;
             background-color: rgba(107, 114, 128, 0.5); /* bg-gray-600 bg-opacity-50 */
@@ -52,9 +50,6 @@
             height: 100%;
             width: 100%;
             z-index: 50;
-            display: flex; /* Use flex to center content */
-            align-items: center;
-            justify-content: center;
         }
     </style>
 </head>
@@ -63,7 +58,6 @@
     <div class="container mx-auto p-4 sm:p-6 md:p-8">
         <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8">
 
-            <!-- Back Button -->
             <div class="mb-6">
                 <button id="backButton" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <svg class="w-5 h-5 mr-2 -ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -73,17 +67,13 @@
                 </button>
             </div>
 
-            <!-- Header Section -->
             <header class="text-center mb-8 border-b pb-4">
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-800">奇美醫療財團法人奇美醫院</h1>
                 <h2 class="text-lg sm:text-xl font-semibold text-blue-700 mt-2">全人照護跨領域教學討論滿意度自評表</h2>
             </header>
 
-            <!-- Form starts here -->
-            <!-- 移除了 action 屬性，改由 JavaScript fetch API 處理提交 -->
             <form id="satisfactionForm">
 
-                <!-- Section 1: Basic Information -->
                 <fieldset class="mb-8">
                     <legend class="text-xl font-semibold text-gray-700 mb-4 border-l-4 border-blue-600 pl-3">一、基本資料</legend>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -106,7 +96,6 @@
                     </div>
                 </fieldset>
 
-                <!-- Section 2: Before Training Assessment -->
                 <fieldset class="mb-8">
                     <legend class="text-xl font-semibold text-gray-700 mb-4 border-l-4 border-blue-600 pl-3 flex items-center">二、滿意度評估 (訓練<span class="text-2xl font-bold text-blue-600 mx-1">前</span>)</legend>
                     <p class="text-sm text-gray-500 mb-4">請在對應的方格內勾選最符合您看法的選項。</p>
@@ -123,13 +112,11 @@
                                 </tr>
                             </thead>
                             <tbody id="before-training-body" class="text-sm text-gray-700">
-                                <!-- Dynamically generated rows for "before" assessment -->
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
                 </fieldset>
                 
-                <!-- Section 3: After Training Assessment -->
                 <fieldset>
                     <legend class="text-xl font-semibold text-gray-700 mb-4 border-l-4 border-green-600 pl-3 flex items-center">三、滿意度評估 (訓練<span class="text-2xl font-bold text-green-600 mx-1">後</span>)</legend>
                     <p class="text-sm text-gray-500 mb-4">請在對應的方格內勾選最符合您看法的選項。</p>
@@ -146,36 +133,31 @@
                                 </tr>
                             </thead>
                             <tbody id="after-training-body" class="text-sm text-gray-700">
-                                <!-- Dynamically generated rows for "after" assessment -->
-                            </tbody>
+                                </tbody>
                         </table>
                     </div>
                 </fieldset>
 
-                <!-- Section 4: Suggestions -->
                 <fieldset class="mt-8">
                      <legend class="text-xl font-semibold text-gray-700 mb-4 border-l-4 border-yellow-600 pl-3">四、建議事項</legend>
                     <textarea id="suggestions" name="suggestions" rows="5" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="請在此輸入您的寶貴建議..."></textarea>
                 </fieldset>
 
-                <!-- Action Buttons -->
                 <div class="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
                     <button type="button" id="saveDraftButton" class="w-full sm:w-auto inline-flex justify-center py-3 px-8 border border-gray-300 shadow-sm text-base font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                         暫存草稿
                     </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <button type="submit" id="submitButton" class="w-full sm:w-auto inline-flex justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                         提交表單
                     </button>
                 </div>
-                <!-- Save Status Message -->
                 <div id="saveStatus" class="mt-4 text-center text-green-600 font-medium opacity-0">
                     草稿已儲存！
                 </div>
             </form>
 
-            <!-- Success Message Modal -->
-            <div id="successMessage" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div id="successMessage" class="hidden flex items-center justify-center">
+                <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                     <div class="mt-3 text-center">
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
                             <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -197,6 +179,29 @@
                 </div>
             </div>
 
+            <div id="errorMessage" class="hidden flex items-center justify-center">
+                <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                    <div class="mt-3 text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mt-2">提交失敗！</h3>
+                        <div class="mt-2 px-7 py-3">
+                            <p class="text-sm text-gray-500">
+                                發生未知錯誤，請檢查您的網路連線或稍後再試。
+                            </p>
+                        </div>
+                        <div class="items-center px-4 py-3">
+                            <button type="button" id="closeErrorModalButton" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                                關閉
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -204,32 +209,37 @@
         document.addEventListener('DOMContentLoaded', function () {
             // --- DOM Element References ---
             const form = document.getElementById('satisfactionForm');
+            const submitButton = document.getElementById('submitButton'); // MODIFIED: Get reference to submit button
             const backButton = document.getElementById('backButton');
             const saveDraftButton = document.getElementById('saveDraftButton');
             const saveStatus = document.getElementById('saveStatus');
             const tableBodyBefore = document.getElementById('before-training-body');
             const tableBodyAfter = document.getElementById('after-training-body');
             const dateInput = document.getElementById('date');
+            
+            // Modals
             const successMessage = document.getElementById('successMessage');
             const closeModalButton = document.getElementById('closeModalButton');
+            const errorMessage = document.getElementById('errorMessage'); // ADDED
+            const closeErrorModalButton = document.getElementById('closeErrorModalButton'); // ADDED
             
             // --- Data and Constants ---
-            const storageKey_draft = 'satisfactionFormDraft'; // For draft saving (optional)
+            const storageKey_draft = 'satisfactionFormDraft'; // For draft saving
             const storageKey_ipp = 'ippFormData'; // For IPP data from previous page
             
             // IMPORTANT: 這裡已經填入您的 Apps Script 網址
             const appsScriptURL = 'https://script.google.com/macros/s/AKfycbwgGfwlycTmQKGujS20bqiRBT3inU39tEUK1XJlcaO6/exec';
 
             const questions = [
-                '我很清楚各單位在臨床照護上的工作內容及特性', // q0
-                '我可以在臨床照護上和各單位做到良好的溝通',     // q1
-                '我知道什麼時候應該傳達訊息給其他共同照護單位成員以尋求協助', // q2
-                '我知道運用什麼管道傳達訊息給其他共同照護單位成員以尋求協助', // q3
-                '良好的跨領域照護可以提升病人的品質',           // q4
-                '良好的跨領域照護教育可以提升自我的臨床能力',     // q5
-                '良好的跨領域照護教育會改善自我的臨床態度',       // q6
-                '我會編寫合適的跨領域照護學習教案',              // q7
-                '整體滿意度'                                   // q8
+                '我很清楚各單位在臨床照護上的工作內容及特性',
+                '我可以在臨床照護上和各單位做到良好的溝通',
+                '我知道什麼時候應該傳達訊息給其他共同照護單位成員以尋求協助',
+                '我知道運用什麼管道傳達訊息給其他共同照護單位成員以尋求協助',
+                '良好的跨領域照護可以提升病人的品質',
+                '良好的跨領域照護教育可以提升自我的臨床能力',
+                '良好的跨領域照護教育會改善自我的臨床態度',
+                '我會編寫合適的跨領域照護學習教案',
+                '整體滿意度'
             ];
 
             // --- Functions ---
@@ -250,13 +260,11 @@
                         const cell = document.createElement('td');
                         const radioInput = document.createElement('input');
                         radioInput.type = 'radio';
-                        // 關鍵：這裡加上了 name 屬性，方便收集資料
-                        radioInput.name = `q${index}_${period}`; // 例如: q0_before, q1_after
+                        radioInput.name = `q${index}_${period}`; // e.g., q0_before, q1_after
                         radioInput.value = i;
                         radioInput.className = 'mx-auto';
-                        if (period === 'before') {
-                            radioInput.required = true;
-                        }
+                        // MODIFIED: Both 'before' and 'after' assessments are now required.
+                        radioInput.required = true; 
                         cell.appendChild(radioInput);
                         row.appendChild(cell);
                     }
@@ -289,21 +297,16 @@
                 for (const [key, value] of Object.entries(data)) {
                     const element = form.elements[key];
                     if (element) {
-                        // Handle radio buttons (RadioNodeList)
                         if (element.constructor.name === 'RadioNodeList') {
                             for (const radio of element) {
-                                if (String(radio.value) === String(value)) { // Convert to string for comparison
+                                if (String(radio.value) === String(value)) {
                                     radio.checked = true;
                                     break;
                                 }
                             }
-                        } 
-                        // Handle checkboxes (if any, though none directly here with a single name)
-                        else if (element.type === 'checkbox') {
-                            element.checked = (value === 'true'); // Store boolean as string
-                        }
-                        // Handle textareas and input fields
-                        else {
+                        } else if (element.type === 'checkbox') {
+                            element.checked = (value === 'true');
+                        } else {
                             element.value = value;
                         }
                     }
@@ -324,13 +327,37 @@
                 successMessage.classList.add('hidden');
                 form.reset();
                 dateInput.valueAsDate = new Date(); // Set current date for date input
+                loadIppDataIntoForm(); // MODIFIED: Reload IPP data after reset
             }
+
+            // ADDED: Function to hide the error modal
+            function closeErrorModal() {
+                errorMessage.classList.add('hidden');
+            }
+
+            // ADDED: Function to load data from IPP form into this form's fields
+            function loadIppDataIntoForm() {
+                const ippDataString = localStorage.getItem(storageKey_ipp);
+                if (!ippDataString) return;
+
+                const ippData = JSON.parse(ippDataString);
+                // Assuming ippData contains keys like 'name', 'unit', 'rank', 'date'
+                // that match the IDs of the inputs in this form.
+                document.getElementById('name').value = ippData.name || '';
+                document.getElementById('unit').value = ippData.unit || '';
+                document.getElementById('rank').value = ippData.rank || '';
+                // The date might be handled differently, let's keep the default
+                if (ippData.date) {
+                    document.getElementById('date').value = ippData.date;
+                }
+            }
+
 
             // --- Event Listeners ---
 
             // Handle back button click
             backButton.addEventListener('click', () => {
-                window.history.back(); // Go back to the previous page (IPP form)
+                window.history.back(); // Go back to the previous page
             });
             
             // Handle save draft button click
@@ -339,85 +366,86 @@
             // Handle form submission
             form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent default browser form submission
+                
+                // Disable submit button to prevent multiple clicks
+                submitButton.disabled = true;
+                submitButton.textContent = '提交中...';
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
 
-                // 1. 讀取 IPP 表單的暫存資料
+                // 1. Read IPP form data from localStorage
                 const ippDataString = localStorage.getItem(storageKey_ipp);
                 const ippData = ippDataString ? JSON.parse(ippDataString) : {};
 
-                // 2. 收集自評表的新資料
-                const satisfactionFormData = new FormData(form); // Collects data from current form elements
+                // 2. Collect current form data
+                const satisfactionFormData = new FormData(form);
                 
-                // 3. 將兩份資料合併到一個 FormData 物件中，準備發送
+                // 3. Merge both data sets into a final FormData object
                 const finalFormData = new FormData();
                 
-                // 複製 IPP 資料到最終的 FormData
+                // Copy IPP data
                 for (const key in ippData) {
                     if (Object.prototype.hasOwnProperty.call(ippData, key)) {
-                        // 對於陣列型別的資料（例如來自多選框的 professions），需要 append 多次
                         if (Array.isArray(ippData[key])) {
-                            ippData[key].forEach(item => {
-                                finalFormData.append(key, item);
-                            });
+                            ippData[key].forEach(item => finalFormData.append(key, item));
                         } else {
                             finalFormData.append(key, ippData[key]);
                         }
                     }
                 }
 
-                // 複製自評表資料到最終的 FormData
+                // Copy satisfaction form data
                 for (const [key, value] of satisfactionFormData.entries()) {
-                    // 對於 checkbox，如果沒有勾選，FormData 預設不會包含其 name/value。
-                    // 如果需要在 Google Sheet 中明確顯示 false/未勾選，
-                    // 則需要額外處理，但目前 Apps Script 會將未送出的欄位視為空值。
                     finalFormData.append(key, value);
                 }
 
-                // 4. 發送合併後的資料到 Apps Script
+                // 4. Send merged data to Apps Script
                 fetch(appsScriptURL, {
                     method: 'POST',
                     body: finalFormData,
-                    // 不設定 'Content-Type'，FormData 會自動設定 multipart/form-data
                 })
                 .then(response => {
                     if (response.ok) {
-                        return response.text(); // Apps Script 會回傳 'Submission successful.'
-                    } else {
-                        // 如果 HTTP 狀態碼不是 2xx (例如 404, 500)，則拋出錯誤
-                        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                        return response.text();
                     }
+                    throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
                 })
                 .then(data => {
                     console.log('Submission successful:', data);
-                    // 提交成功後，清除暫存資料並顯示成功訊息
-                    localStorage.removeItem(storageKey_ipp); // 清除 IPP 表單資料
-                    clearDraft(); // 清除自評表草稿
-                    successMessage.classList.remove('hidden'); // 顯示成功訊息 Modal
+                    localStorage.removeItem(storageKey_ipp);
+                    clearDraft();
+                    successMessage.classList.remove('hidden'); // Show success modal
                 })
                 .catch(error => {
                     console.error('Submission failed:', error);
-                    alert('提交失敗，請稍後再試。錯誤訊息：' + error.message); // 顯示錯誤訊息
+                    // MODIFIED: Show custom error modal instead of alert
+                    errorMessage.classList.remove('hidden');
+                })
+                .finally(() => {
+                    // Re-enable submit button whether successful or not
+                    submitButton.disabled = false;
+                    submitButton.textContent = '提交表單';
+                    submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
                 });
             });
             
-            // The close button in the modal will hide the modal and reset the form.
+            // Event listeners for modal close buttons
             closeModalButton.addEventListener('click', closeModalAndReset);
+            closeErrorModalButton.addEventListener('click', closeErrorModal); // ADDED
 
             // --- Initialisation ---
-            // 設定會議日期為當天
+            // Set default date
             if (!dateInput.value) {
                 dateInput.valueAsDate = new Date();
             }
-            // 動態生成評估表格
+            // Populate tables
             populateTable(tableBodyBefore, 'before');
             populateTable(tableBodyAfter, 'after');
 
-            // 載入自評表草稿 (如果有)
-            loadDraft();
+            // Load data from previous page (IPP form) into relevant fields
+            loadIppDataIntoForm();
 
-            // 從 localStorage 載入 IPP 資料到自評表的相關欄位（如果有的話）
-            // 由於自評表也有姓名/單位/日期，這裡假設使用者會手動填寫或由 IPP 表單帶過來，
-            // 如果自評表的這些欄位需要自動填入 IPP 表單的資料，需要額外增加邏輯。
-            // 但目前的 HTML 中自評表的姓名/單位/日期是 required，且有 name 屬性，所以會被FormData收集。
+            // Load draft for this form (will overwrite IPP data if there's a conflict, which is desired)
+            loadDraft();
         });
     </script>
 </body>
