@@ -303,10 +303,10 @@
         lucide.createIcons();
 
         // --- Data Store ---
-        let meetings = [];
-        let announcements = [];
-        let users = [];
-        // Submissions data is not fully managed yet, just linking to meetings.
+        // Load data from localStorage or initialize as empty array
+        let meetings = JSON.parse(localStorage.getItem('meetings')) || [];
+        let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || [];
 
         // --- DOM Elements ---
         const meetingForm = document.getElementById('meeting-form');
@@ -321,6 +321,17 @@
         const usersTbody = document.getElementById('users-tbody');
 
         const submissionsTbody = document.getElementById('submissions-tbody');
+
+        // --- Data Persistence Functions ---
+        function saveMeetings() {
+            localStorage.setItem('meetings', JSON.stringify(meetings));
+        }
+        function saveAnnouncements() {
+            localStorage.setItem('announcements', JSON.stringify(announcements));
+        }
+        function saveUsers() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
 
         // --- Utility Functions ---
         function formatDisplayDate(dateString) {
@@ -378,8 +389,9 @@
             };
             if (index) { meetings[index] = meetingData; } 
             else { meetings.push(meetingData); }
+            saveMeetings();
             renderMeetings();
-            renderSubmissions(); // Update submissions page as well
+            renderSubmissions(); 
             closeModal('meeting-modal');
         }
 
@@ -404,6 +416,7 @@
 
         function deleteMeeting(index) {
             meetings.splice(index, 1);
+            saveMeetings();
             renderMeetings();
             renderSubmissions();
         }
@@ -442,6 +455,7 @@
             };
             if (index) { announcements[index] = annData; } 
             else { announcements.push(annData); }
+            saveAnnouncements();
             renderAnnouncements();
             closeModal('announcement-modal');
         }
@@ -466,6 +480,7 @@
 
         function deleteAnnouncement(index) {
             announcements.splice(index, 1);
+            saveAnnouncements();
             renderAnnouncements();
         }
 
@@ -501,6 +516,7 @@
                 role: document.getElementById('user-role').value,
             };
             users.push(userData);
+            saveUsers();
             renderUsers();
             closeModal('user-modal');
         }
@@ -512,6 +528,7 @@
 
         function deleteUser(index) {
             users.splice(index, 1);
+            saveUsers();
             renderUsers();
         }
         
@@ -597,14 +614,16 @@
         closeSidebarBtn.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
 
         // --- Initial Setup ---
-        meetingForm.addEventListener('submit', handleMeetingFormSubmit);
-        announcementForm.addEventListener('submit', handleAnnouncementFormSubmit);
-        userForm.addEventListener('submit', handleUserFormSubmit);
-        
-        renderMeetings();
-        renderAnnouncements();
-        renderUsers();
-        renderSubmissions();
+        document.addEventListener('DOMContentLoaded', () => {
+            meetingForm.addEventListener('submit', handleMeetingFormSubmit);
+            announcementForm.addEventListener('submit', handleAnnouncementFormSubmit);
+            userForm.addEventListener('submit', handleUserFormSubmit);
+            
+            renderMeetings();
+            renderAnnouncements();
+            renderUsers();
+            renderSubmissions();
+        });
 
     </script>
 </body>
