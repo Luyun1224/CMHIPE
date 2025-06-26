@@ -42,6 +42,20 @@
         #saveStatus {
             transition: opacity 0.5s ease-in-out;
         }
+        /* Style for the success message modal */
+        #successMessage {
+            display: none; /* Hidden by default */
+            position: fixed;
+            inset: 0;
+            background-color: rgba(107, 114, 128, 0.5); /* bg-gray-600 bg-opacity-50 */
+            overflow-y: auto;
+            height: 100%;
+            width: 100%;
+            z-index: 50;
+            display: flex; /* Use flex to center content */
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -66,6 +80,7 @@
             </header>
 
             <!-- Form starts here -->
+            <!-- 移除了 action 屬性，改由 JavaScript fetch API 處理提交 -->
             <form id="satisfactionForm">
 
                 <!-- Section 1: Basic Information -->
@@ -152,7 +167,7 @@
                         提交表單
                     </button>
                 </div>
-                 <!-- Save Status Message -->
+                <!-- Save Status Message -->
                 <div id="saveStatus" class="mt-4 text-center text-green-600 font-medium opacity-0">
                     草稿已儲存！
                 </div>
@@ -199,21 +214,25 @@
             const closeModalButton = document.getElementById('closeModalButton');
             
             // --- Data and Constants ---
-            const storageKey = 'satisfactionFormDraft';
+            const storageKey_draft = 'satisfactionFormDraft'; // For draft saving (optional)
+            const storageKey_ipp = 'ippFormData'; // For IPP data from previous page
+            
+            // IMPORTANT: 這裡已經填入您的 Apps Script 網址
+            const appsScriptURL = 'https://script.google.com/macros/s/AKfycbwgGfwlycTmQKGujS20bqiRBT3inU39tEUK1XJlcaO6/exec';
+
             const questions = [
-                '我很清楚各單位在臨床照護上的工作內容及特性',
-                '我可以在臨床照護上和各單位做到良好的溝通',
-                '我知道什麼時候應該傳達訊息給其他共同照護單位成員以尋求協助',
-                '我知道運用什麼管道傳達訊息給其他共同照護單位成員以尋求協助',
-                '良好的跨領域照護可以提升病人的品質',
-                '良好的跨領域照護教育可以提升自我的臨床能力',
-                '良好的跨領域照護教育會改善自我的臨床態度',
-                '我會編寫合適的跨領域照護學習教案',
-                '整體滿意度'
+                '我很清楚各單位在臨床照護上的工作內容及特性', // q0
+                '我可以在臨床照護上和各單位做到良好的溝通',     // q1
+                '我知道什麼時候應該傳達訊息給其他共同照護單位成員以尋求協助', // q2
+                '我知道運用什麼管道傳達訊息給其他共同照護單位成員以尋求協助', // q3
+                '良好的跨領域照護可以提升病人的品質',           // q4
+                '良好的跨領域照護教育可以提升自我的臨床能力',     // q5
+                '良好的跨領域照護教育會改善自我的臨床態度',       // q6
+                '我會編寫合適的跨領域照護學習教案',              // q7
+                '整體滿意度'                                   // q8
             ];
 
             // --- Functions ---
-
             /**
              * Populates a table with assessment questions and radio buttons.
              * @param {HTMLElement} tableBody - The tbody element to populate.
@@ -223,21 +242,20 @@
                 questions.forEach((questionText, index) => {
                     const row = document.createElement('tr');
                     row.className = 'even:bg-gray-50';
-
                     const questionCell = document.createElement('td');
                     questionCell.textContent = questionText;
                     questionCell.className = 'text-left p-3 font-medium';
                     row.appendChild(questionCell);
-
                     for (let i = 5; i >= 1; i--) {
                         const cell = document.createElement('td');
                         const radioInput = document.createElement('input');
                         radioInput.type = 'radio';
-                        radioInput.name = `q${index}-${period}`;
+                        // 關鍵：這裡加上了 name 屬性，方便收集資料
+                        radioInput.name = `q${index}_${period}`; // 例如: q0_before, q1_after
                         radioInput.value = i;
                         radioInput.className = 'mx-auto';
                         if (period === 'before') {
-                             radioInput.required = true;
+                            radioInput.required = true;
                         }
                         cell.appendChild(radioInput);
                         row.appendChild(cell);
@@ -245,14 +263,14 @@
                     tableBody.appendChild(row);
                 });
             }
-
+            
             /**
              * Saves the current form data to localStorage.
              */
             function saveDraft() {
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
-                localStorage.setItem(storageKey, JSON.stringify(data));
+                localStorage.setItem(storageKey_draft, JSON.stringify(data));
                 
                 saveStatus.style.opacity = '1';
                 setTimeout(() => {
@@ -264,21 +282,28 @@
              * Loads form data from localStorage and populates the form.
              */
             function loadDraft() {
-                const savedData = localStorage.getItem(storageKey);
+                const savedData = localStorage.getItem(storageKey_draft);
                 if (!savedData) return;
 
                 const data = JSON.parse(savedData);
                 for (const [key, value] of Object.entries(data)) {
                     const element = form.elements[key];
                     if (element) {
+                        // Handle radio buttons (RadioNodeList)
                         if (element.constructor.name === 'RadioNodeList') {
                             for (const radio of element) {
-                                if (radio.value === value) {
+                                if (String(radio.value) === String(value)) { // Convert to string for comparison
                                     radio.checked = true;
                                     break;
                                 }
                             }
-                        } else {
+                        } 
+                        // Handle checkboxes (if any, though none directly here with a single name)
+                        else if (element.type === 'checkbox') {
+                            element.checked = (value === 'true'); // Store boolean as string
+                        }
+                        // Handle textareas and input fields
+                        else {
                             element.value = value;
                         }
                     }
@@ -289,7 +314,7 @@
              * Clears the saved draft from localStorage.
              */
             function clearDraft() {
-                 localStorage.removeItem(storageKey);
+                localStorage.removeItem(storageKey_draft);
             }
 
             /**
@@ -298,41 +323,101 @@
             function closeModalAndReset() {
                 successMessage.classList.add('hidden');
                 form.reset();
-                dateInput.valueAsDate = new Date();
+                dateInput.valueAsDate = new Date(); // Set current date for date input
             }
 
             // --- Event Listeners ---
 
+            // Handle back button click
             backButton.addEventListener('click', () => {
-                window.history.back();
+                window.history.back(); // Go back to the previous page (IPP form)
             });
             
+            // Handle save draft button click
             saveDraftButton.addEventListener('click', saveDraft);
 
+            // Handle form submission
             form.addEventListener('submit', function (event) {
-                event.preventDefault(); 
+                event.preventDefault(); // Prevent default browser form submission
 
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData.entries());
-                console.log('Form Data Submitted:', JSON.stringify(data, null, 2));
+                // 1. 讀取 IPP 表單的暫存資料
+                const ippDataString = localStorage.getItem(storageKey_ipp);
+                const ippData = ippDataString ? JSON.parse(ippDataString) : {};
 
-                clearDraft();
-                successMessage.classList.remove('hidden');
+                // 2. 收集自評表的新資料
+                const satisfactionFormData = new FormData(form); // Collects data from current form elements
+                
+                // 3. 將兩份資料合併到一個 FormData 物件中，準備發送
+                const finalFormData = new FormData();
+                
+                // 複製 IPP 資料到最終的 FormData
+                for (const key in ippData) {
+                    if (Object.prototype.hasOwnProperty.call(ippData, key)) {
+                        // 對於陣列型別的資料（例如來自多選框的 professions），需要 append 多次
+                        if (Array.isArray(ippData[key])) {
+                            ippData[key].forEach(item => {
+                                finalFormData.append(key, item);
+                            });
+                        } else {
+                            finalFormData.append(key, ippData[key]);
+                        }
+                    }
+                }
+
+                // 複製自評表資料到最終的 FormData
+                for (const [key, value] of satisfactionFormData.entries()) {
+                    // 對於 checkbox，如果沒有勾選，FormData 預設不會包含其 name/value。
+                    // 如果需要在 Google Sheet 中明確顯示 false/未勾選，
+                    // 則需要額外處理，但目前 Apps Script 會將未送出的欄位視為空值。
+                    finalFormData.append(key, value);
+                }
+
+                // 4. 發送合併後的資料到 Apps Script
+                fetch(appsScriptURL, {
+                    method: 'POST',
+                    body: finalFormData,
+                    // 不設定 'Content-Type'，FormData 會自動設定 multipart/form-data
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text(); // Apps Script 會回傳 'Submission successful.'
+                    } else {
+                        // 如果 HTTP 狀態碼不是 2xx (例如 404, 500)，則拋出錯誤
+                        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                    }
+                })
+                .then(data => {
+                    console.log('Submission successful:', data);
+                    // 提交成功後，清除暫存資料並顯示成功訊息
+                    localStorage.removeItem(storageKey_ipp); // 清除 IPP 表單資料
+                    clearDraft(); // 清除自評表草稿
+                    successMessage.classList.remove('hidden'); // 顯示成功訊息 Modal
+                })
+                .catch(error => {
+                    console.error('Submission failed:', error);
+                    alert('提交失敗，請稍後再試。錯誤訊息：' + error.message); // 顯示錯誤訊息
+                });
             });
             
             // The close button in the modal will hide the modal and reset the form.
             closeModalButton.addEventListener('click', closeModalAndReset);
 
             // --- Initialisation ---
-            
+            // 設定會議日期為當天
             if (!dateInput.value) {
                 dateInput.valueAsDate = new Date();
             }
-
+            // 動態生成評估表格
             populateTable(tableBodyBefore, 'before');
             populateTable(tableBodyAfter, 'after');
 
+            // 載入自評表草稿 (如果有)
             loadDraft();
+
+            // 從 localStorage 載入 IPP 資料到自評表的相關欄位（如果有的話）
+            // 由於自評表也有姓名/單位/日期，這裡假設使用者會手動填寫或由 IPP 表單帶過來，
+            // 如果自評表的這些欄位需要自動填入 IPP 表單的資料，需要額外增加邏輯。
+            // 但目前的 HTML 中自評表的姓名/單位/日期是 required，且有 name 屬性，所以會被FormData收集。
         });
     </script>
 </body>
