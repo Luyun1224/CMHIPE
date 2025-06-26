@@ -18,8 +18,6 @@
 
   <style>
     body { font-family: 'Noto Sans TC', sans-serif; background-color:#f8fafc; }
-    .modal-hidden { display:none; opacity:0; transition:opacity .3s ease; }
-    .modal-visible { display:flex; opacity:1; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -29,9 +27,9 @@
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
       <nav class="hidden md:flex space-x-6">
-        <a href="#schedule"     class="text-gray-600 hover:text-teal-600">會議時程</a>
+        <a href="#schedule" class="text-gray-600 hover:text-teal-600">會議時程</a>
         <a href="#announcements" class="text-gray-600 hover:text-teal-600">最新公告</a>
-        <a href="#portals"       class="text-gray-600 hover:text-teal-600">身分入口</a>
+        <a href="#portals" class="text-gray-600 hover:text-teal-600">身分入口</a>
       </nav>
       <button id="mobile-menu-button" class="md:hidden">
         <i class="fas fa-bars text-2xl text-teal-700"></i>
@@ -40,9 +38,9 @@
 
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
-      <a href="#schedule"      class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
+      <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
       <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
-      <a href="#portals"       class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
+      <a href="#portals" class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
     </div>
   </header>
 
@@ -59,18 +57,18 @@
     <!-- Schedule + Announcements -->
     <div class="grid md:grid-cols-2 gap-12 mb-16">
       <!-- Schedule -->
-      <div id="schedule" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
+      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
-        <div class="space-y-6">
-           <p class="text-gray-500">目前尚無排定的會議。</p>
+        <div id="meetings-container" class="space-y-6">
+          <p class="text-gray-500">目前尚無排定的會議。</p>
         </div>
       </div>
 
       <!-- Announcements -->
-      <div id="announcements" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
+      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
-        <div class="space-y-4">
-           <p class="text-gray-500">目前沒有最新公告。</p>
+        <div id="announcements-container" class="space-y-4">
+          <p class="text-gray-500">目前沒有最新公告。</p>
         </div>
       </div>
     </div>
@@ -80,32 +78,32 @@
       <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
       <div class="grid md:grid-cols-3 gap-8">
         <!-- 學員 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition">
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
           <h3 class="text-2xl font-bold mb-4">學員入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
           <button onclick="openStudentModal()"
-                  class="bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600">
+                  class="bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
             學員進入
           </button>
         </div>
 
         <!-- 教師 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition">
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
-          <button onclick="openLoginModal('教師')" class="bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600">
+          <button onclick="openLoginModal('教師')" class="bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
             教師登入
           </button>
         </div>
 
         <!-- 管理者 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition">
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
           <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button onclick="openLoginModal('管理者')" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600">
+          <button onclick="openLoginModal('管理者')" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
             管理者登入
           </button>
         </div>
@@ -122,7 +120,7 @@
   </footer>
 
   <!-- ========= Student Modal ========= -->
-  <div id="student-modal" class="modal-hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+  <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
       <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
@@ -145,7 +143,7 @@
   </div>
 
   <!-- ========= Login Modal (教師 / 管理者) ========= -->
-  <div id="login-modal" class="modal-hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+  <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
@@ -161,7 +159,6 @@
         </div>
         <div class="mb-6">
           <label for="login-password" class="block text-gray-700 font-bold mb-2">密碼</label>
-          <!-- 密碼容器，用於定位眼睛圖示 -->
           <div class="relative">
             <input id="login-password" name="password" type="password"
                    class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
@@ -178,7 +175,7 @@
   </div>
 
   <!-- ========= IPP iframe Modal ========= -->
-  <div id="ipp-container" class="fixed inset-0 bg-black/60 z-50 hidden justify-center items-center p-4">
+  <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="relative w-full max-w-3xl h-[90vh]">
       <button onclick="closeIPP()"
               class="absolute -top-3 -right-3 bg-white rounded-full shadow p-2 text-gray-600 hover:text-red-500">
@@ -190,91 +187,154 @@
 
   <!-- ========= Scripts ========= -->
   <script>
-    /* ---------- Menu ---------- */
-    const mobileMenuBtn = document.getElementById('mobile-menu-button');
-    const mobileMenu    = document.getElementById('mobile-menu');
-    mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-
-    /* ---------- Login Modal ---------- */
-    const loginModal = document.getElementById('login-modal');
-    const modalTitle = document.getElementById('modal-title');
-    function openLoginModal(role){ modalTitle.innerText = `${role}登入`; toggle(loginModal, true); }
-    function closeLoginModal(){   toggle(loginModal, false); document.getElementById('login-form').reset(); }
-    loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
-    
-    document.getElementById('login-form').addEventListener('submit', e=>{
-      e.preventDefault();
-      const role = modalTitle.innerText;
-      const username = e.target.username.value;
-      const password = document.getElementById('login-password').value;
-
-      if (role.includes('教師')) {
-        // 教師登入驗證
-        if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-          // 登入成功，直接導向教師頁面
-          window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
-        } else {
-          alert('帳號或密碼錯誤。');
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA LOADING LOGIC ---
+        function formatDisplayDate(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
+                return `${year}/${month}/${day} (${dayOfWeek})`;
+            } catch (error) { return dateString; }
         }
-      } else if (role.includes('管理者')) {
-        // 管理者登入驗證
-        if (username === 'B20401' && password === 'B20401') {
-            // 登入成功，直接導向管理者頁面
-            window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
-        } else {
-            alert('帳號或密碼錯誤。');
+
+        function formatDisplayTime(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString);
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `${hours}:${minutes}`;
+            } catch (error) { return ''; }
         }
-      } else {
-        // 其他未知角色
-        alert('未知的登入角色。');
-        closeLoginModal();
-      }
-    });
 
-    /* ---------- Password Visibility Toggle ---------- */
-    const togglePasswordIcon = document.getElementById('toggle-password-icon');
-    const loginPasswordInput = document.getElementById('login-password');
+        const meetingsContainer = document.getElementById('meetings-container');
+        const storedMeetings = JSON.parse(localStorage.getItem('meetings')) || [];
+        if (storedMeetings.length > 0) {
+            meetingsContainer.innerHTML = '';
+            storedMeetings.forEach(meeting => {
+                const meetingElement = document.createElement('div');
+                meetingElement.innerHTML = `
+                    <div class="pb-4 border-b border-gray-200 last:border-b-0">
+                        <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                        <p class="text-gray-700 mt-1 font-semibold">${meeting.title}</p>
+                        <p class="text-sm text-gray-500">地點：${meeting.location}</p>
+                    </div>
+                `;
+                meetingsContainer.appendChild(meetingElement);
+            });
+        }
 
-    togglePasswordIcon.addEventListener('click', function() {
-        // 切換 input 的 type 屬性
-        const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        loginPasswordInput.setAttribute('type', type);
+        const announcementsContainer = document.getElementById('announcements-container');
+        const storedAnnouncements = JSON.parse(localStorage.getItem('announcements')) || [];
+        const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布');
+        if (publishedAnnouncements.length > 0) {
+            announcementsContainer.innerHTML = '';
+            publishedAnnouncements.forEach(ann => {
+                const announcementElement = document.createElement('div');
+                announcementElement.innerHTML = `
+                    <div class="pb-3 border-b border-gray-200 last:border-b-0">
+                        <p class="font-bold text-amber-600">${ann.title}</p>
+                        <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
+                        <p class="text-xs text-gray-400 text-right mt-2">發布於 ${ann.publishDate}</p>
+                    </div>
+                `;
+                announcementsContainer.appendChild(announcementElement);
+            });
+        }
+
+        // --- ORIGINAL SCRIPT ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+        const loginModal = document.getElementById('login-modal');
+        const modalTitle = document.getElementById('modal-title');
         
-        // 切換眼睛圖示
-        this.classList.toggle('fa-eye');
-        this.classList.toggle('fa-eye-slash');
-    });
+        function toggle(el, show) {
+            if (show) {
+                el.classList.remove('hidden');
+                el.classList.add('flex'); // Use flex for centering
+            } else {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            }
+        }
+        
+        function openLoginModal(role) { 
+            modalTitle.innerText = `${role}登入`; 
+            toggle(loginModal, true); 
+        }
+        function closeLoginModal() { 
+            toggle(loginModal, false); 
+            document.getElementById('login-form').reset(); 
+        }
+        loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
 
-    /* ---------- Student Modal ---------- */
-    const studentModal = document.getElementById('student-modal');
-    const studentForm  = document.getElementById('student-form');
-    function openStudentModal(){ toggle(studentModal, true); }
-    function closeStudentModal(){ toggle(studentModal, false); studentForm.reset(); }
-    studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); });
+        document.getElementById('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const role = modalTitle.innerText;
+            const username = e.target.username.value;
+            const password = document.getElementById('login-password').value;
+            if (role.includes('教師')) {
+                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+                    window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
+                } else {
+                    alert('帳號或密碼錯誤。');
+                }
+            } else if (role.includes('管理者')) {
+                if (username === 'B20401' && password === 'B20401') {
+                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
+                } else {
+                    alert('帳號或密碼錯誤。');
+                }
+            } else {
+                alert('未知的登入角色。');
+                closeLoginModal();
+            }
+        });
 
-    /* ---------- IPP iframe ---------- */
-    const ippContainer = document.getElementById('ipp-container');
-    const ippFrame     = document.getElementById('ipp-frame');
-    function closeIPP(){
-      ippFrame.src = '';                  // 停止載入
-      toggle(ippContainer, false);
-    }
+        const togglePasswordIcon = document.getElementById('toggle-password-icon');
+        const loginPasswordInput = document.getElementById('login-password');
+        togglePasswordIcon.addEventListener('click', function() {
+            const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPasswordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
 
-    /* ---------- Toggle helper ---------- */
-    function toggle(el, show){
-      el.classList[show ? 'remove' : 'add']('hidden');
-      if(show){ el.classList.add('modal-visible'); } else { el.classList.remove('modal-visible'); }
-    }
+        const studentModal = document.getElementById('student-modal');
+        const studentForm = document.getElementById('student-form');
+        function openStudentModal() { toggle(studentModal, true); }
+        function closeStudentModal() { toggle(studentModal, false); studentForm.reset(); }
+        studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); });
 
-    /* ---------- Student form submit ---------- */
-    studentForm.addEventListener('submit', e=>{
-      e.preventDefault();
-      const name = document.getElementById('student-name').value.trim();
-      if(!name){ alert('請輸入姓名'); return; }
-      localStorage.setItem('username', name);
-      ippFrame.src = 'https://luyun1224.github.io/CMHIPE/IPP.html';
-      closeStudentModal();
-      toggle(ippContainer, true);
+        const ippContainer = document.getElementById('ipp-container');
+        const ippFrame = document.getElementById('ipp-frame');
+        function closeIPP() {
+            ippFrame.src = '';
+            toggle(ippContainer, false);
+        }
+
+        studentForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const name = document.getElementById('student-name').value.trim();
+            if(!name) { alert('請輸入姓名'); return; }
+            localStorage.setItem('username', name);
+            ippFrame.src = 'https://luyun1224.github.io/CMHIPE/IPP.html';
+            closeStudentModal();
+            toggle(ippContainer, true);
+        });
+        
+        // --- FIX: Expose functions to global scope for onclick attributes ---
+        window.openLoginModal = openLoginModal;
+        window.closeLoginModal = closeLoginModal;
+        window.openStudentModal = openStudentModal;
+        window.closeStudentModal = closeStudentModal;
+        window.closeIPP = closeIPP;
     });
   </script>
 </body>
