@@ -62,7 +62,7 @@
       <div id="schedule" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <div class="space-y-6">
-          <p class="text-gray-500">目前尚無排定的會議。</p>
+           <p class="text-gray-500">目前尚無排定的會議。</p>
         </div>
       </div>
 
@@ -70,7 +70,7 @@
       <div id="announcements" class="bg-white p-8 rounded-xl shadow hover:shadow-2xl">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <div class="space-y-4">
-          <p class="text-gray-500">目前沒有最新公告。</p>
+           <p class="text-gray-500">目前沒有最新公告。</p>
         </div>
       </div>
     </div>
@@ -199,7 +199,7 @@
     const loginModal = document.getElementById('login-modal');
     const modalTitle = document.getElementById('modal-title');
     function openLoginModal(role){ modalTitle.innerText = `${role}登入`; toggle(loginModal, true); }
-    function closeLoginModal(){   toggle(loginModal, false); }
+    function closeLoginModal(){   toggle(loginModal, false); document.getElementById('login-form').reset(); }
     loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
     
     document.getElementById('login-form').addEventListener('submit', e=>{
@@ -208,22 +208,27 @@
       const username = e.target.username.value;
       const password = document.getElementById('login-password').value;
 
-      if (role.includes('管理者')) {
-        // 管理者登入驗證
-        if (username === 'admin' && password === 'admin') {
-          alert('管理者登入成功！');
-          // 實際應用中，您可以在此處加入跳轉到管理者後台的程式碼
-          // 例如: window.location.href = '/admin-dashboard';
-          closeLoginModal();
+      if (role.includes('教師')) {
+        // 教師登入驗證
+        if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+          // 登入成功，直接導向教師頁面
+          window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
         } else {
           alert('帳號或密碼錯誤。');
         }
+      } else if (role.includes('管理者')) {
+        // 管理者登入驗證
+        if (username === 'B20401' && password === 'B20401') {
+            // 登入成功，直接導向管理者頁面
+            window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
+        } else {
+            alert('帳號或密碼錯誤。');
+        }
       } else {
-        // 其他角色（如教師）的示範登入
-        alert(`此為${role}示範登入，無實際後端驗證功能。`);
+        // 其他未知角色
+        alert('未知的登入角色。');
         closeLoginModal();
       }
-      document.getElementById('login-form').reset();
     });
 
     /* ---------- Password Visibility Toggle ---------- */
@@ -266,9 +271,10 @@
       e.preventDefault();
       const name = document.getElementById('student-name').value.trim();
       if(!name){ alert('請輸入姓名'); return; }
-      // 僅顯示歡迎訊息，不進行跳轉
-      alert(`歡迎，${name}！此為學員進入示範。`);
+      localStorage.setItem('username', name);
+      ippFrame.src = 'https://luyun1224.github.io/CMHIPE/IPP.html';
       closeStudentModal();
+      toggle(ippContainer, true);
     });
   </script>
 </body>
