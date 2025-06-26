@@ -58,21 +58,6 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        /* 隱藏提交成功訊息 */
-        #success-message {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 2rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            z-index: 100;
-            text-align: center;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -83,7 +68,7 @@
             <p class="text-lg text-gray-600 mt-2">學員IPP表單</p>
         </header>
 
-        <form id="ipp-main-form" method="POST" action="YOUR_APPS_SCRIPT_URL_HERE">
+        <form id="ipp-main-form">
             <div class="form-section">
                 <h2 class="text-xl font-bold mb-6 text-gray-700 border-b pb-3">基本資料</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,20 +113,20 @@
                 <div class="mb-6">
                     <label class="form-label">2. 參與職類 (Team)</label>
                     <div class="checkbox-grid p-4 border rounded-lg bg-gray-50">
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_西醫" value="西醫" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>西醫</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_護理" value="護理" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>護理</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_藥劑" value="藥劑" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>藥劑</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_營養" value="營養" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>營養</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_醫檢" value="醫檢" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>醫檢</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_放射" value="放射" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>放射</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_社工" value="社工" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>社工</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_職能治療" value="職能治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>職能治療</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_物理治療" value="物理治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>物理治療</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_語言治療" value="語言治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>語言治療</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_臨床心理" value="臨床心理" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>臨床心理</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" name="profession_呼吸治療" value="呼吸治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>呼吸治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="西醫" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>西醫</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="護理" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>護理</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="藥劑" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>藥劑</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="營養" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>營養</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="醫檢" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>醫檢</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="放射" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>放射</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="社工" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>社工</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="職能治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>職能治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="物理治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>物理治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="語言治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>語言治療</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="臨床心理" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>臨床心理</span></label>
+                        <label class="flex items-center space-x-2"><input type="checkbox" name="professions" value="呼吸治療" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"><span>呼吸治療</span></label>
                         <div class="col-span-2 md:col-span-4 flex items-center space-x-2">
-                             <input type="checkbox" id="other-profession-checkbox" name="other_profession_checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                             <input type="checkbox" id="other-profession-checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                              <label for="other-profession-checkbox">其他:</label>
                              <input type="text" id="other-profession-text" name="other_profession_text" class="form-input !w-auto flex-grow" placeholder="請填寫其他職類">
                         </div>
@@ -154,17 +139,17 @@
                 </div>
 
                 <div class="mb-6">
-                     <label class="form-label">4. 團隊合作 (IPP Team work)</label>
-                     <div class="space-y-4">
-                        <div>
-                             <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
-                             <textarea id="teamwork-strategy" name="teamwork_strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
-                        </div>
-                        <div>
-                            <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
-                            <textarea id="teamwork-details" name="teamwork_details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
-                        </div>
-                     </div>
+                      <label class="form-label">4. 團隊合作 (IPP Team work)</label>
+                      <div class="space-y-4">
+                            <div>
+                                 <label for="teamwork-strategy" class="font-semibold text-gray-600">具體策略</label>
+                                 <textarea id="teamwork-strategy" name="teamwork_strategy" class="form-textarea mt-1" placeholder="團隊合作的具體策略..."></textarea>
+                            </div>
+                            <div>
+                               <label for="teamwork-details" class="font-semibold text-gray-600">執行細節</label>
+                               <textarea id="teamwork-details" name="teamwork_details" class="form-textarea mt-1" placeholder="策略的執行細節..."></textarea>
+                            </div>
+                      </div>
                 </div>
 
                  <div>
@@ -197,7 +182,7 @@
                             </tbody>
                         </table>
                     </div>
-                 </div>
+                </div>
             </div>
 
             <div class="form-section">
@@ -251,7 +236,7 @@
                                 <span class="text-gray-700">安寧 (包含：安寧議題、病人自主、預立醫療決定、DNR)。</span>
                               </label>
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
 
@@ -302,7 +287,7 @@
 
         // Handle form submission and data storage
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default submission to run validation and data collection first.
+            e.preventDefault(); // Prevent default submission
             
             // Simple validation check for required fields.
             const name = document.getElementById('participant-name').value;
@@ -330,10 +315,11 @@
                     teamwork_details: document.getElementById('teamwork-details')?.value || '',
 
                     // 參與職類 (勾選框) - 收集所有勾選的值
-                    professions: Array.from(document.querySelectorAll('input[name^="profession_"]:checked')).map(cb => cb.value),
+                    // MODIFIED: Updated selector to use the standard name attribute
+                    professions: Array.from(document.querySelectorAll('input[name="professions"]:checked')).map(cb => cb.value),
                     other_profession_text: document.getElementById('other-profession-text')?.value || '',
                     
-                    // IPE 內容 (CC-KAS 表格) - 使用更穩定的選擇器
+                    // IPE 內容 (CC-KAS 表格)
                     core_knowledge: document.querySelector('textarea[name="core_knowledge"]')?.value || '',
                     contextualized_knowledge: document.querySelector('textarea[name="contextualized_knowledge"]')?.value || '',
                     core_attitude: document.querySelector('textarea[name="core_attitude"]')?.value || '',
@@ -350,7 +336,10 @@
                     checklist_social_longterm: document.querySelector('input[name="checklist_social_longterm"]')?.checked || false,
                     checklist_social_hospice: document.querySelector('input[name="checklist_social_hospice"]')?.checked || false,
 
-                    // 教師審核 (學員填寫階段通常為空)
+                    // 教師審核
+                    // MODIFIED: Added a note about Apps Script.
+                    // 注意：以下教師欄位資料會被收集，但您提供的 Apps Script (.gs) 檔案中並未包含這些欄位。
+                    // 如需儲存此三項資料，請務必在您的 .gs 檔案中的 rowData 陣列裡也加入它們。
                     teacher_name: document.getElementById('teacher-name')?.value || '',
                     teacher_id: document.getElementById('teacher-id')?.value || '',
                     teacher_email: document.getElementById('teacher-email')?.value || ''
@@ -359,7 +348,7 @@
                 // 將收集到的資料儲存到瀏覽器的 localStorage 中
                 localStorage.setItem('ippFormData', JSON.stringify(ippFormData));
 
-                // **FIXED**: Programmatically click the hidden link to trigger redirection.
+                // Programmatically click the hidden link to trigger redirection.
                 document.getElementById('redirect-link').click();
 
             } catch (error) {
