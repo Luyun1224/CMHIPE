@@ -8,26 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background-color: #f8fafc;
-        }
-        .sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-        .main-content {
-            transition: margin-left 0.3s ease-in-out;
-        }
-        /* Custom modal styles */
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        .modal {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .active-link {
-            background-color: #374151; /* bg-gray-700 */
-        }
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
+        .sidebar { transition: transform 0.3s ease-in-out; }
+        .main-content { transition: margin-left 0.3s ease-in-out; }
+        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
+        .modal { transition: opacity 0.3s ease, transform 0.3s ease; }
+        .active-link { background-color: #374151; }
     </style>
 </head>
 <body>
@@ -36,9 +22,7 @@
         <div id="sidebar" class="sidebar fixed z-30 inset-y-0 left-0 w-64 bg-gray-800 text-white p-6 transform md:transform-none -translate-x-full md:relative md:-translate-x-0">
             <div class="flex items-center justify-between mb-10">
                 <a href="#" class="text-2xl font-bold text-white">跨領域後台</a>
-                <button id="close-sidebar-btn" class="md:hidden text-white">
-                    <i data-lucide="x"></i>
-                </button>
+                <button id="close-sidebar-btn" class="md:hidden text-white"><i data-lucide="x"></i></button>
             </div>
             <nav>
                 <a href="#meetings" class="nav-link active-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
@@ -64,13 +48,9 @@
         <!-- Main Content -->
         <div id="main-content" class="main-content flex-1 flex flex-col overflow-hidden">
             <header class="flex items-center justify-between p-6 bg-white border-b">
-                 <button id="open-sidebar-btn" class="md:hidden text-gray-600">
-                    <i data-lucide="menu"></i>
-                </button>
+                 <button id="open-sidebar-btn" class="md:hidden text-gray-600"><i data-lucide="menu"></i></button>
                 <h1 id="page-title" class="text-2xl font-semibold text-gray-800">會議時程管理</h1>
-                 <div>
-                    <span class="text-gray-600">歡迎，管理者</span>
-                </div>
+                 <div><span class="text-gray-600">歡迎，管理者</span></div>
             </header>
 
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
@@ -84,17 +64,15 @@
                     </div>
                     <div class="bg-white rounded-lg shadow overflow-x-auto">
                         <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
+                            <thead>
+                                <tr class="bg-gray-50">
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">會議時間</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">主題</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">地點</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="meetings-tbody" class="divide-y divide-gray-200">
-                                <!-- Meeting rows will be dynamically inserted here -->
-                            </tbody>
+                            <tbody id="meetings-tbody" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -109,17 +87,15 @@
                     </div>
                      <div class="bg-white rounded-lg shadow overflow-x-auto">
                         <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
+                            <thead>
+                                <tr class="bg-gray-50">
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">標題</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">發布日期</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                                 </tr>
                             </thead>
-                             <tbody id="announcements-tbody" class="divide-y divide-gray-200">
-                                <!-- Announcement rows will be dynamically inserted here -->
-                             </tbody>
+                             <tbody id="announcements-tbody" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -134,8 +110,8 @@
                     </div>
                      <div class="bg-white rounded-lg shadow overflow-x-auto">
                         <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
+                            <thead>
+                                <tr class="bg-gray-50">
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">單位</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">信箱</th>
@@ -143,9 +119,7 @@
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                                 </tr>
                             </thead>
-                             <tbody id="users-tbody" class="divide-y divide-gray-200">
-                                <!-- User rows will be dynamically inserted here -->
-                             </tbody>
+                             <tbody id="users-tbody" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -155,17 +129,15 @@
                     <h2 class="text-3xl font-bold text-gray-800 mb-6">查看表單提交</h2>
                      <div class="bg-white rounded-lg shadow overflow-x-auto">
                         <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
+                            <thead>
+                                <tr class="bg-gray-50">
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">會議主題</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">會議日期</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">已提交數量</th>
                                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">查看表單</th>
                                 </tr>
                             </thead>
-                             <tbody id="submissions-tbody" class="divide-y divide-gray-200">
-                                <!-- Submission rows will be dynamically inserted here -->
-                             </tbody>
+                             <tbody id="submissions-tbody" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -174,27 +146,26 @@
     </div>
 
     <!-- Modals -->
-    <!-- Meeting Modal -->
     <div id="meeting-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
-        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform opacity-0 scale-95">
             <h3 id="meeting-modal-title" class="text-2xl font-bold mb-6 text-gray-800">新增會議</h3>
             <form id="meeting-form">
-                <input type="hidden" id="meeting-edit-index">
+                <input type="hidden" id="meeting-id">
                 <div class="mb-4">
                     <label for="meeting-start-date" class="block text-gray-700 text-sm font-bold mb-2">開始時間</label>
-                    <input type="datetime-local" id="meeting-start-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <input type="datetime-local" id="meeting-start-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                 </div>
                 <div class="mb-4">
                     <label for="meeting-end-date" class="block text-gray-700 text-sm font-bold mb-2">結束時間</label>
-                    <input type="datetime-local" id="meeting-end-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <input type="datetime-local" id="meeting-end-date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" required>
                 </div>
                 <div class="mb-4">
                     <label for="meeting-title" class="block text-gray-700 text-sm font-bold mb-2">主題</label>
-                    <input type="text" id="meeting-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入會議主題" required>
+                    <input type="text" id="meeting-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入會議主題" required>
                 </div>
                 <div class="mb-6">
                     <label for="meeting-location" class="block text-gray-700 text-sm font-bold mb-2">地點</label>
-                    <input type="text" id="meeting-location" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入會議地點" required>
+                    <input type="text" id="meeting-location" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入會議地點" required>
                 </div>
                 <div class="flex items-center justify-end">
                     <button type="button" onclick="closeModal('meeting-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg mr-2">取消</button>
@@ -204,29 +175,28 @@
         </div>
     </div>
 
-    <!-- Announcement Modal -->
     <div id="announcement-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
-        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform opacity-0 scale-95">
             <h3 id="announcement-modal-title" class="text-2xl font-bold mb-6 text-gray-800">新增公告</h3>
             <form id="announcement-form">
-                <input type="hidden" id="announcement-edit-index">
+                <input type="hidden" id="announcement-id">
                 <div class="mb-4">
                     <label for="announcement-title" class="block text-gray-700 text-sm font-bold mb-2">標題</label>
-                    <input type="text" id="announcement-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入公告標題" required>
+                    <input type="text" id="announcement-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入公告標題" required>
                 </div>
                 <div class="mb-4">
                     <label for="announcement-content" class="block text-gray-700 text-sm font-bold mb-2">內容</label>
-                    <textarea id="announcement-content" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入公告內容"></textarea>
+                    <textarea id="announcement-content" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入公告內容"></textarea>
                 </div>
                  <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">狀態</label>
                     <div class="relative">
-                        <select id="announcement-status" class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                        <select id="announcement-status" class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded">
                             <option value="草稿">草稿</option>
                             <option value="已發布">已發布</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            <i data-lucide="chevron-down"></i>
                         </div>
                     </div>
                 </div>
@@ -238,33 +208,32 @@
         </div>
     </div>
     
-    <!-- User Modal -->
     <div id="user-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
-        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform scale-95 opacity-0">
+        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 p-8 transform opacity-0 scale-95">
             <h3 class="text-2xl font-bold mb-6 text-gray-800">新增使用者</h3>
-            <p class="text-sm text-gray-600 mb-4">新增後，系統將寄送登入通知至該使用者信箱。</p>
+            <p class="text-sm text-gray-600 mb-4">帳號密碼預設皆為信箱，登入後可修改。</p>
             <form id="user-form">
                  <div class="mb-4">
                     <label for="user-dept" class="block text-gray-700 text-sm font-bold mb-2">單位</label>
-                    <input type="text" id="user-dept" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="例如：護理部、教學部" required>
+                    <input type="text" id="user-dept" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="例如：護理部" required>
                 </div>
                 <div class="mb-4">
                     <label for="user-name" class="block text-gray-700 text-sm font-bold mb-2">姓名</label>
-                    <input type="text" id="user-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="請輸入姓名" required>
+                    <input type="text" id="user-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="請輸入姓名" required>
                 </div>
                 <div class="mb-4">
                     <label for="user-email" class="block text-gray-700 text-sm font-bold mb-2">信箱</label>
-                    <input type="email" id="user-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="使用者將以此信箱登入" required>
+                    <input type="email" id="user-email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" placeholder="使用者將以此信箱登入" required>
                 </div>
                  <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">角色</label>
                     <div class="relative">
-                        <select id="user-role" class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                        <select id="user-role" class="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded">
                             <option>教師</option>
                             <option>管理者</option>
                         </select>
                          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            <i data-lucide="chevron-down"></i>
                         </div>
                     </div>
                 </div>
@@ -275,356 +244,292 @@
             </form>
         </div>
     </div>
-    
-     <!-- Submission Detail Modal (Placeholder) -->
-    <div id="submission-detail-modal" class="modal-backdrop fixed inset-0 z-40 flex items-center justify-center hidden">
-        <div class="modal bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 p-8 transform scale-95 opacity-0">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                     <h3 class="text-2xl font-bold text-gray-800">提交詳情</h3>
-                     <p id="submission-modal-title" class="text-gray-600">會議</p>
-                </div>
-                 <button type="button" onclick="closeModal('submission-detail-modal')" class="text-gray-500 hover:text-gray-700">&times;</button>
-            </div>
+
+    <script type="module">
+        // Wrap all code in an async function to allow top-level await and return
+        async function main() {
+            // Import Firebase modules
+            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+            const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+            // --- Firebase Initialization ---
+            const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             
-             <div class="bg-white rounded-lg shadow overflow-x-auto">
-                <p class="text-center py-10 text-gray-500">此處將顯示詳細的提交列表。</p>
-            </div>
-
-            <div class="flex items-center justify-end mt-8">
-                <button type="button" onclick="closeModal('submission-detail-modal')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg">關閉</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // Lucide Icons
-        lucide.createIcons();
-
-        // --- Data Store ---
-        // Load data from localStorage or initialize as empty array
-        let meetings = JSON.parse(localStorage.getItem('meetings')) || [];
-        let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-
-        // --- DOM Elements ---
-        const meetingForm = document.getElementById('meeting-form');
-        const meetingsTbody = document.getElementById('meetings-tbody');
-        const meetingModalTitle = document.getElementById('meeting-modal-title');
-
-        const announcementForm = document.getElementById('announcement-form');
-        const announcementsTbody = document.getElementById('announcements-tbody');
-        const announcementModalTitle = document.getElementById('announcement-modal-title');
-
-        const userForm = document.getElementById('user-form');
-        const usersTbody = document.getElementById('users-tbody');
-
-        const submissionsTbody = document.getElementById('submissions-tbody');
-
-        // --- Data Persistence Functions ---
-        function saveMeetings() {
-            localStorage.setItem('meetings', JSON.stringify(meetings));
-        }
-        function saveAnnouncements() {
-            localStorage.setItem('announcements', JSON.stringify(announcements));
-        }
-        function saveUsers() {
-            localStorage.setItem('users', JSON.stringify(users));
-        }
-
-        // --- Utility Functions ---
-        function formatDisplayDate(dateString) {
-            if (!dateString) return '';
+            let db, auth;
             try {
-                const date = new Date(dateString);
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-                const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
-                return `${year}/${month}/${day} (${dayOfWeek})`;
-            } catch (error) { return dateString; }
-        }
-
-        function formatDisplayTime(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                return `${hours}:${minutes}`;
-            } catch (error) { return ''; }
-        }
-
-        // --- Meetings Functions ---
-        function renderMeetings() {
-            meetingsTbody.innerHTML = '';
-            if (meetings.length === 0) {
-                meetingsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有會議</td></tr>`;
-                return;
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Firebase initialized and authenticated successfully.");
+            } catch (e) {
+                console.error("Firebase initialization failed:", e);
+                alert("資料庫連接失敗，請稍後再試。");
+                return; // This is now a valid return
             }
-            meetings.forEach((meeting, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${meeting.location}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="openEditMeetingModal(${index})" class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
-                        <button onclick="deleteMeeting(${index})" class="text-red-600 hover:text-red-900">刪除</button>
-                    </td>
-                `;
-                meetingsTbody.appendChild(row);
+
+            // --- Local Data Cache ---
+            let allMeetings = [];
+            let allAnnouncements = [];
+
+            // --- Collections ---
+            const meetingsCol = collection(db, `/artifacts/${appId}/public/data/meetings`);
+            const announcementsCol = collection(db, `/artifacts/${appId}/public/data/announcements`);
+            const usersCol = collection(db, `/artifacts/${appId}/public/data/users`);
+
+            // --- DOM Elements ---
+            const meetingsTbody = document.getElementById('meetings-tbody');
+            const announcementsTbody = document.getElementById('announcements-tbody');
+            const usersTbody = document.getElementById('users-tbody');
+            const submissionsTbody = document.getElementById('submissions-tbody');
+
+            // --- Utility ---
+            const formatDateTime = (datetime) => datetime ? new Date(datetime).toLocaleString('zh-TW', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-') : '';
+            const formatDate = (date) => date ? new Date(date).toLocaleDateString('sv-SE') : '';
+            const formatTime = (datetime) => datetime ? new Date(datetime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) : '';
+
+            // --- Real-time Listeners & Renders ---
+            onSnapshot(meetingsCol, (snapshot) => {
+                allMeetings = []; // Clear local cache
+                snapshot.forEach((doc) => allMeetings.push({ ...doc.data(), id: doc.id }));
+                
+                meetingsTbody.innerHTML = '';
+                if (allMeetings.length === 0) {
+                    meetingsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有會議</td></tr>`;
+                } else {
+                    allMeetings.forEach(meeting => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">${formatDateTime(meeting.start)} - ${formatTime(meeting.end)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${meeting.location}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="edit-meeting-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${meeting.id}">編輯</button>
+                                <button class="delete-meeting-btn text-red-600 hover:text-red-900" data-id="${meeting.id}">刪除</button>
+                            </td>
+                        `;
+                        meetingsTbody.appendChild(row);
+                    });
+                }
+                renderSubmissions(allMeetings);
             });
-        }
-        
-        function handleMeetingFormSubmit(event) {
-            event.preventDefault();
-            const index = document.getElementById('meeting-edit-index').value;
-            const meetingData = {
-                start: document.getElementById('meeting-start-date').value,
-                end: document.getElementById('meeting-end-date').value,
-                title: document.getElementById('meeting-title').value,
-                location: document.getElementById('meeting-location').value,
-            };
-            if (index) { meetings[index] = meetingData; } 
-            else { meetings.push(meetingData); }
-            saveMeetings();
-            renderMeetings();
-            renderSubmissions(); 
-            closeModal('meeting-modal');
-        }
 
-        function openAddMeetingModal() {
-            meetingModalTitle.textContent = '新增會議';
-            meetingForm.reset();
-            document.getElementById('meeting-edit-index').value = '';
-            openModal('meeting-modal');
-        }
+            onSnapshot(announcementsCol, (snapshot) => {
+                allAnnouncements = []; // Clear local cache
+                snapshot.forEach((doc) => allAnnouncements.push({ ...doc.data(), id: doc.id }));
 
-        function openEditMeetingModal(index) {
-            const meeting = meetings[index];
-            if (!meeting) return;
-            meetingModalTitle.textContent = '編輯會議';
-            document.getElementById('meeting-edit-index').value = index;
-            document.getElementById('meeting-start-date').value = meeting.start;
-            document.getElementById('meeting-end-date').value = meeting.end;
-            document.getElementById('meeting-title').value = meeting.title;
-            document.getElementById('meeting-location').value = meeting.location;
-            openModal('meeting-modal');
-        }
-
-        function deleteMeeting(index) {
-            meetings.splice(index, 1);
-            saveMeetings();
-            renderMeetings();
-            renderSubmissions();
-        }
-
-        // --- Announcements Functions ---
-        function renderAnnouncements() {
-            announcementsTbody.innerHTML = '';
-            if (announcements.length === 0) {
-                announcementsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有公告</td></tr>`;
-                return;
-            }
-            announcements.forEach((ann, index) => {
-                const statusColor = ann.status === '已發布' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${ann.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${ann.publishDate}</td>
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${ann.status}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="openEditAnnouncementModal(${index})" class="text-indigo-600 hover:text-indigo-900 mr-4">編輯</button>
-                        <button onclick="deleteAnnouncement(${index})" class="text-red-600 hover:text-red-900">刪除</button>
-                    </td>
-                `;
-                announcementsTbody.appendChild(row);
-            });
-        }
-
-        function handleAnnouncementFormSubmit(event) {
-            event.preventDefault();
-            const index = document.getElementById('announcement-edit-index').value;
-            const annData = {
-                title: document.getElementById('announcement-title').value,
-                content: document.getElementById('announcement-content').value,
-                status: document.getElementById('announcement-status').value,
-                publishDate: new Date().toLocaleDateString('sv-SE'), // YYYY-MM-DD format
-            };
-            if (index) { announcements[index] = annData; } 
-            else { announcements.push(annData); }
-            saveAnnouncements();
-            renderAnnouncements();
-            closeModal('announcement-modal');
-        }
-
-        function openAddAnnouncementModal() {
-            announcementModalTitle.textContent = '新增公告';
-            announcementForm.reset();
-            document.getElementById('announcement-edit-index').value = '';
-            openModal('announcement-modal');
-        }
-
-        function openEditAnnouncementModal(index) {
-            const ann = announcements[index];
-            if (!ann) return;
-            announcementModalTitle.textContent = '編輯公告';
-            document.getElementById('announcement-edit-index').value = index;
-            document.getElementById('announcement-title').value = ann.title;
-            document.getElementById('announcement-content').value = ann.content;
-            document.getElementById('announcement-status').value = ann.status;
-            openModal('announcement-modal');
-        }
-
-        function deleteAnnouncement(index) {
-            announcements.splice(index, 1);
-            saveAnnouncements();
-            renderAnnouncements();
-        }
-
-        // --- Users Functions ---
-        function renderUsers() {
-            usersTbody.innerHTML = '';
-            if (users.length === 0) {
-                usersTbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-500">目前沒有使用者</td></tr>`;
-                return;
-            }
-            users.forEach((user, index) => {
-                const roleColor = user.role === '管理者' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800';
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${user.dept}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColor}">${user.role}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onclick="deleteUser(${index})" class="text-red-600 hover:text-red-900">移除</button>
-                    </td>
-                `;
-                usersTbody.appendChild(row);
-            });
-        }
-
-        function handleUserFormSubmit(event) {
-            event.preventDefault();
-            const userData = {
-                name: document.getElementById('user-name').value,
-                dept: document.getElementById('user-dept').value,
-                email: document.getElementById('user-email').value,
-                role: document.getElementById('user-role').value,
-            };
-            users.push(userData);
-            saveUsers();
-            renderUsers();
-            closeModal('user-modal');
-        }
-        
-        function openAddUserModal() {
-            userForm.reset();
-            openModal('user-modal');
-        }
-
-        function deleteUser(index) {
-            users.splice(index, 1);
-            saveUsers();
-            renderUsers();
-        }
-        
-        // --- Submissions Functions ---
-        function renderSubmissions() {
-            submissionsTbody.innerHTML = '';
-            if (meetings.length === 0) {
-                submissionsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">請先新增會議</td></tr>`;
-                return;
-            }
-            meetings.forEach(meeting => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${formatDisplayDate(meeting.start)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">0 / ${Math.floor(Math.random() * 10) + 5}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                        <button onclick="openSubmissionDetailModal('${meeting.title}')" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto">
-                            <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
-                        </button>
-                    </td>
-                `;
-                submissionsTbody.appendChild(row);
-            });
-        }
-
-        function openSubmissionDetailModal(title) {
-            document.getElementById('submission-modal-title').textContent = `會議：${title}`;
-            openModal('submission-detail-modal');
-        }
-
-        // --- General Page Logic ---
-        const navLinks = document.querySelectorAll('.nav-link');
-        const pageContents = document.querySelectorAll('.page-content');
-        const pageTitle = document.getElementById('page-title');
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active-link'));
-                link.classList.add('active-link');
-                const targetId = link.getAttribute('href').substring(1) + '-content';
-                pageContents.forEach(content => {
-                    content.classList.toggle('hidden', content.id !== targetId);
-                });
-                pageTitle.textContent = link.textContent.trim();
-                if (window.innerWidth < 768) {
-                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                announcementsTbody.innerHTML = '';
+                if (allAnnouncements.length === 0) {
+                    announcementsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有公告</td></tr>`;
+                } else {
+                    allAnnouncements.forEach(ann => {
+                        const statusColor = ann.status === '已發布' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">${ann.title}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${formatDate(ann.publishDate)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${ann.status}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="edit-announcement-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${ann.id}">編輯</button>
+                                <button class="delete-announcement-btn text-red-600 hover:text-red-900" data-id="${ann.id}">刪除</button>
+                            </td>
+                        `;
+                        announcementsTbody.appendChild(row);
+                    });
                 }
             });
-        });
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const modalContent = modal.querySelector('.modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('modal-backdrop');
-                modalContent.classList.remove('scale-95', 'opacity-0');
-            }, 10);
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const modalContent = modal.querySelector('.modal');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.remove('modal-backdrop');
-                modal.classList.add('hidden');
-            }, 300);
-        }
-        
-        window.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal-backdrop')) {
-                closeModal(event.target.id);
-            }
-        });
-        
-        const openSidebarBtn = document.getElementById('open-sidebar-btn');
-        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-        const sidebar = document.getElementById('sidebar');
-        openSidebarBtn.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-        closeSidebarBtn.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
-
-        // --- Initial Setup ---
-        document.addEventListener('DOMContentLoaded', () => {
-            meetingForm.addEventListener('submit', handleMeetingFormSubmit);
-            announcementForm.addEventListener('submit', handleAnnouncementFormSubmit);
-            userForm.addEventListener('submit', handleUserFormSubmit);
             
-            renderMeetings();
-            renderAnnouncements();
-            renderUsers();
-            renderSubmissions();
-        });
+            onSnapshot(usersCol, (snapshot) => {
+                usersTbody.innerHTML = '';
+                if(snapshot.empty){
+                    usersTbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-500">目前沒有使用者</td></tr>`;
+                } else {
+                     snapshot.forEach(doc => {
+                        const user = { ...doc.data(), id: doc.id };
+                        const roleColor = user.role === '管理者' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${user.dept}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColor}">${user.role}</span></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <button class="delete-user-btn text-red-600 hover:text-red-900" data-id="${user.id}">移除</button>
+                            </td>
+                        `;
+                        usersTbody.appendChild(row);
+                    });
+                }
+            });
+            
+            function renderSubmissions(meetings) {
+                submissionsTbody.innerHTML = '';
+                if (meetings.length === 0) {
+                     submissionsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">請先新增會議</td></tr>`;
+                     return;
+                }
+                meetings.forEach(meeting => {
+                     const row = document.createElement('tr');
+                     row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${formatDate(meeting.start)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">0 / ?</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto" data-title="${meeting.title}">
+                                <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
+                            </button>
+                        </td>
+                     `;
+                     submissionsTbody.appendChild(row);
+                });
+                lucide.createIcons();
+            }
 
+            // --- Event Handlers ---
+            document.getElementById('meeting-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('meeting-id').value;
+                const data = {
+                    start: document.getElementById('meeting-start-date').value,
+                    end: document.getElementById('meeting-end-date').value,
+                    title: document.getElementById('meeting-title').value,
+                    location: document.getElementById('meeting-location').value,
+                };
+                try {
+                    if (id) await setDoc(doc(meetingsCol, id), data);
+                    else await addDoc(meetingsCol, data);
+                    closeModal('meeting-modal');
+                } catch (error) { console.error("Error saving meeting:", error); alert("儲存會議失敗！"); }
+            });
+
+            document.getElementById('announcement-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('announcement-id').value;
+                const data = {
+                    title: document.getElementById('announcement-title').value,
+                    content: document.getElementById('announcement-content').value,
+                    status: document.getElementById('announcement-status').value,
+                    publishDate: new Date().toISOString(),
+                };
+                try {
+                    if (id) await setDoc(doc(announcementsCol, id), data);
+                    else await addDoc(announcementsCol, data);
+                    closeModal('announcement-modal');
+                } catch (error) { console.error("Error saving announcement:", error); alert("儲存公告失敗！"); }
+            });
+
+            document.getElementById('user-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    name: document.getElementById('user-name').value,
+                    dept: document.getElementById('user-dept').value,
+                    email: document.getElementById('user-email').value,
+                    role: document.getElementById('user-role').value,
+                };
+                 try {
+                    await addDoc(usersCol, data);
+                    closeModal('user-modal');
+                } catch (error) { console.error("Error adding user:", error); alert("新增使用者失敗！"); }
+            });
+            
+            document.body.addEventListener('click', async (e) => {
+                if (e.target.matches('.delete-meeting-btn')) await deleteDoc(doc(meetingsCol, e.target.dataset.id));
+                if (e.target.matches('.delete-announcement-btn')) await deleteDoc(doc(announcementsCol, e.target.dataset.id));
+                if (e.target.matches('.delete-user-btn')) await deleteDoc(doc(usersCol, e.target.dataset.id));
+                if (e.target.matches('.edit-meeting-btn')) {
+                    const meetingDoc = allMeetings.find(m => m.id === e.target.dataset.id);
+                    if(meetingDoc) openEditMeetingModal(meetingDoc);
+                }
+                if (e.target.matches('.edit-announcement-btn')) {
+                     const annDoc = allAnnouncements.find(a => a.id === e.target.dataset.id);
+                    if(annDoc) openEditAnnouncementModal(annDoc);
+                }
+            });
+
+            // --- Modal Functions ---
+            const modals = {};
+            ['meeting-modal', 'announcement-modal', 'user-modal'].forEach(id => modals[id] = document.getElementById(id));
+
+            const openModal = (id) => {
+                modals[id].classList.remove('hidden');
+                setTimeout(() => modals[id].querySelector('.modal').classList.remove('opacity-0', 'scale-95'), 10);
+            };
+            const closeModal = (id) => {
+                modals[id].querySelector('.modal').classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    modals[id].classList.add('hidden');
+                    // Reset form after closing
+                    const form = modals[id].querySelector('form');
+                    if (form) form.reset();
+                }, 300);
+            };
+            
+            window.openAddMeetingModal = () => {
+                document.getElementById('meeting-id').value = '';
+                document.getElementById('meeting-modal-title').innerText = '新增會議';
+                openModal('meeting-modal');
+            };
+            window.openEditMeetingModal = (meeting) => {
+                 document.getElementById('meeting-id').value = meeting.id;
+                 document.getElementById('meeting-start-date').value = meeting.start;
+                 document.getElementById('meeting-end-date').value = meeting.end;
+                 document.getElementById('meeting-title').value = meeting.title;
+                 document.getElementById('meeting-location').value = meeting.location;
+                 document.getElementById('meeting-modal-title').innerText = '編輯會議';
+                 openModal('meeting-modal');
+            };
+
+            window.openAddAnnouncementModal = () => {
+                document.getElementById('announcement-id').value = '';
+                document.getElementById('announcement-modal-title').innerText = '新增公告';
+                openModal('announcement-modal');
+            };
+            window.openEditAnnouncementModal = (ann) => {
+                 document.getElementById('announcement-id').value = ann.id;
+                 document.getElementById('announcement-title').value = ann.title;
+                 document.getElementById('announcement-content').value = ann.content;
+                 document.getElementById('announcement-status').value = ann.status;
+                 document.getElementById('announcement-modal-title').innerText = '編輯公告';
+                 openModal('announcement-modal');
+            };
+            
+            window.openAddUserModal = () => {
+                openModal('user-modal');
+            }
+
+            window.closeModal = closeModal;
+            lucide.createIcons();
+
+            // --- Sidebar Logic ---
+            const sidebar = document.getElementById('sidebar');
+            document.getElementById('open-sidebar-btn').addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+            document.getElementById('close-sidebar-btn').addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+            
+            // --- Page Navigation ---
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pageContents = document.querySelectorAll('.page-content');
+            const pageTitle = document.getElementById('page-title');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active-link'));
+                    link.classList.add('active-link');
+                    const targetId = link.getAttribute('href').substring(1) + '-content';
+                    pageContents.forEach(content => content.classList.toggle('hidden', content.id !== targetId));
+                    pageTitle.textContent = link.textContent.trim();
+                    if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
+                });
+            });
+        }
+
+        // Run the main async function
+        main().catch(console.error);
     </script>
 </body>
 </html>
