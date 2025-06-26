@@ -272,7 +272,7 @@
         <a id="redirect-link" href="https://luyun1224.github.io/CMHIPE/form" target="_top" style="display:none;"></a>
     </div>
 
-   <script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('ipp-main-form');
         
@@ -318,7 +318,7 @@
                     teamwork_strategy: document.getElementById('teamwork-strategy')?.value || '',
                     teamwork_details: document.getElementById('teamwork-details')?.value || '',
 
-                    // 參與職類 (勾選框) - 收集所有勾選的值
+                    // 參與職類 (勾選框)
                     professions: Array.from(document.querySelectorAll('input[name="professions"]:checked')).map(cb => cb.value),
                     other_profession_text: document.getElementById('other-profession-text')?.value || '',
                     
@@ -330,8 +330,8 @@
                     core_skill: document.querySelector('textarea[name="core_skill"]')?.value || '',
                     contextualized_skill: document.querySelector('textarea[name="contextualized_skill"]')?.value || '',
 
-                    // 照護查檢表 (Checklist) - 收集所有勾選的值
-                    checklist_items: Array.from(document.querySelectorAll('input[name="checklist"]:checked')).map(cb => cb.value),
+                    // 照護查檢表 (Checklist) - 關鍵修改：將鍵名改為 "checklist"
+                    checklist: Array.from(document.querySelectorAll('input[name="checklist"]:checked')).map(cb => cb.value),
 
                     // 教師審核
                     teacher_name: document.getElementById('teacher-name')?.value || '',
