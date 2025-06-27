@@ -218,7 +218,7 @@
         <div class="modal-content"><p id="modal-message"></p><button id="modal-close-btn" class="mt-4 btn-primary">關閉</button></div>
     </div>
 
-    <script>
+   <script>
         // --- DOM Elements ---
         const loginPage = document.getElementById('login-page');
         const teacherDashboard = document.getElementById('teacher-dashboard');
@@ -256,21 +256,38 @@
 
         // --- Login/Logout ---
         function handleLogin() {
-            const email = emailInput.value;
+            const email = emailInput.value.trim(); // 移除首尾空白
             if (!email || !email.includes('@')) {
                 showModal("請輸入有效的電子信箱。");
                 return;
             }
-            currentTeacher = { email };
-            teacherEmailDisplay.textContent = `登入身分: ${currentTeacher.email}`;
-            showPage('teacher-dashboard');
-            fetchMeetings();
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>登入中...';
+
+            // 調用 Apps Script 進行驗證
+            google.script.run
+                .withSuccessHandler(isVerified => {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '登入';
+                    if (isVerified) {
+                        currentTeacher = { email: email };
+                        teacherEmailDisplay.textContent = `登入身分: ${currentTeacher.email}`;
+                        showPage('teacher-dashboard');
+                        fetchMeetings();
+                    } else {
+                        showModal("登入失敗：無效的教師帳號或未授權。");
+                    }
+                })
+                .withFailureHandler(onFailure)
+                .verifyTeacherEmail(email);
         }
 
         function handleLogout() {
             currentTeacher = null;
             showPage('login-page');
             meetingList.innerHTML = '';
+            emailInput.value = ''; // 清空輸入框
         }
 
         // --- Data Fetching & Rendering ---
