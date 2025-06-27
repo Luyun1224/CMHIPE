@@ -23,6 +23,66 @@
         background-color: #f0fdfa; /* teal-50 */
         border-color: #14b8a6; /* teal-500 */
     }
+
+    /* Enforce grid layout for Schedule and Announcements for larger screens */
+    .responsive-grid-2-col {
+        display: grid;
+        gap: 3rem; /* equivalent to Tailwind gap-12 */
+        /* Fallback for smaller screens: stack */
+        grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) { /* md breakpoint */
+        .responsive-grid-2-col {
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two columns */
+        }
+    }
+
+    /* Ensure portal cards equal height and grid layout */
+    .responsive-grid-3-col {
+        display: grid;
+        gap: 2rem; /* equivalent to Tailwind gap-8 */
+        align-items: stretch; /* Make grid items stretch to equal height */
+        /* Fallback for smaller screens: stack */
+        grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) { /* md breakpoint */
+        .responsive-grid-3-col {
+            grid-template-columns: repeat(3, minmax(0, 1fr)); /* Three columns */
+        }
+    }
+
+    /* Base styling for content containers */
+    #meetings-container,
+    #announcements-container {
+        min-height: 150px; /* Provides a base height */
+        overflow-y: auto; /* Allows scrolling if content overflows */
+        padding: 1rem; /* Consistent padding */
+    }
+    /* Styles for the *initial* loading/no data message within these containers */
+    #meetings-container p:first-child,
+    #announcements-container p:first-child {
+        text-align: center; /* Center the loading/no data message */
+        width: 100%; /* Ensure it spans full width */
+        margin-top: auto; /* Push to center vertically if only one element */
+        margin-bottom: auto; /* Push to center vertically if only one element */
+    }
+    /* Styles for individual meeting/announcement items when loaded */
+    #meetings-container > div,
+    #announcements-container > div {
+        text-align: left; /* Align actual data items to left */
+        width: 100%; /* Ensure they take full width */
+        /* Removed auto margins for these, let default flow take over */
+    }
+
+    /* Ensure portal cards have equal height */
+    .portal-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* Ensure they stretch to container height */
+    }
+    .portal-card p {
+        flex-grow: 1; /* Allow paragraph to take available space */
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -60,7 +120,8 @@
     </section>
 
     <!-- Schedule + Announcements -->
-    <div class="grid md:grid-cols-2 gap-12 mb-16">
+    <!-- Applied custom grid class -->
+    <div class="responsive-grid-2-col mb-16">
       <!-- Schedule -->
       <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
@@ -81,34 +142,35 @@
     <!-- Portals -->
     <div id="portals" class="pb-12">
       <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
-      <div class="grid md:grid-cols-3 gap-8">
+      <!-- Applied custom grid class -->
+      <div class="responsive-grid-3-col">
         <!-- 學員 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
           <h3 class="text-2xl font-bold mb-4">學員入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
           <button id="student-portal-btn"
-                  class="bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
+                  class="mt-auto bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
             學員進入
           </button>
         </div>
 
         <!-- 教師 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
-          <button id="teacher-portal-btn" class="bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
+          <button id="teacher-portal-btn" class="mt-auto bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
             教師登入
           </button>
         </div>
 
         <!-- 管理者 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
           <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button id="admin-portal-btn" class="bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
+          <button id="admin-portal-btn" class="mt-auto bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
             管理者登入
           </button>
         </div>
@@ -144,8 +206,8 @@
             </button>
         </form>
       </div>
-     </div>
     </div>
+  </div>
 
 
   <!-- ========= Login Modal (教師 / 管理者) ========= -->
@@ -199,12 +261,17 @@
     // --- Helper Functions ---
     const fetchData = async (sheetName) => {
         try {
+            console.log(`Attempting to fetch data from sheet: ${sheetName}`);
+            console.log(`Fetching URL: ${SCRIPT_URL}?sheet=${sheetName}`);
             const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
             if (!response.ok) {
                 const errorText = await response.text();
+                console.error(`HTTP Error for ${sheetName}: Status ${response.status}, Message: ${errorText}`);
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            return await response.json();
+            const data = await response.json();
+            console.log(`Successfully fetched data from ${sheetName}:`, data);
+            return data;
         } catch (error) {
             console.error(`Failed to fetch data from ${sheetName}:`, error);
             throw error; // Re-throw to be caught by the calling function
@@ -217,7 +284,7 @@
             const date = new Date(dateString);
             // Check for Invalid Date
             if (isNaN(date.getTime())) {
-                console.warn(`Invalid date string received: ${dateString}`);
+                console.warn(`Invalid date string received for display (date): ${dateString}`);
                 return dateString; // Return original if invalid
             }
             const year = date.getFullYear();
@@ -236,7 +303,7 @@
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
-                console.warn(`Invalid time string received: ${dateString}`);
+                console.warn(`Invalid time string received for display (time): ${dateString}`);
                 return ''; // Return empty string if invalid
             }
             const hours = date.getHours().toString().padStart(2, '0');
@@ -279,15 +346,21 @@
         async function loadAndRenderData() {
             // Load Meetings
             try {
+                meetingsContainer.innerHTML = '<p class="text-gray-500">正在讀取會議資料...</p>'; // Show loading state
                 const storedMeetings = await fetchData('meetings');
-                const upcomingMeetings = storedMeetings
-                    .filter(m => m.start && new Date(m.start).getTime() > new Date().getTime()) // Filter out past meetings
-                    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()); // Sort by date
+                console.log("Raw meetings data from Apps Script:", storedMeetings); // Log raw data
+                
+                // Now displaying all meetings, sorted by date (most recent first)
+                const allMeetingsSorted = storedMeetings
+                    .filter(m => m.start && !isNaN(new Date(m.start).getTime())) // Filter out invalid dates
+                    .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); // Sort by date DESCENDING
 
-                const meetingsToShow = upcomingMeetings.slice(0, 3);
+                console.log("All meetings (sorted) for display:", allMeetingsSorted); // Log sorted data
+
+                const meetingsToShow = allMeetingsSorted.slice(0, 3); // Still show only top 3 for "近期"
                 
                 if (meetingsToShow.length > 0) {
-                    meetingsContainer.innerHTML = '';
+                    meetingsContainer.innerHTML = ''; // Clear loading message
                     meetingsToShow.forEach((meeting, index) => {
                         const meetingElement = document.createElement('div');
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
@@ -302,7 +375,7 @@
                         meetingsContainer.appendChild(meetingElement);
                     });
                 } else {
-                    meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
+                    meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無會議資料。請在後台新增會議。</p>';
                 }
             } catch (error) {
                 meetingsContainer.innerHTML = `<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
@@ -310,19 +383,22 @@
 
             // Load Announcements
             try {
+                announcementsContainer.innerHTML = '<p class="text-gray-500">正在讀取最新公告...</p>'; // Show loading state
                 const storedAnnouncements = await fetchData('announcements');
                 const publishedAnnouncements = storedAnnouncements
                     .filter(ann => ann.status === '已發布')
                     .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
                 
                 if (publishedAnnouncements.length > 0) {
-                    announcementsContainer.innerHTML = '';
+                    announcementsContainer.innerHTML = ''; // Clear loading message
                     publishedAnnouncements.forEach(ann => {
                         const announcementElement = document.createElement('div');
+                        // Add a check for ann.content to ensure it's a string before calling replace
+                        const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
                         announcementElement.innerHTML = `
                             <div class="pb-3 border-b border-gray-200 last:border-b-0">
                                 <p class="font-bold text-amber-600">${ann.title}</p>
-                                <p class="text-gray-600 mt-2 text-sm">${ann.content ? ann.content.replace(/\n/g, '<br>') : ''}</p>
+                                <p class="text-gray-600 mt-2 text-sm">${content}</p>
                                 <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
                             </div>`;
                         announcementsContainer.appendChild(announcementElement);
@@ -387,7 +463,7 @@
         
         const closeIPP = () => {
             ippFrame.src = '';
-            toggle(ippContainer, false);
+            toggle(ippContainer, true); // Keep it flex when opened
         };
 
         // --- Event Listeners ---
@@ -408,17 +484,22 @@
             const role = modalTitle.innerText;
             const username = e.target.username.value;
             const password = loginPasswordInput.value;
+            // These are hardcoded for demo, you'd implement actual authentication here
             if (role.includes('教師')) {
-                // Using a custom modal for alerts instead of window.alert
-                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
-                else { /* Implement custom alert: showCustomAlert('帳號或密碼錯誤。'); */ console.log('帳號或密碼錯誤。'); }
+                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+                    window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher'; // Replace with your actual teacher portal URL
+                } else {
+                    console.log('教師帳號或密碼錯誤。');
+                    // Implement a custom alert or message display here instead of window.alert
+                }
             } else if (role.includes('管理者')) {
-                // Using a custom modal for alerts instead of window.alert
-                if (username === 'B20401' && password === 'B20401') window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
-                else { /* Implement custom alert: showCustomAlert('帳號或密碼錯誤。'); */ console.log('帳號或密碼錯誤。'); }
+                if (username === 'B20401' && password === 'B20401') {
+                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin'; // Replace with your actual admin portal URL
+                } else {
+                    console.log('管理者帳號或密碼錯誤。');
+                    // Implement a custom alert or message display here instead of window.alert
+                }
             } else {
-                // Using a custom modal for alerts instead of window.alert
-                // showCustomAlert('未知的登入角色。');
                 console.log('未知的登入角色。');
                 closeLoginModal();
             }
@@ -442,6 +523,6 @@
             }
         });
     });
-  </script>
+</script>
 </body>
 </html>
