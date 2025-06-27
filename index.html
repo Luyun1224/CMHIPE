@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>奇美醫院跨領域全人照護討論會</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- Google Font：Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
   <style>
     body { font-family: 'Noto Sans TC', sans-serif; background-color:#f8fafc; }
@@ -24,7 +27,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <header class="bg-white shadow-md sticky top-0 z-40">
+  <!-- ========= Header ========= -->
+  <header class="bg-white shadow-md sticky top-0 z-40">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
       <nav class="hidden md:flex space-x-6">
@@ -37,30 +41,36 @@
       </button>
     </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
       <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
       <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
       <a href="#portals" class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
     </div>
   </header>
 
-    <main class="container mx-auto px-6 py-12">
-        <section class="text-center mb-16">
+  <!-- ========= Main ========= -->
+  <main class="container mx-auto px-6 py-12">
+    <!-- Hero -->
+    <section class="text-center mb-16">
       <h2 class="text-4xl font-bold mb-4">促進合作，提升照護品質</h2>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
         我們致力於搭建一個跨專業領域的溝通平台，透過案例討論與經驗分享，共同探索全人照護的最佳實踐。
       </p>
     </section>
 
-        <div class="grid md:grid-cols-2 gap-12 mb-16">
-            <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+    <!-- Schedule + Announcements -->
+    <div class="grid md:grid-cols-2 gap-12 mb-16">
+      <!-- Schedule -->
+      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <div id="meetings-container" class="space-y-6">
           <p class="text-gray-500">正在讀取會議資料...</p>
         </div>
       </div>
 
-            <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+      <!-- Announcements -->
+      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <div id="announcements-container" class="space-y-4">
           <p class="text-gray-500">正在讀取最新公告...</p>
@@ -68,10 +78,12 @@
       </div>
     </div>
 
-        <div id="portals" class="pb-12">
+    <!-- Portals -->
+    <div id="portals" class="pb-12">
       <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
       <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <!-- 學員 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
           <h3 class="text-2xl font-bold mb-4">學員入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
@@ -81,7 +93,8 @@
           </button>
         </div>
 
-                <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <!-- 教師 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
@@ -90,7 +103,8 @@
           </button>
         </div>
 
-                <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
+        <!-- 管理者 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center flex flex-col items-center hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
           <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
@@ -102,35 +116,40 @@
     </div>
   </main>
 
-    <footer class="bg-gray-800 text-white">
+  <!-- ========= Footer ========= -->
+  <footer class="bg-gray-800 text-white">
     <div class="container mx-auto px-6 py-8 text-center">
       <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
       <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作</p>
     </div>
   </footer>
 
-    <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+  <!-- ========= Student Modal (Simplified Flow) ========= -->
+  <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg relative">
       <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
       </button>
 
-            <div>
+      <!-- Meeting Selection -->
+      <div>
         <h2 class="text-2xl font-bold text-center mb-6">請選擇會議場次</h2>
         <form id="student-meeting-form">
             <div id="meeting-list-container" class="space-y-3 max-h-64 overflow-y-auto mb-6 pr-2">
-                            </div>
+                <!-- Meeting list will be populated here by JavaScript -->
+            </div>
             <button id="student-next-button" type="submit"
                     class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
               進入表單
             </button>
         </form>
       </div>
+     </div>
     </div>
-  </div>
 
 
-    <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+  <!-- ========= Login Modal (教師 / 管理者) ========= -->
+  <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
       <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
@@ -161,7 +180,8 @@
     </div>
   </div>
 
-    <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+  <!-- ========= IPP iframe Modal ========= -->
+  <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="relative w-full max-w-3xl h-[90vh]">
       <button id="close-ipp-modal-btn"
               class="absolute -top-3 -right-3 bg-white rounded-full shadow p-2 text-gray-600 hover:text-red-500">
@@ -169,9 +189,10 @@
       </button>
       <iframe id="ipp-frame" src="" class="w-full h-full rounded-xl shadow-2xl border"></iframe>
     </div>
-   </div>
+  </div>
 
-    <script type="module">
+  <!-- ========= Scripts ========= -->
+  <script type="module">
     // --- Google Apps Script Web App URL ---
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
 
@@ -179,7 +200,10 @@
     const fetchData = async (sheetName) => {
         try {
             const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
             return await response.json();
         } catch (error) {
             console.error(`Failed to fetch data from ${sheetName}:`, error);
@@ -191,6 +215,11 @@
         if (!dateString) return '';
         try {
             const date = new Date(dateString);
+            // Check for Invalid Date
+            if (isNaN(date.getTime())) {
+                console.warn(`Invalid date string received: ${dateString}`);
+                return dateString; // Return original if invalid
+            }
             const year = date.getFullYear();
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');
@@ -206,6 +235,10 @@
         if (!dateString) return '';
         try {
             const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                console.warn(`Invalid time string received: ${dateString}`);
+                return ''; // Return empty string if invalid
+            }
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
@@ -248,8 +281,8 @@
             try {
                 const storedMeetings = await fetchData('meetings');
                 const upcomingMeetings = storedMeetings
-                    .filter(m => m.start && new Date(m.start) > new Date()) // Filter out past meetings
-                    .sort((a, b) => new Date(a.start) - new Date(b.start));
+                    .filter(m => m.start && new Date(m.start).getTime() > new Date().getTime()) // Filter out past meetings
+                    .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()); // Sort by date
 
                 const meetingsToShow = upcomingMeetings.slice(0, 3);
                 
@@ -272,7 +305,7 @@
                     meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
                 }
             } catch (error) {
-                meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。</p>';
+                meetingsContainer.innerHTML = `<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
             }
 
             // Load Announcements
@@ -280,7 +313,7 @@
                 const storedAnnouncements = await fetchData('announcements');
                 const publishedAnnouncements = storedAnnouncements
                     .filter(ann => ann.status === '已發布')
-                    .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
                 
                 if (publishedAnnouncements.length > 0) {
                     announcementsContainer.innerHTML = '';
@@ -289,7 +322,7 @@
                         announcementElement.innerHTML = `
                             <div class="pb-3 border-b border-gray-200 last:border-b-0">
                                 <p class="font-bold text-amber-600">${ann.title}</p>
-                                <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
+                                <p class="text-gray-600 mt-2 text-sm">${ann.content ? ann.content.replace(/\n/g, '<br>') : ''}</p>
                                 <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
                             </div>`;
                         announcementsContainer.appendChild(announcementElement);
@@ -298,7 +331,7 @@
                     announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
                 }
             } catch (error) {
-                announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。</p>';
+                announcementsContainer.innerHTML = `<p class="text-red-500">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
             }
         }
         
@@ -320,11 +353,12 @@
             toggle(studentModal, true);
             try {
                 const storedMeetings = await fetchData('meetings');
-                const upcomingMeetings = storedMeetings.sort((a, b) => new Date(b.start) - new Date(a.start));
+                // Sort by start date (descending, so most recent is first)
+                const sortedMeetings = storedMeetings.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
                 
                 meetingListContainer.innerHTML = '';
-                if (upcomingMeetings.length > 0) {
-                    upcomingMeetings.forEach((meeting, index) => {
+                if (sortedMeetings.length > 0) {
+                    sortedMeetings.forEach((meeting, index) => {
                         const meetingId = `meeting-${index}`;
                         const meetingCard = document.createElement('label');
                         meetingCard.htmlFor = meetingId;
@@ -342,7 +376,7 @@
                 }
             } catch (error) {
                 console.error("Error loading meetings for student modal:", error);
-                meetingListContainer.innerHTML = '<p class="text-red-500 text-center">讀取會議列表失敗。</p>';
+                meetingListContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議列表失敗。錯誤：${error.message}</p>`;
             }
         };
 
@@ -408,6 +442,6 @@
             }
         });
     });
-</script>
+  </script>
 </body>
 </html>
