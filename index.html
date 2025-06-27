@@ -53,10 +53,18 @@
         margin: auto; /* Push to center vertically */
     }
     /* Styles for individual meeting/announcement items when loaded */
+    /* Removed text-left from here as it's now applied directly to specific elements */
     #meetings-container > div,
     #announcements-container > div {
-        text-align: left; /* Align actual data items to left */
         width: 100%; /* Ensure they take full width */
+    }
+
+    /* Styling for modal content containers */
+    #all-meetings-list-container,
+    #all-announcements-list-container {
+        max-height: 70vh; /* Limit height of scrollable list in modal */
+        overflow-y: auto;
+        padding-right: 1rem; /* Space for scrollbar */
     }
   </style>
 </head>
@@ -100,22 +108,24 @@
     <!-- Changed to Tailwind grid classes: grid-cols-1 md:grid-cols-2 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
       <!-- Schedule -->
-      <!-- Added min-h-[20rem] and flex flex-col for equal height and internal layout -->
-      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 min-h-[20rem] flex flex-col">
+      <!-- Adjusted min-h- to fit content, removed flex-col to allow content to dictate height -->
+      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
-        <!-- Adjusted container padding, flex-grow handled by CSS -->
-        <div id="meetings-container" class="space-y-6">
-          <p class="text-gray-500">正在讀取會議資料...</p>
+        <a id="meetings-more-link" href="#" class="absolute top-8 right-8 text-sm text-teal-600 hover:underline hidden">More </a>
+        <!-- Removed min-h, space-y, and flex-col for meetings-container to allow content to shrink its height -->
+        <div id="meetings-container">
+          <p class="text-gray-500 text-center">正在讀取會議資料...</p>
         </div>
       </div>
 
       <!-- Announcements -->
-      <!-- Added min-h-[20rem] and flex flex-col for equal height and internal layout -->
-      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 min-h-[20rem] flex flex-col">
+      <!-- Adjusted min-h- to fit content, removed flex-col to allow content to dictate height -->
+      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
-        <!-- Adjusted container padding, flex-grow handled by CSS -->
-        <div id="announcements-container" class="space-y-4">
-          <p class="text-gray-500">正在讀取最新公告...</p>
+        <a id="announcements-more-link" href="#" class="absolute top-8 right-8 text-sm text-amber-600 hover:underline hidden">More </a>
+        <!-- Removed min-h, space-y, and flex-col for announcements-container to allow content to shrink its height -->
+        <div id="announcements-container">
+          <p class="text-gray-500 text-center">正在讀取最新公告...</p>
         </div>
       </div>
     </div>
@@ -235,6 +245,32 @@
     </div>
   </div>
 
+  <!-- ========= All Meetings Modal ========= -->
+  <div id="all-meetings-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl relative">
+      <button id="close-all-meetings-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+        <i class="fas fa-times-circle"></i>
+      </button>
+      <h2 class="text-2xl font-bold text-center mb-6">所有會議場次</h2>
+      <div id="all-meetings-list-container" class="space-y-6">
+        <p class="text-gray-500 text-center">正在讀取所有會議資料...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= All Announcements Modal ========= -->
+  <div id="all-announcements-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl relative">
+      <button id="close-all-announcements-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+        <i class="fas fa-times-circle"></i>
+      </button>
+      <h2 class="text-2xl font-bold text-center mb-6">所有最新公告</h2>
+      <div id="all-announcements-list-container" class="space-y-4">
+        <p class="text-gray-500 text-center">正在讀取所有最新公告...</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ========= Scripts ========= -->
   <script type="module">
     // --- Google Apps Script Web App URL ---
@@ -323,78 +359,174 @@
         const studentNextBtn = document.getElementById('student-next-button');
         const loginPasswordInput = document.getElementById('login-password');
         const togglePasswordIcon = document.getElementById('toggle-password-icon');
+        const meetingsMoreLink = document.getElementById('meetings-more-link');
+        const announcementsMoreLink = document.getElementById('announcements-more-link');
+
+        // New elements for "More" modals
+        const allMeetingsModal = document.getElementById('all-meetings-modal');
+        const closeAllMeetingsModalBtn = document.getElementById('close-all-meetings-modal-btn');
+        const allMeetingsListContainer = document.getElementById('all-meetings-list-container');
+
+        const allAnnouncementsModal = document.getElementById('all-announcements-modal');
+        const closeAllAnnouncementsModalBtn = document.getElementById('close-all-announcements-modal-btn');
+        const allAnnouncementsListContainer = document.getElementById('all-announcements-list-container');
+
 
         // --- Data Loading and Rendering ---
         async function loadAndRenderData() {
             // Load Meetings
             try {
-                meetingsContainer.innerHTML = '<p class="text-gray-500">正在讀取會議資料...</p>'; // Show loading state
+                meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議資料...</p>'; // Show loading state
                 const storedMeetings = await fetchData('meetings');
                 console.log("Raw meetings data from Apps Script:", storedMeetings); // Log raw data
                 
-                // Now displaying all meetings, sorted by date (most recent first)
+                // Sort by date (most recent first)
                 const allMeetingsSorted = storedMeetings
                     .filter(m => m.start && !isNaN(new Date(m.start).getTime())) // Filter out invalid dates
                     .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); // Sort by date DESCENDING
 
                 console.log("All meetings (sorted) for display:", allMeetingsSorted); // Log sorted data
 
-                const meetingsToShow = allMeetingsSorted.slice(0, 3); // Still show only top 3 for "近期"
+                const meetingsToShow = allMeetingsSorted.slice(0, 1); // Show only top 1 for "近期"
                 
+                // Show "More" link if there is more than 1 meeting
+                if (allMeetingsSorted.length > 1) {
+                    meetingsMoreLink.classList.remove('hidden');
+                } else {
+                    meetingsMoreLink.classList.add('hidden');
+                }
+
                 if (meetingsToShow.length > 0) {
                     meetingsContainer.innerHTML = ''; // Clear loading message
                     meetingsToShow.forEach((meeting, index) => {
                         const meetingElement = document.createElement('div');
+                        // Removed pb-4 and border-b for main page display to reduce height
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingElement.innerHTML = `
-                            <div class="pb-4 border-b border-gray-200 last:border-b-0">
-                                <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                                <div class="flex items-center mt-1">
+                            <div class="mb-4"> <!-- Only mb-4 for spacing if multiple are shown, but only one is here -->
+                                <p class="font-bold text-teal-600 text-left">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                <div class="flex items-center mt-1 text-left">
                                     <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
                                 </div>
-                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
+                                <p class="text-sm text-gray-500 text-left">地點：${meeting.location}</p>
                             </div>`;
                         meetingsContainer.appendChild(meetingElement);
                     });
                 } else {
-                    meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無會議資料。請在後台新增會議。</p>';
+                    meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。請在後台新增會議。</p>';
                 }
             } catch (error) {
-                meetingsContainer.innerHTML = `<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
+                meetingsContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
             }
 
             // Load Announcements
             try {
-                announcementsContainer.innerHTML = '<p class="text-gray-500">正在讀取最新公告...</p>'; // Show loading state
+                announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取最新公告...</p>'; // Show loading state
                 const storedAnnouncements = await fetchData('announcements');
                 const publishedAnnouncements = storedAnnouncements
                     .filter(ann => ann.status === '已發布')
                     .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
                 
-                if (publishedAnnouncements.length > 0) {
+                const announcementsToShow = publishedAnnouncements.slice(0, 1); // Show only top 1 for "最新"
+
+                // Show "More" link if there is more than 1 announcement
+                if (publishedAnnouncements.length > 1) {
+                    announcementsMoreLink.classList.remove('hidden');
+                } else {
+                    announcementsMoreLink.classList.add('hidden');
+                }
+
+                if (announcementsToShow.length > 0) {
                     announcementsContainer.innerHTML = ''; // Clear loading message
-                    publishedAnnouncements.forEach(ann => {
+                    announcementsToShow.forEach(ann => {
                         const announcementElement = document.createElement('div');
-                        // Add a check for ann.content to ensure it's a string before calling replace
+                        // Removed pb-3 and border-b for main page display to reduce height
                         const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
                         announcementElement.innerHTML = `
-                            <div class="pb-3 border-b border-gray-200 last:border-b-0">
+                            <div class="mb-4 text-center"> <!-- mb-4 for spacing, text-center for content -->
                                 <p class="font-bold text-amber-600">${ann.title}</p>
                                 <p class="text-gray-600 mt-2 text-sm">${content}</p>
-                                <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
+                                <p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
                             </div>`;
                         announcementsContainer.appendChild(announcementElement);
                     });
                 } else {
-                    announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
+                    announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>';
                 }
             } catch (error) {
-                announcementsContainer.innerHTML = `<p class="text-red-500">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
+                announcementsContainer.innerHTML = `<p class="text-red-500 text-center">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
             }
         }
         
         // Call the function to load data when the page is ready
         loadAndRenderData();
+
+        // --- Functions to open "All" Modals ---
+        const openAllMeetingsModal = async () => {
+            allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有會議資料...</p>';
+            toggle(allMeetingsModal, true);
+            try {
+                const storedMeetings = await fetchData('meetings');
+                const allMeetingsSorted = storedMeetings
+                    .filter(m => m.start && !isNaN(new Date(m.start).getTime()))
+                    .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
+
+                if (allMeetingsSorted.length > 0) {
+                    allMeetingsListContainer.innerHTML = ''; // Clear loading message
+                    allMeetingsSorted.forEach((meeting, index) => {
+                        const meetingElement = document.createElement('div');
+                        // Apply styling for spacing, border, and alignment within the modal
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+                        meetingElement.innerHTML = `
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4">
+                                <p class="font-bold text-teal-600 text-left">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                <div class="flex items-center mt-1 text-left">
+                                    <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
+                                </div>
+                                <p class="text-sm text-gray-500 text-left">地點：${meeting.location}</p>
+                            </div>`;
+                        allMeetingsListContainer.appendChild(meetingElement);
+                    });
+                } else {
+                    allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。</p>';
+                }
+            } catch (error) {
+                console.error("Error loading all meetings:", error);
+                allMeetingsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有會議資料時發生錯誤。錯誤：${error.message}</p>`;
+            }
+        };
+
+        const openAllAnnouncementsModal = async () => {
+            allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有最新公告...</p>';
+            toggle(allAnnouncementsModal, true);
+            try {
+                const storedAnnouncements = await fetchData('announcements');
+                const publishedAnnouncements = storedAnnouncements
+                    .filter(ann => ann.status === '已發布')
+                    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+
+                if (publishedAnnouncements.length > 0) {
+                    allAnnouncementsListContainer.innerHTML = ''; // Clear loading message
+                    publishedAnnouncements.forEach(ann => {
+                        const announcementElement = document.createElement('div');
+                        // Apply styling for spacing, border, and alignment within the modal
+                        const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
+                        announcementElement.innerHTML = `
+                            <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4">
+                                <p class="font-bold text-amber-600 text-left">${ann.title}</p>
+                                <p class="text-gray-600 mt-2 text-sm text-left">${content}</p>
+                                <p class="text-xs text-gray-400 text-left mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
+                            </div>`;
+                        allAnnouncementsListContainer.appendChild(announcementElement);
+                    });
+                } else {
+                    allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>';
+                }
+            } catch (error) {
+                console.error("Error loading all announcements:", error);
+                allAnnouncementsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有公告時發生錯誤。錯誤：${error.message}</p>`;
+            }
+        };
 
         // --- Modal Opening/Closing Functions ---
         const openLoginModal = (role) => {
@@ -460,6 +592,22 @@
 
         loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
         studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); });
+        ippContainer.addEventListener('click', e => { if (e.target === ippContainer) closeIPP(); }); // Close IPP modal on outside click
+
+        // Event listeners for new "More" modals
+        meetingsMoreLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior (jumping to anchor)
+            openAllMeetingsModal();
+        });
+        announcementsMoreLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior (jumping to anchor)
+            openAllAnnouncementsModal();
+        });
+        closeAllMeetingsModalBtn.addEventListener('click', () => toggle(allMeetingsModal, false));
+        allMeetingsModal.addEventListener('click', e => { if (e.target === allMeetingsModal) toggle(allMeetingsModal, false); });
+
+        closeAllAnnouncementsModalBtn.addEventListener('click', () => toggle(allAnnouncementsModal, false));
+        allAnnouncementsModal.addEventListener('click', e => { if (e.target === allAnnouncementsModal) toggle(allAnnouncementsModal, false); });
         
         document.getElementById('login-form').addEventListener('submit', e => {
             e.preventDefault();
