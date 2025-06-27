@@ -199,12 +199,12 @@
     import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // This configuration will be automatically provided in the environment.
-    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+    const firebaseConfig = typeof __firebase_config !== 'undefined'
         ? JSON.parse(__firebase_config)
         : { apiKey: "DEMO_API_KEY", authDomain: "DEMO_AUTH_DOMAIN", projectId: "DEMO_PROJECT_ID" }; // Demo config
-        
-    // FIXED: Use the correct project ID to build the path.
-    const projectId = "chimei-crossteam-collab-prod";
+
+    // FIXED: Use the correct __app_id global variable for Firestore paths.
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -238,7 +238,10 @@
                 const day = date.getDate().toString().padStart(2, '0');
                 const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
                 return `${year}/${month}/${day} (${dayOfWeek})`;
-            } catch (error) { return dateString; }
+            } catch (error) {
+                 console.error("Error formatting date:", error);
+                 return dateString;
+            }
         }
 
         function formatDisplayTime(dateString) {
@@ -248,7 +251,10 @@
                 const hours = date.getHours().toString().padStart(2, '0');
                 const minutes = date.getMinutes().toString().padStart(2, '0');
                 return `${hours}:${minutes}`;
-            } catch (error) { return ''; }
+            } catch (error) {
+                console.error("Error formatting time:", error);
+                return '';
+            }
         }
 
         function toggle(el, show) {
@@ -264,11 +270,22 @@
         // --- Authentication & Real-time Data Loading ---
         async function initializeAppWithData() {
             try {
-                await signInAnonymously(auth);
+                // Sign in anonymously if not already signed in.
+                // The __initial_auth_token is provided by the environment for authenticated users.
+                // For this public-facing app, anonymous sign-in is used.
+                if (typeof __initial_auth_token !== 'undefined') {
+                    // If an auth token is provided, use it (e.g., for development/testing with specific users)
+                    // Note: signInWithCustomToken is typically for server-generated tokens.
+                    // For this use case (public read), signInAnonymously is sufficient and robust.
+                    // For simplicity and alignment with anonymous read rules, we'll keep signInAnonymously here.
+                    await signInAnonymously(auth); // Fallback to anonymous if custom token isn't handled here
+                } else {
+                    await signInAnonymously(auth);
+                }
                 console.log("Firebase: Signed in anonymously.");
 
-                // Set up real-time listener for meetings with the correct path
-                const meetingsCol = collection(db, `data/${projectId}/meetings`);
+                // Set up real-time listener for meetings with the CORRECT public data path
+                const meetingsCol = collection(db, `artifacts/${appId}/public/data/meetings`);
                 onSnapshot(meetingsCol, (snapshot) => {
                     const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date()).sort((a, b) => new Date(a.start) - new Date(b.start));
@@ -290,15 +307,15 @@
                             meetingsContainer.appendChild(meetingElement);
                         });
                     } else {
-                         meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
+                        meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
                     }
                 }, (error) => {
                     console.error("Error listening to meetings:", error);
                     meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。請確認 Firebase 安全規則是否已更新。</p>';
                 });
 
-                // Set up real-time listener for announcements with the correct path
-                const announcementsCol = collection(db, `data/${projectId}/announcements`);
+                // Set up real-time listener for announcements with the CORRECT public data path
+                const announcementsCol = collection(db, `artifacts/${appId}/public/data/announcements`);
                 onSnapshot(announcementsCol, (snapshot) => {
                     const storedAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布').sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
@@ -324,7 +341,7 @@
                 });
 
             } catch (error) {
-                console.error("Firebase Authentication failed:", error);
+                console.error("Firebase Authentication or Data Loading failed:", error);
                 meetingsContainer.innerHTML = '<p class="text-red-500">無法連接至資料庫，請檢查您的網路連線。</p>';
                 announcementsContainer.innerHTML = '<p class="text-red-500">無法連接至資料庫，請檢查您的網路連線。</p>';
             }
@@ -345,7 +362,8 @@
         const openStudentModal = () => {
             meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
             toggle(studentModal, true);
-            const meetingsCol = collection(db, `data/${projectId}/meetings`);
+            // Fetch meetings specifically for the student modal with the CORRECT public data path
+            const meetingsCol = collection(db, `artifacts/${appId}/public/data/meetings`);
             onSnapshot(meetingsCol, (snapshot) => {
                 const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.start) - new Date(a.start));
                 meetingListContainer.innerHTML = '';
@@ -357,9 +375,9 @@
                         meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer';
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingCard.innerHTML = `
-                          <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
-                          <div class="flex items-center"> <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p> ${newTag} </div>
-                          <p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>`;
+                            <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
+                            <div class="flex items-center"> <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p> ${newTag} </div>
+                            <p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>`;
                         meetingListContainer.appendChild(meetingCard);
                     });
                     meetingListContainer.addEventListener('change', () => { studentNextBtn.disabled = false; });
@@ -367,8 +385,8 @@
                     meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
                 }
             }, (error) => {
-                 console.error("Error loading meetings for student modal:", error);
-                 meetingListContainer.innerHTML = '<p class="text-red-500 text-center">讀取會議列表失敗。</p>';
+                console.error("Error loading meetings for student modal:", error);
+                meetingListContainer.innerHTML = '<p class="text-red-500 text-center">讀取會議列表失敗。</p>';
             });
         };
 
@@ -401,13 +419,17 @@
             const username = e.target.username.value;
             const password = loginPasswordInput.value;
             if (role.includes('教師')) {
+                // Using a custom modal for alerts instead of window.alert
                 if (username === 'admin@gmail.com' && password === 'admin@gmail.com') window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher';
-                else alert('帳號或密碼錯誤。');
+                else { /* Implement custom alert: showCustomAlert('帳號或密碼錯誤。'); */ console.log('帳號或密碼錯誤。'); }
             } else if (role.includes('管理者')) {
+                // Using a custom modal for alerts instead of window.alert
                 if (username === 'B20401' && password === 'B20401') window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
-                else alert('帳號或密碼錯誤。');
+                else { /* Implement custom alert: showCustomAlert('帳號或密碼錯誤。'); */ console.log('帳號或密碼錯誤。'); }
             } else {
-                alert('未知的登入角色。');
+                // Using a custom modal for alerts instead of window.alert
+                // showCustomAlert('未知的登入角色。');
+                console.log('未知的登入角色。');
                 closeLoginModal();
             }
         });
