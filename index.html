@@ -192,27 +192,62 @@
   </div>
 
   <!-- ========= Scripts ========= -->
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+ <script type="module">
+    // --- Google Apps Script Web App URL ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
 
-    // This configuration will be automatically provided in the environment.
-    const firebaseConfig = typeof __firebase_config !== 'undefined'
-        ? JSON.parse(__firebase_config)
-        : { apiKey: "DEMO_API_KEY", authDomain: "DEMO_AUTH_DOMAIN", projectId: "DEMO_PROJECT_ID" }; // Demo config
+    // --- Helper Functions ---
+    const fetchData = async (sheetName) => {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error(`Failed to fetch data from ${sheetName}:`, error);
+            throw error; // Re-throw to be caught by the calling function
+        }
+    };
 
-    // FIXED: Use the correct __app_id global variable for Firestore paths.
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    function formatDisplayDate(dateString) {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
+            return `${year}/${month}/${day} (${dayOfWeek})`;
+        } catch (error) {
+            console.error("Error formatting date:", error);
+            return dateString;
+        }
+    }
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    function formatDisplayTime(dateString) {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        } catch (error) {
+            console.error("Error formatting time:", error);
+            return '';
+        }
+    }
 
-    // The main execution starts after DOM is loaded.
-    document.addEventListener('DOMContentLoaded', () => {
+    function toggle(el, show) {
+        if (show) {
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        } else {
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+    }
+
+    // --- Main Execution on DOMContentLoaded ---
+    document.addEventListener('DOMContentLoaded', async () => {
         // --- Get All Elements ---
         const meetingsContainer = document.getElementById('meetings-container');
         const announcementsContainer = document.getElementById('announcements-container');
@@ -228,147 +263,89 @@
         const loginPasswordInput = document.getElementById('login-password');
         const togglePasswordIcon = document.getElementById('toggle-password-icon');
 
-        // --- Helper Functions ---
-        function formatDisplayDate(dateString) {
-            if (!dateString) return '';
+        // --- Data Loading and Rendering ---
+        async function loadAndRenderData() {
+            // Load Meetings
             try {
-                const date = new Date(dateString);
-                const year = date.getFullYear();
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const day = date.getDate().toString().padStart(2, '0');
-                const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
-                return `${year}/${month}/${day} (${dayOfWeek})`;
-            } catch (error) {
-                 console.error("Error formatting date:", error);
-                 return dateString;
-            }
-        }
+                const storedMeetings = await fetchData('meetings');
+                const upcomingMeetings = storedMeetings
+                    .filter(m => m.start && new Date(m.start) > new Date()) // Filter out past meetings
+                    .sort((a, b) => new Date(a.start) - new Date(b.start));
 
-        function formatDisplayTime(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString);
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                return `${hours}:${minutes}`;
-            } catch (error) {
-                console.error("Error formatting time:", error);
-                return '';
-            }
-        }
-
-        function toggle(el, show) {
-            if (show) {
-                el.classList.remove('hidden');
-                el.classList.add('flex');
-            } else {
-                el.classList.add('hidden');
-                el.classList.remove('flex');
-            }
-        }
-        
-        // --- Authentication & Real-time Data Loading ---
-        async function initializeAppWithData() {
-            try {
-                // Sign in anonymously if not already signed in.
-                // The __initial_auth_token is provided by the environment for authenticated users.
-                // For this public-facing app, anonymous sign-in is used.
-                if (typeof __initial_auth_token !== 'undefined') {
-                    // If an auth token is provided, use it (e.g., for development/testing with specific users)
-                    // Note: signInWithCustomToken is typically for server-generated tokens.
-                    // For this use case (public read), signInAnonymously is sufficient and robust.
-                    // For simplicity and alignment with anonymous read rules, we'll keep signInAnonymously here.
-                    await signInAnonymously(auth); // Fallback to anonymous if custom token isn't handled here
+                const meetingsToShow = upcomingMeetings.slice(0, 3);
+                
+                if (meetingsToShow.length > 0) {
+                    meetingsContainer.innerHTML = '';
+                    meetingsToShow.forEach((meeting, index) => {
+                        const meetingElement = document.createElement('div');
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+                        meetingElement.innerHTML = `
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0">
+                                <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                <div class="flex items-center mt-1">
+                                    <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
+                                </div>
+                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
+                            </div>`;
+                        meetingsContainer.appendChild(meetingElement);
+                    });
                 } else {
-                    await signInAnonymously(auth);
+                    meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
                 }
-                console.log("Firebase: Signed in anonymously.");
-
-                // Set up real-time listener for meetings with the CORRECT public data path
-                const meetingsCol = collection(db, `artifacts/${appId}/public/data/meetings`);
-                onSnapshot(meetingsCol, (snapshot) => {
-                    const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    const upcomingMeetings = storedMeetings.filter(m => new Date(m.start) > new Date()).sort((a, b) => new Date(a.start) - new Date(b.start));
-                    const meetingsToShow = upcomingMeetings.slice(0, 3);
-                    
-                    if (meetingsToShow.length > 0) {
-                        meetingsContainer.innerHTML = '';
-                        meetingsToShow.forEach((meeting, index) => {
-                            const meetingElement = document.createElement('div');
-                            const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
-                            meetingElement.innerHTML = `
-                                <div class="pb-4 border-b border-gray-200 last:border-b-0">
-                                    <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                                    <div class="flex items-center mt-1">
-                                        <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
-                                    </div>
-                                    <p class="text-sm text-gray-500">地點：${meeting.location}</p>
-                                </div>`;
-                            meetingsContainer.appendChild(meetingElement);
-                        });
-                    } else {
-                        meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無排定的會議。</p>';
-                    }
-                }, (error) => {
-                    console.error("Error listening to meetings:", error);
-                    meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。請確認 Firebase 安全規則是否已更新。</p>';
-                });
-
-                // Set up real-time listener for announcements with the CORRECT public data path
-                const announcementsCol = collection(db, `artifacts/${appId}/public/data/announcements`);
-                onSnapshot(announcementsCol, (snapshot) => {
-                    const storedAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    const publishedAnnouncements = storedAnnouncements.filter(ann => ann.status === '已發布').sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate));
-                    
-                    if (publishedAnnouncements.length > 0) {
-                        announcementsContainer.innerHTML = '';
-                        publishedAnnouncements.forEach(ann => {
-                            const announcementElement = document.createElement('div');
-                            announcementElement.innerHTML = `
-                                <div class="pb-3 border-b border-gray-200 last:border-b-0">
-                                    <p class="font-bold text-amber-600">${ann.title}</p>
-                                    <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
-                                    <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
-                                </div>`;
-                            announcementsContainer.appendChild(announcementElement);
-                        });
-                    } else {
-                        announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
-                    }
-                }, (error) => {
-                    console.error("Error listening to announcements:", error);
-                    announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告時發生錯誤。請確認 Firebase 安全規則是否已更新。</p>';
-                });
-
             } catch (error) {
-                console.error("Firebase Authentication or Data Loading failed:", error);
-                meetingsContainer.innerHTML = '<p class="text-red-500">無法連接至資料庫，請檢查您的網路連線。</p>';
-                announcementsContainer.innerHTML = '<p class="text-red-500">無法連接至資料庫，請檢查您的網路連線。</p>';
+                meetingsContainer.innerHTML = '<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。</p>';
+            }
+
+            // Load Announcements
+            try {
+                const storedAnnouncements = await fetchData('announcements');
+                const publishedAnnouncements = storedAnnouncements
+                    .filter(ann => ann.status === '已發布')
+                    .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate));
+                
+                if (publishedAnnouncements.length > 0) {
+                    announcementsContainer.innerHTML = '';
+                    publishedAnnouncements.forEach(ann => {
+                        const announcementElement = document.createElement('div');
+                        announcementElement.innerHTML = `
+                            <div class="pb-3 border-b border-gray-200 last:border-b-0">
+                                <p class="font-bold text-amber-600">${ann.title}</p>
+                                <p class="text-gray-600 mt-2 text-sm">${ann.content.replace(/\n/g, '<br>')}</p>
+                                <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
+                            </div>`;
+                        announcementsContainer.appendChild(announcementElement);
+                    });
+                } else {
+                    announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
+                }
+            } catch (error) {
+                announcementsContainer.innerHTML = '<p class="text-red-500">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。</p>';
             }
         }
         
-        initializeAppWithData();
+        // Call the function to load data when the page is ready
+        loadAndRenderData();
 
         // --- Modal Opening/Closing Functions ---
-        const openLoginModal = (role) => { 
-            modalTitle.innerText = `${role}登入`; 
-            toggle(loginModal, true); 
+        const openLoginModal = (role) => {
+            modalTitle.innerText = `${role}登入`;
+            toggle(loginModal, true);
         };
-        const closeLoginModal = () => { 
-            toggle(loginModal, false); 
-            document.getElementById('login-form').reset(); 
+        const closeLoginModal = () => {
+            toggle(loginModal, false);
+            document.getElementById('login-form').reset();
         };
 
-        const openStudentModal = () => {
+        const openStudentModal = async () => {
             meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
             toggle(studentModal, true);
-            // Fetch meetings specifically for the student modal with the CORRECT public data path
-            const meetingsCol = collection(db, `artifacts/${appId}/public/data/meetings`);
-            onSnapshot(meetingsCol, (snapshot) => {
-                const storedMeetings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.start) - new Date(a.start));
+            try {
+                const storedMeetings = await fetchData('meetings');
+                const upcomingMeetings = storedMeetings.sort((a, b) => new Date(b.start) - new Date(a.start));
+                
                 meetingListContainer.innerHTML = '';
-                if (storedMeetings.length > 0) {
-                    storedMeetings.forEach((meeting, index) => {
+                if (upcomingMeetings.length > 0) {
+                    upcomingMeetings.forEach((meeting, index) => {
                         const meetingId = `meeting-${index}`;
                         const meetingCard = document.createElement('label');
                         meetingCard.htmlFor = meetingId;
@@ -384,10 +361,10 @@
                 } else {
                     meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
                 }
-            }, (error) => {
+            } catch (error) {
                 console.error("Error loading meetings for student modal:", error);
                 meetingListContainer.innerHTML = '<p class="text-red-500 text-center">讀取會議列表失敗。</p>';
-            });
+            }
         };
 
         const closeStudentModal = () => {
@@ -452,6 +429,6 @@
             }
         });
     });
-  </script>
+</script>
 </body>
 </html>
