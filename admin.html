@@ -298,384 +298,414 @@
         </div>
     </div>
 
-    <script type="module">
-        async function main() {
-            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js");
-            const { getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js");
-            const { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, getDoc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js");
-            const { getAnalytics } = await import("https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js");
+   <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
 
-            const firebaseConfig = {
-              apiKey: "AIzaSyDcG2ycz9Uih6luKNf06owebG1OJxHxAco",
-              authDomain: "cmhipe-761f5.firebaseapp.com",
-              projectId: "cmhipe-761f5",
-              storageBucket: "cmhipe-761f5.appspot.com",
-              messagingSenderId: "282621579528",
-              appId: "1:282621579528:web:c581d14089af1793365cbd",
-              measurementId: "G-DGGSW2JXBY"
-            };
+    const meetingsTbody = document.getElementById('meetings-tbody');
+    const announcementsTbody = document.getElementById('announcements-tbody');
+    const usersTbody = document.getElementById('users-tbody');
+    const submissionsTbody = document.getElementById('submissions-tbody');
+    
+    // Helper functions
+    const formatDateTime = (datetime) => datetime ? new Date(datetime).toLocaleString('zh-TW', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-') : '';
+    const formatDate = (date) => date ? new Date(date).toLocaleDateString('sv-SE') : '';
+    const formatTime = (datetime) => datetime ? new Date(datetime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) : '';
+    
+    // Fetch data from Google Sheets via Apps Script
+    const fetchData = async (sheetName) => {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
             
-            const dataScopeId = "chimei-crossteam-collab-prod";
-            
-            let db;
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                const auth = getAuth(app);
-                await signInAnonymously(auth);
-                const analytics = getAnalytics(app);
-                console.log("Firebase initialized and authenticated successfully.");
-            } catch (e) {
-                console.error("Firebase initialization failed:", e);
-                const errorOverlay = document.getElementById('config-error-overlay');
-                const errorMessage = document.getElementById('config-error-message');
-                
-                if (errorOverlay && errorMessage) {
-                    if (e.code === 'auth/configuration-not-found') {
-                        errorMessage.innerHTML = `請在 Firebase 控制台啟用「匿名登入」。<br><span class="text-sm text-gray-400 mt-2 block">路徑：Authentication → Sign-in method → Anonymous → 啟用</span>`;
-                    } else {
-                        errorMessage.innerHTML = `請確認您的 Firebase 設定是否正確，或聯繫管理員。<br><span class="text-sm text-gray-400 mt-2 block">錯誤碼：${e.code}</span>`
-                    }
-                    errorOverlay.classList.remove('hidden');
-                }
-                return; 
+            // Render the data on the page
+            switch (sheetName) {
+                case 'meetings':
+                    renderMeetings(data);
+                    renderSubmissions(data);
+                    break;
+                case 'announcements':
+                    renderAnnouncements(data);
+                    break;
+                case 'users':
+                    renderUsers(data);
+                    break;
             }
-
-            const meetingsCol = collection(db, `data/${dataScopeId}/meetings`);
-            const announcementsCol = collection(db, `data/${dataScopeId}/announcements`);
-            const usersCol = collection(db, `data/${dataScopeId}/users`);
-
-            const meetingsTbody = document.getElementById('meetings-tbody');
-            const announcementsTbody = document.getElementById('announcements-tbody');
-            const usersTbody = document.getElementById('users-tbody');
-            const submissionsTbody = document.getElementById('submissions-tbody');
-
-            const formatDateTime = (datetime) => datetime ? new Date(datetime).toLocaleString('zh-TW', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(/\//g, '-') : '';
-            const formatDate = (date) => date ? new Date(date).toLocaleDateString('sv-SE') : '';
-            const formatTime = (datetime) => datetime ? new Date(datetime).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }) : '';
-
-            onSnapshot(meetingsCol, (snapshot) => {
-                meetingsTbody.innerHTML = '';
-                const meetingDocs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-                if (meetingDocs.length === 0) {
-                    meetingsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有會議</td></tr>`;
-                } else {
-                    meetingDocs.forEach(meeting => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap">${formatDateTime(meeting.start)} - ${formatTime(meeting.end)}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${meeting.location}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="edit-meeting-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${meeting.id}">編輯</button>
-                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="meetings" data-id="${meeting.id}" data-message="您確定要刪除這個會議嗎？">刪除</button>
-                            </td>
-                        `;
-                        meetingsTbody.appendChild(row);
-                    });
-                }
-                renderSubmissions(meetingDocs);
+            console.log(`Fetched data from ${sheetName}:`, data);
+            return data;
+        } catch (error) {
+            console.error(`Failed to fetch data from ${sheetName}:`, error);
+            showNotification(`無法從 Google Sheets 讀取資料：${error.message}`, false);
+            return null;
+        }
+    };
+    
+    // Post data (add/update/delete) to Google Sheets
+    const postData = async (sheetName, action, data) => {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=${action}&sheet=${sheetName}`, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
             });
+            // In no-cors mode, response.ok is always true, so we rely on the Apps Script's JSON response logic.
+            const responseText = await response.text();
+            console.log('Post response:', responseText);
+            return { success: true };
+        } catch (error) {
+            console.error(`Error performing ${action} on ${sheetName}:`, error);
+            showNotification(`操作失敗：${error.message}`, false);
+            return { success: false, error };
+        }
+    };
 
-            onSnapshot(announcementsCol, (snapshot) => {
-                announcementsTbody.innerHTML = '';
-                const announcementDocs = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-                if (announcementDocs.length === 0) {
-                    announcementsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有公告</td></tr>`;
-                } else {
-                    announcementDocs.forEach(ann => {
-                        const statusColor = ann.status === '已發布' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap">${ann.title}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${formatDate(ann.publishDate)}</td>
-                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${ann.status}</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="edit-announcement-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${ann.id}">編輯</button>
-                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="announcements" data-id="${ann.id}" data-message="您確定要刪除這個公告嗎？">刪除</button>
-                            </td>
-                        `;
-                        announcementsTbody.appendChild(row);
-                    });
-                }
-            });
-            
-            onSnapshot(usersCol, (snapshot) => {
-                usersTbody.innerHTML = '';
-                if(snapshot.empty){
-                    usersTbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-500">目前沒有使用者</td></tr>`;
-                } else {
-                     snapshot.forEach(doc => {
-                        const user = { ...doc.data(), id: doc.id };
-                        const roleColor = user.role === '管理者' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800';
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${user.dept}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
-                            <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColor}">${user.role}</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="delete-btn text-red-600 hover:text-red-900" data-collection="users" data-id="${user.id}" data-message="您確定要移除這位使用者嗎？">移除</button>
-                            </td>
-                        `;
-                        usersTbody.appendChild(row);
-                    });
-                }
-            });
-            
-            function renderSubmissions(meetings) {
-                submissionsTbody.innerHTML = '';
-                if (meetings.length === 0) {
-                     submissionsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">請先新增會議</td></tr>`;
-                     return;
-                }
-                meetings.forEach(meeting => {
-                     const row = document.createElement('tr');
-                     row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">${formatDate(meeting.start)}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">0 / ?</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto" data-title="${meeting.title}">
-                                <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
-                            </button>
-                        </td>
-                     `;
-                     submissionsTbody.appendChild(row);
-                });
-                lucide.createIcons();
-            }
-
-            const toggleSavingState = (form, isSaving) => {
-                const button = form.querySelector('button[type="submit"]');
-                if (!button) return;
-                const btnText = button.querySelector('.btn-text');
-                const spinner = button.querySelector('.spinner');
-                button.disabled = isSaving;
-                if (btnText) btnText.classList.toggle('hidden', isSaving);
-                if (spinner) spinner.classList.toggle('hidden', !isSaving);
-            };
-
-            const showNotification = (message, isSuccess = true) => {
-                const toast = document.getElementById('notification-toast');
-                const messageEl = document.getElementById('notification-message');
-                if(!toast || !messageEl) return;
-                
-                messageEl.textContent = message;
-                toast.className = `fixed top-5 right-5 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform transition-transform duration-300 ${isSuccess ? 'bg-green-500' : 'bg-red-500'}`;
-                
-                toast.classList.remove('hidden', 'translate-x-full');
-                toast.classList.add('translate-x-0');
-
-                setTimeout(() => {
-                    toast.classList.remove('translate-x-0');
-                    toast.classList.add('translate-x-full');
-                    setTimeout(() => toast.classList.add('hidden'), 300);
-                }, 3000);
-            };
-
-            document.getElementById('meeting-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                toggleSavingState(form, true);
-                const id = document.getElementById('meeting-id').value;
-                const data = {
-                    start: document.getElementById('meeting-start-date').value,
-                    end: document.getElementById('meeting-end-date').value,
-                    title: document.getElementById('meeting-title').value,
-                    location: document.getElementById('meeting-location').value,
-                };
-                try {
-                    if (id) {
-                        await setDoc(doc(meetingsCol, id), data);
-                        showNotification('會議更新成功！');
-                    } else {
-                        await addDoc(meetingsCol, data);
-                        showNotification('會議新增成功！');
-                    }
-                    closeModal('meeting-modal');
-                } catch (error) { 
-                    console.error("Error saving meeting:", error); 
-                    showNotification('儲存會議失敗！', false);
-                }
-                finally { toggleSavingState(form, false); }
-            });
-
-            document.getElementById('announcement-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                toggleSavingState(form, true);
-                const id = document.getElementById('announcement-id').value;
-                const data = {
-                    title: document.getElementById('announcement-title').value,
-                    content: document.getElementById('announcement-content').value,
-                    status: document.getElementById('announcement-status').value,
-                    publishDate: new Date().toISOString(),
-                };
-                try {
-                    if (id) {
-                        await setDoc(doc(announcementsCol, id), data);
-                        showNotification('公告更新成功！');
-                    } else {
-                        await addDoc(announcementsCol, data);
-                        showNotification('公告新增成功！');
-                    }
-                    closeModal('announcement-modal');
-                } catch (error) { 
-                    console.error("Error saving announcement:", error); 
-                    showNotification('儲存公告失敗！', false);
-                }
-                finally { toggleSavingState(form, false); }
-            });
-
-            document.getElementById('user-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                toggleSavingState(form, true);
-                const data = {
-                    name: document.getElementById('user-name').value,
-                    dept: document.getElementById('user-dept').value,
-                    email: document.getElementById('user-email').value,
-                    role: document.getElementById('user-role').value,
-                };
-                 try {
-                    await addDoc(usersCol, data);
-                    showNotification('使用者新增成功！');
-                    closeModal('user-modal');
-                } catch (error) { 
-                    console.error("Error adding user:", error); 
-                    showNotification('新增使用者失敗！', false);
-                }
-                finally { toggleSavingState(form, false); }
-            });
-            
-            document.body.addEventListener('click', async (e) => {
-                const target = e.target.closest('button');
-                if (!target) return;
-
-                if (target.matches('.delete-btn')) {
-                    const collectionName = target.dataset.collection;
-                    const docId = target.dataset.id;
-                    const message = target.dataset.message || "您確定要刪除嗎？";
-                    
-                    openConfirmModal(message, async () => {
-                        let colRef;
-                        if (collectionName === 'meetings') colRef = meetingsCol;
-                        else if (collectionName === 'announcements') colRef = announcementsCol;
-                        else if (collectionName === 'users') colRef = usersCol;
-                        
-                        if (colRef) {
-                            await deleteDoc(doc(colRef, docId));
-                            showNotification('刪除成功！');
-                        }
-                    });
-                }
-                
-                if (target.matches('.edit-meeting-btn')) {
-                    const docSnap = await getDoc(doc(meetingsCol, target.dataset.id));
-                    if(docSnap.exists()) openEditMeetingModal({ ...docSnap.data(), id: docSnap.id });
-                }
-                if (target.matches('.edit-announcement-btn')) {
-                    const docSnap = await getDoc(doc(announcementsCol, target.dataset.id));
-                    if(docSnap.exists()) openEditAnnouncementModal({ ...docSnap.data(), id: docSnap.id });
-                }
-            });
-
-            const modals = {};
-            ['meeting-modal', 'announcement-modal', 'user-modal', 'confirm-modal'].forEach(id => modals[id] = document.getElementById(id));
-
-            const openModal = (id) => {
-                modals[id].classList.remove('hidden');
-                setTimeout(() => modals[id].querySelector('.modal').classList.remove('opacity-0', 'scale-95'), 10);
-            };
-            const closeModal = (id) => {
-                modals[id].querySelector('.modal').classList.add('opacity-0', 'scale-95');
-                setTimeout(() => {
-                    modals[id].classList.add('hidden');
-                    const form = modals[id].querySelector('form');
-                    if (form) form.reset();
-                }, 300);
-            };
-            
-            const confirmOkBtn = document.getElementById('confirm-ok-btn');
-            const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
-            const confirmMessage = document.getElementById('confirm-message');
-            let onConfirmCallback = null;
-            
-            const openConfirmModal = (message, callback) => {
-                confirmMessage.textContent = message;
-                onConfirmCallback = callback;
-                openModal('confirm-modal');
-            };
-            
-            confirmOkBtn.addEventListener('click', async () => {
-                if (typeof onConfirmCallback === 'function') {
-                    await onConfirmCallback();
-                }
-                closeModal('confirm-modal');
-            });
-
-            confirmCancelBtn.addEventListener('click', () => closeModal('confirm-modal'));
-            
-            window.openAddMeetingModal = () => {
-                document.getElementById('meeting-form').reset();
-                document.getElementById('meeting-id').value = '';
-                document.getElementById('meeting-modal-title').innerText = '新增會議';
-                openModal('meeting-modal');
-            };
-            window.openEditMeetingModal = (meeting) => {
-                 document.getElementById('meeting-id').value = meeting.id;
-                 document.getElementById('meeting-start-date').value = meeting.start;
-                 document.getElementById('meeting-end-date').value = meeting.end;
-                 document.getElementById('meeting-title').value = meeting.title;
-                 document.getElementById('meeting-location').value = meeting.location;
-                 document.getElementById('meeting-modal-title').innerText = '編輯會議';
-                 openModal('meeting-modal');
-            };
-
-            window.openAddAnnouncementModal = () => {
-                document.getElementById('announcement-form').reset();
-                document.getElementById('announcement-id').value = '';
-                document.getElementById('announcement-modal-title').innerText = '新增公告';
-                openModal('announcement-modal');
-            };
-            window.openEditAnnouncementModal = (ann) => {
-                 document.getElementById('announcement-id').value = ann.id;
-                 document.getElementById('announcement-title').value = ann.title;
-                 document.getElementById('announcement-content').value = ann.content;
-                 document.getElementById('announcement-status').value = ann.status;
-                 document.getElementById('announcement-modal-title').innerText = '編輯公告';
-                 openModal('announcement-modal');
-            };
-            
-            window.openAddUserModal = () => {
-                openModal('user-modal');
-            }
-
-            window.closeModal = closeModal;
-            lucide.createIcons();
-
-            const sidebar = document.getElementById('sidebar');
-            document.getElementById('open-sidebar-btn').addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-            document.getElementById('close-sidebar-btn').addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            const pageContents = document.querySelectorAll('.page-content');
-            const pageTitle = document.getElementById('page-title');
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navLinks.forEach(l => l.classList.remove('active-link'));
-                    link.classList.add('active-link');
-                    const targetId = link.getAttribute('href').substring(1) + '-content';
-                    pageContents.forEach(content => content.classList.toggle('hidden', content.id !== targetId));
-                    pageTitle.textContent = link.textContent.trim();
-                    if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
-                });
+    // Rendering functions (retained from your original code)
+    const renderMeetings = (meetings) => {
+        meetingsTbody.innerHTML = '';
+        if (meetings.length === 0) {
+            meetingsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有會議</td></tr>`;
+        } else {
+            meetings.forEach(meeting => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">${formatDateTime(meeting.start)} - ${formatTime(meeting.end)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${meeting.location}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="edit-meeting-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${meeting.id}">編輯</button>
+                        <button class="delete-btn text-red-600 hover:text-red-900" data-collection="meetings" data-id="${meeting.id}" data-message="您確定要刪除這個會議嗎？">刪除</button>
+                    </td>
+                `;
+                meetingsTbody.appendChild(row);
             });
         }
+    };
 
-        main().catch(console.error);
-    </script>
+    const renderAnnouncements = (announcements) => {
+        announcementsTbody.innerHTML = '';
+        if (announcements.length === 0) {
+            announcementsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">目前沒有公告</td></tr>`;
+        } else {
+            announcements.forEach(ann => {
+                const statusColor = ann.status === '已發布' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">${ann.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${formatDate(ann.publishDate)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${ann.status}</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="edit-announcement-btn text-indigo-600 hover:text-indigo-900 mr-4" data-id="${ann.id}">編輯</button>
+                        <button class="delete-btn text-red-600 hover:text-red-900" data-collection="announcements" data-id="${ann.id}" data-message="您確定要刪除這個公告嗎？">刪除</button>
+                    </td>
+                `;
+                announcementsTbody.appendChild(row);
+            });
+        }
+    };
+
+    const renderUsers = (users) => {
+        usersTbody.innerHTML = '';
+        if (users.length === 0) {
+            usersTbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-500">目前沒有使用者</td></tr>`;
+        } else {
+            users.forEach(user => {
+                const roleColor = user.role === '管理者' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">${user.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${user.dept}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColor}">${user.role}</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="delete-btn text-red-600 hover:text-red-900" data-collection="users" data-id="${user.id}" data-message="您確定要移除這位使用者嗎？">移除</button>
+                    </td>
+                `;
+                usersTbody.appendChild(row);
+            });
+        }
+    };
+
+    const renderSubmissions = (meetings) => {
+        submissionsTbody.innerHTML = '';
+        if (meetings.length === 0) {
+            submissionsTbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-gray-500">請先新增會議</td></tr>`;
+            return;
+        }
+        meetings.forEach(meeting => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">${meeting.title}</td>
+                <td class="px-6 py-4 whitespace-nowrap">${formatDate(meeting.start)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">0 / ?</td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                    <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-lg flex items-center mx-auto" data-title="${meeting.title}">
+                        <i data-lucide="file-text" class="w-4 h-4 mr-2"></i> 查看詳情
+                    </button>
+                </td>
+            `;
+            submissionsTbody.appendChild(row);
+        });
+        lucide.createIcons();
+    };
+
+    // UI state and notification functions (retained)
+    const toggleSavingState = (form, isSaving) => {
+        const button = form.querySelector('button[type="submit"]');
+        if (!button) return;
+        const btnText = button.querySelector('.btn-text');
+        const spinner = button.querySelector('.spinner');
+        button.disabled = isSaving;
+        if (btnText) btnText.classList.toggle('hidden', isSaving);
+        if (spinner) spinner.classList.toggle('hidden', !isSaving);
+    };
+
+    const showNotification = (message, isSuccess = true) => {
+        const toast = document.getElementById('notification-toast');
+        const messageEl = document.getElementById('notification-message');
+        if(!toast || !messageEl) return;
+        
+        messageEl.textContent = message;
+        toast.className = `fixed top-5 right-5 text-white py-3 px-6 rounded-lg shadow-lg z-50 transform transition-transform duration-300 ${isSuccess ? 'bg-green-500' : 'bg-red-500'}`;
+        
+        toast.classList.remove('hidden', 'translate-x-full');
+        toast.classList.add('translate-x-0');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-x-0');
+            toast.classList.add('translate-x-full');
+            setTimeout(() => toast.classList.add('hidden'), 300);
+        }, 3000);
+    };
+
+    // Form submission event listeners (updated to use fetch)
+    document.getElementById('meeting-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        toggleSavingState(form, true);
+        const id = document.getElementById('meeting-id').value;
+        const data = {
+            id: id,
+            start: document.getElementById('meeting-start-date').value,
+            end: document.getElementById('meeting-end-date').value,
+            title: document.getElementById('meeting-title').value,
+            location: document.getElementById('meeting-location').value,
+        };
+        try {
+            const action = id ? 'update' : 'add';
+            const result = await postData('meetings', action, data);
+            if (result.success) {
+                showNotification(`會議${action === 'add' ? '新增' : '更新'}成功！`);
+                closeModal('meeting-modal');
+                await fetchData('meetings');
+            } else {
+                showNotification(`儲存會議失敗！`, false);
+            }
+        } catch (error) {
+            console.error("Error saving meeting:", error);
+            showNotification('儲存會議失敗！', false);
+        }
+        finally { toggleSavingState(form, false); }
+    });
+
+    document.getElementById('announcement-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        toggleSavingState(form, true);
+        const id = document.getElementById('announcement-id').value;
+        const data = {
+            id: id,
+            title: document.getElementById('announcement-title').value,
+            content: document.getElementById('announcement-content').value,
+            status: document.getElementById('announcement-status').value,
+            publishDate: new Date().toISOString(),
+        };
+        try {
+            const action = id ? 'update' : 'add';
+            const result = await postData('announcements', action, data);
+            if (result.success) {
+                showNotification(`公告${action === 'add' ? '新增' : '更新'}成功！`);
+                closeModal('announcement-modal');
+                await fetchData('announcements');
+            } else {
+                showNotification('儲存公告失敗！', false);
+            }
+        } catch (error) {
+            console.error("Error saving announcement:", error);
+            showNotification('儲存公告失敗！', false);
+        }
+        finally { toggleSavingState(form, false); }
+    });
+
+    document.getElementById('user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        toggleSavingState(form, true);
+        const data = {
+            name: document.getElementById('user-name').value,
+            dept: document.getElementById('user-dept').value,
+            email: document.getElementById('user-email').value,
+            role: document.getElementById('user-role').value,
+        };
+        try {
+            const result = await postData('users', 'add', data);
+            if (result.success) {
+                showNotification('使用者新增成功！');
+                closeModal('user-modal');
+                await fetchData('users');
+            } else {
+                showNotification('新增使用者失敗！', false);
+            }
+        } catch (error) {
+            console.error("Error adding user:", error);
+            showNotification('新增使用者失敗！', false);
+        }
+        finally { toggleSavingState(form, false); }
+    });
+    
+    // Event delegation for edit and delete buttons (updated to use fetch)
+    document.body.addEventListener('click', async (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+
+        if (target.matches('.delete-btn')) {
+            const collectionName = target.dataset.collection;
+            const docId = target.dataset.id;
+            const message = target.dataset.message || "您確定要刪除嗎？";
+            
+            openConfirmModal(message, async () => {
+                const result = await postData(collectionName, 'delete', { id: docId });
+                if(result.success) {
+                    showNotification('刪除成功！');
+                    await fetchData(collectionName);
+                }
+            });
+        }
+        
+        if (target.matches('.edit-meeting-btn')) {
+            const id = target.dataset.id;
+            const meetings = await fetchData('meetings');
+            const meeting = meetings.find(m => m.id === id);
+            if (meeting) {
+                openEditMeetingModal(meeting);
+            }
+        }
+        if (target.matches('.edit-announcement-btn')) {
+            const id = target.dataset.id;
+            const announcements = await fetchData('announcements');
+            const ann = announcements.find(a => a.id === id);
+            if (ann) {
+                openEditAnnouncementModal(ann);
+            }
+        }
+    });
+    
+    // Modal functions (retained)
+    const modals = {};
+    ['meeting-modal', 'announcement-modal', 'user-modal', 'confirm-modal'].forEach(id => modals[id] = document.getElementById(id));
+
+    const openModal = (id) => {
+        modals[id].classList.remove('hidden');
+        setTimeout(() => modals[id].querySelector('.modal').classList.remove('opacity-0', 'scale-95'), 10);
+    };
+    const closeModal = (id) => {
+        modals[id].querySelector('.modal').classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            modals[id].classList.add('hidden');
+            const form = modals[id].querySelector('form');
+            if (form) form.reset();
+        }, 300);
+    };
+    
+    const confirmOkBtn = document.getElementById('confirm-ok-btn');
+    const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    const confirmMessage = document.getElementById('confirm-message');
+    let onConfirmCallback = null;
+    
+    const openConfirmModal = (message, callback) => {
+        confirmMessage.textContent = message;
+        onConfirmCallback = callback;
+        openModal('confirm-modal');
+    };
+    
+    confirmOkBtn.addEventListener('click', async () => {
+        if (typeof onConfirmCallback === 'function') {
+            await onConfirmCallback();
+        }
+        closeModal('confirm-modal');
+    });
+
+    confirmCancelBtn.addEventListener('click', () => closeModal('confirm-modal'));
+    
+    window.openAddMeetingModal = () => {
+        document.getElementById('meeting-form').reset();
+        document.getElementById('meeting-id').value = '';
+        document.getElementById('meeting-modal-title').innerText = '新增會議';
+        openModal('meeting-modal');
+    };
+    window.openEditMeetingModal = (meeting) => {
+        document.getElementById('meeting-id').value = meeting.id;
+        document.getElementById('meeting-start-date').value = meeting.start.substring(0, 16);
+        document.getElementById('meeting-end-date').value = meeting.end.substring(0, 16);
+        document.getElementById('meeting-title').value = meeting.title;
+        document.getElementById('meeting-location').value = meeting.location;
+        document.getElementById('meeting-modal-title').innerText = '編輯會議';
+        openModal('meeting-modal');
+    };
+
+    window.openAddAnnouncementModal = () => {
+        document.getElementById('announcement-form').reset();
+        document.getElementById('announcement-id').value = '';
+        document.getElementById('announcement-modal-title').innerText = '新增公告';
+        openModal('announcement-modal');
+    };
+    window.openEditAnnouncementModal = (ann) => {
+        document.getElementById('announcement-id').value = ann.id;
+        document.getElementById('announcement-title').value = ann.title;
+        document.getElementById('announcement-content').value = ann.content;
+        document.getElementById('announcement-status').value = ann.status;
+        document.getElementById('announcement-modal-title').innerText = '編輯公告';
+        openModal('announcement-modal');
+    };
+    
+    window.openAddUserModal = () => {
+        openModal('user-modal');
+    }
+    window.closeModal = closeModal;
+
+    // Sidebar and main content toggling (retained)
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('open-sidebar-btn').addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+    document.getElementById('close-sidebar-btn').addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageContents = document.querySelectorAll('.page-content');
+    const pageTitle = document.getElementById('page-title');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active-link'));
+            link.classList.add('active-link');
+            const targetId = link.getAttribute('href').substring(1) + '-content';
+            pageContents.forEach(content => content.classList.toggle('hidden', content.id !== targetId));
+            pageTitle.textContent = link.textContent.trim();
+            if (window.innerWidth < 768) sidebar.classList.add('-translate-x-full');
+        });
+    });
+
+    // Main initialization function
+    async function main() {
+        // Initial data fetch for all sections
+        await fetchData('meetings');
+        await fetchData('announcements');
+        await fetchData('users');
+        
+        lucide.createIcons();
+    }
+    
+    main().catch(console.error);
+</script>
 </body>
 </html>
