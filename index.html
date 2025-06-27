@@ -35,13 +35,10 @@
     }
 
     /* Base styling for content containers within schedule/announcements */
-    /* Applied flex-grow to parents, so ensure these adjust inside */
     #meetings-container,
     #announcements-container {
-        /* min-height is now handled by the parent div with min-h-[20rem] */
         overflow-y: auto; /* Allows scrolling if content overflows */
         padding: 1rem; /* Consistent padding */
-        flex-grow: 1; /* Allow the content containers to grow within their flex parent */
         display: flex; /* Use flex to center child elements when empty */
         flex-direction: column; /* Stack children vertically */
     }
@@ -53,7 +50,6 @@
         margin: auto; /* Push to center vertically */
     }
     /* Styles for individual meeting/announcement items when loaded */
-    /* Removed text-left from here as it's now applied directly to specific elements */
     #meetings-container > div,
     #announcements-container > div {
         width: 100%; /* Ensure they take full width */
@@ -137,31 +133,31 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- 學員 -->
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
+          <div class="text-5xl text-teal-700 mb-4"><i class="fas fa-user-graduate"></i></div> <!-- Changed to teal-700 -->
           <h3 class="text-2xl font-bold mb-4">學員入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
           <button id="student-portal-btn"
-                  class="mt-auto bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
+                  class="mt-auto bg-teal-700 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-800 transition-colors"> <!-- Changed to teal-700/800 -->
             學員進入
           </button>
         </div>
 
         <!-- 教師 -->
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
+          <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> <!-- Changed to sky-700 -->
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
-          <button id="teacher-portal-btn" class="mt-auto bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
+          <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> <!-- Changed to sky-700/800 -->
             教師登入
           </button>
         </div>
 
         <!-- 管理者 -->
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
+          <div class="text-5xl text-purple-900 mb-4"><i class="fas fa-user-shield"></i></div> <!-- Changed to purple-900 for deeper color -->
           <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button id="admin-portal-btn" class="mt-auto bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
+          <button id="admin-portal-btn" class="mt-auto bg-purple-900 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-950 transition-colors"> <!-- Changed to purple-900/950 for deeper color -->
             管理者登入
           </button>
         </div>
@@ -214,20 +210,20 @@
         <div class="mb-6">
           <label for="username" class="block text-gray-700 font-bold mb-2">帳號</label>
           <input id="username" name="username" type="text"
-                 class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                 class="login-input shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2"
                  placeholder="請輸入帳號" required />
         </div>
         <div class="mb-6">
           <label for="login-password" class="block text-gray-700 font-bold mb-2">密碼</label>
           <div class="relative">
             <input id="login-password" name="password" type="password"
-                   class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                   class="login-input shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2"
                    placeholder="請輸入密碼" required />
             <i id="toggle-password-icon" class="fas fa-eye absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"></i>
           </div>
         </div>
-        <button type="submit"
-                class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-full">
+        <button type="submit" id="login-submit-btn"
+                class="w-full text-white font-bold py-3 rounded-full">
           登入
         </button>
       </form>
@@ -252,7 +248,7 @@
         <i class="fas fa-times-circle"></i>
       </button>
       <h2 class="text-2xl font-bold text-center mb-6">所有會議場次</h2>
-      <div id="all-meetings-list-container" class="space-y-6">
+      <div id="all-meetings-list-container"> <!-- Removed space-y-6 here -->
         <p class="text-gray-500 text-center">正在讀取所有會議資料...</p>
       </div>
     </div>
@@ -265,7 +261,7 @@
         <i class="fas fa-times-circle"></i>
       </button>
       <h2 class="text-2xl font-bold text-center mb-6">所有最新公告</h2>
-      <div id="all-announcements-list-container" class="space-y-4">
+      <div id="all-announcements-list-container"> <!-- Removed space-y-4 here -->
         <p class="text-gray-500 text-center">正在讀取所有最新公告...</p>
       </div>
     </div>
@@ -361,6 +357,10 @@
         const togglePasswordIcon = document.getElementById('toggle-password-icon');
         const meetingsMoreLink = document.getElementById('meetings-more-link');
         const announcementsMoreLink = document.getElementById('announcements-more-link');
+        
+        // Login form elements for dynamic styling
+        const loginInputs = document.querySelectorAll('#login-form .login-input');
+        const loginSubmitBtn = document.getElementById('login-submit-btn');
 
         // New elements for "More" modals
         const allMeetingsModal = document.getElementById('all-meetings-modal');
@@ -400,15 +400,18 @@
                     meetingsContainer.innerHTML = ''; // Clear loading message
                     meetingsToShow.forEach((meeting, index) => {
                         const meetingElement = document.createElement('div');
-                        // Removed pb-4 and border-b for main page display to reduce height
+                        // Use a flex container for alignment to match the image, and pb-4/border-b for separation
+                        // last:border-b-0 ensures no border on the last item
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingElement.innerHTML = `
-                            <div class="mb-4"> <!-- Only mb-4 for spacing if multiple are shown, but only one is here -->
-                                <p class="font-bold text-teal-600 text-left">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                                <div class="flex items-center mt-1 text-left">
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
+                                <div class="flex items-center">
+                                    <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                </div>
+                                <div class="flex items-center mt-1">
                                     <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
                                 </div>
-                                <p class="text-sm text-gray-500 text-left">地點：${meeting.location}</p>
+                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
                             </div>`;
                         meetingsContainer.appendChild(meetingElement);
                     });
@@ -438,13 +441,17 @@
 
                 if (announcementsToShow.length > 0) {
                     announcementsContainer.innerHTML = ''; // Clear loading message
-                    announcementsToShow.forEach(ann => {
+                    announcementsToShow.forEach((ann, index) => { // Added index for NEW tag logic
                         const announcementElement = document.createElement('div');
-                        // Removed pb-3 and border-b for main page display to reduce height
+                        // Use a flex container for alignment to match the image, and pb-3/border-b for separation
+                        // last:border-b-0 ensures no border on the last item
                         const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : ''; // New tag for announcements
                         announcementElement.innerHTML = `
-                            <div class="mb-4 text-center"> <!-- mb-4 for spacing, text-center for content -->
-                                <p class="font-bold text-amber-600">${ann.title}</p>
+                            <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
+                                <div class="flex items-center">
+                                    <p class="font-bold text-amber-600">${ann.title}</p> ${newTag}
+                                </div>
                                 <p class="text-gray-600 mt-2 text-sm">${content}</p>
                                 <p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
                             </div>`;
@@ -478,12 +485,14 @@
                         // Apply styling for spacing, border, and alignment within the modal
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingElement.innerHTML = `
-                            <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4">
-                                <p class="font-bold text-teal-600 text-left">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                                <div class="flex items-center mt-1 text-left">
+                            <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
+                                <div class="flex items-center">
+                                    <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                </div>
+                                <div class="flex items-center mt-1">
                                     <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
                                 </div>
-                                <p class="text-sm text-gray-500 text-left">地點：${meeting.location}</p>
+                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
                             </div>`;
                         allMeetingsListContainer.appendChild(meetingElement);
                     });
@@ -507,15 +516,18 @@
 
                 if (publishedAnnouncements.length > 0) {
                     allAnnouncementsListContainer.innerHTML = ''; // Clear loading message
-                    publishedAnnouncements.forEach(ann => {
+                    publishedAnnouncements.forEach((ann, index) => { // Added index for NEW tag logic
                         const announcementElement = document.createElement('div');
                         // Apply styling for spacing, border, and alignment within the modal
                         const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
+                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : ''; // New tag for announcements in modal
                         announcementElement.innerHTML = `
-                            <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4">
-                                <p class="font-bold text-amber-600 text-left">${ann.title}</p>
-                                <p class="text-gray-600 mt-2 text-sm text-left">${content}</p>
-                                <p class="text-xs text-gray-400 text-left mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
+                            <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
+                                <div class="flex items-center">
+                                    <p class="font-bold text-amber-600">${ann.title}</p> ${newTag}
+                                </div>
+                                <p class="text-gray-600 mt-2 text-sm">${content}</p>
+                                <p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
                             </div>`;
                         allAnnouncementsListContainer.appendChild(announcementElement);
                     });
@@ -532,10 +544,34 @@
         const openLoginModal = (role) => {
             modalTitle.innerText = `${role}登入`;
             toggle(loginModal, true);
+
+            // Reset classes first to avoid conflicts
+            loginInputs.forEach(input => {
+                input.classList.remove('focus:ring-teal-700', 'focus:ring-sky-700', 'focus:ring-purple-900');
+            });
+            loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950');
+
+            if (role.includes('教師')) {
+                loginInputs.forEach(input => {
+                    input.classList.add('focus:ring-sky-700');
+                });
+                loginSubmitBtn.classList.add('bg-sky-700', 'hover:bg-sky-800');
+            } else if (role.includes('管理者')) {
+                loginInputs.forEach(input => {
+                    input.classList.add('focus:ring-purple-900');
+                });
+                loginSubmitBtn.classList.add('bg-purple-900', 'hover:bg-purple-950');
+            }
         };
+
         const closeLoginModal = () => {
             toggle(loginModal, false);
             document.getElementById('login-form').reset();
+            // Clear dynamic classes when closing the modal
+            loginInputs.forEach(input => {
+                input.classList.remove('focus:ring-teal-700', 'focus:ring-sky-700', 'focus:ring-purple-900');
+            });
+            loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950');
         };
 
         const openStudentModal = async () => {
