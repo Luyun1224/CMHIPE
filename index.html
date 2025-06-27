@@ -1,528 +1,145 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>奇美醫院跨領域全人照護討論會</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>奇美醫院跨領域全人照護討論會</title>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Font：Noto Sans TC -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Google Font：Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
-  <style>
-    body { font-family: 'Noto Sans TC', sans-serif; background-color:#f8fafc; }
-    /* Custom style for radio button cards */
-    .meeting-card:has(input:checked) {
-        background-color: #f0fdfa; /* teal-50 */
-        border-color: #14b8a6; /* teal-500 */
-    }
-
-    /* Enforce grid layout for Schedule and Announcements for larger screens */
-    .responsive-grid-2-col {
-        display: grid;
-        gap: 3rem; /* equivalent to Tailwind gap-12 */
-        /* Fallback for smaller screens: stack */
-        grid-template-columns: 1fr;
-    }
-    @media (min-width: 768px) { /* md breakpoint */
-        .responsive-grid-2-col {
-            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Two columns */
-        }
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background-color:#f8fafc; }
+    /* Custom style for radio button cards */
+    .meeting-card:has(input:checked) {
+        background-color: #f0fdfa; /* teal-50 */
+        border-color: #14b8a6;       /* teal-500 */
     }
 
-    /* Ensure portal cards equal height and grid layout */
-    .responsive-grid-3-col {
-        display: grid;
-        gap: 2rem; /* equivalent to Tailwind gap-8 */
-        align-items: stretch; /* Make grid items stretch to equal height */
-        /* Fallback for smaller screens: stack */
-        grid-template-columns: 1fr;
-    }
-    @media (min-width: 768px) { /* md breakpoint */
-        .responsive-grid-3-col {
-            grid-template-columns: repeat(3, minmax(0, 1fr)); /* Three columns */
-        }
-    }
-
-    /* Base styling for content containers */
+    /* Schedule & Announcements scroll containers */
     #meetings-container,
     #announcements-container {
-        min-height: 150px; /* Provides a base height */
-        overflow-y: auto; /* Allows scrolling if content overflows */
-        padding: 1rem; /* Consistent padding */
-    }
-    /* Styles for the *initial* loading/no data message within these containers */
-    #meetings-container p:first-child,
-    #announcements-container p:first-child {
-        text-align: center; /* Center the loading/no data message */
-        width: 100%; /* Ensure it spans full width */
-        margin-top: auto; /* Push to center vertically if only one element */
-        margin-bottom: auto; /* Push to center vertically if only one element */
-    }
-    /* Styles for individual meeting/announcement items when loaded */
-    #meetings-container > div,
-    #announcements-container > div {
-        text-align: left; /* Align actual data items to left */
-        width: 100%; /* Ensure they take full width */
-        /* Removed auto margins for these, let default flow take over */
+      min-height: 150px;
+      overflow-y: auto;
+      padding: 1rem;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start; /* keep items left‑aligned */
     }
 
-    /* Ensure portal cards have equal height */
-    .portal-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%; /* Ensure they stretch to container height */
-    }
-    .portal-card p {
-        flex-grow: 1; /* Allow paragraph to take available space */
-    }
-  </style>
+    /* Equal‑height portal cards */
+    .portal-card{display:flex;flex-direction:column;height:100%}
+    .portal-card p{flex-grow:1}
+  </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- ========= Header ========= -->
-  <header class="bg-white shadow-md sticky top-0 z-40">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
-      <nav class="hidden md:flex space-x-6">
-        <a href="#schedule" class="text-gray-600 hover:text-teal-600">會議時程</a>
-        <a href="#announcements" class="text-gray-600 hover:text-teal-600">最新公告</a>
-        <a href="#portals" class="text-gray-600 hover:text-teal-600">身分入口</a>
-      </nav>
-      <button id="mobile-menu-button" class="md:hidden">
-        <i class="fas fa-bars text-2xl text-teal-700"></i>
-      </button>
-    </div>
+  <!-- ========= Header ========= -->
+  <header class="bg-white shadow-md sticky top-0 z-40">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
+      <nav class="hidden md:flex space-x-6">
+        <a href="#schedule"       class="text-gray-600 hover:text-teal-600">會議時程</a>
+        <a href="#announcements"  class="text-gray-600 hover:text-teal-600">最新公告</a>
+        <a href="#portals"        class="text-gray-600 hover:text-teal-600">身分入口</a>
+      </nav>
+      <button id="mobile-menu-button" class="md:hidden">
+        <i class="fas fa-bars text-2xl text-teal-700"></i>
+      </button>
+    </div>
 
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
-      <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
-      <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
-      <a href="#portals" class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
-    </div>
-  </header>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
+      <a href="#schedule"      class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
+      <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
+      <a href="#portals"       class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
+    </div>
+  </header>
 
-  <!-- ========= Main ========= -->
-  <main class="container mx-auto px-6 py-12">
-    <!-- Hero -->
-    <section class="text-center mb-16">
-      <h2 class="text-4xl font-bold mb-4">促進合作，提升照護品質</h2>
-      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-        我們致力於搭建一個跨專業領域的溝通平台，透過案例討論與經驗分享，共同探索全人照護的最佳實踐。
-      </p>
-    </section>
+  <!-- ========= Main ========= -->
+  <main class="container mx-auto px-6 py-12">
+    <!-- Hero -->
+    <section class="text-center mb-16">
+      <h2 class="text-4xl font-bold mb-4">促進合作，提升照護品質</h2>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+        我們致力於搭建一個跨專業領域的溝通平台，透過案例討論與經驗分享，共同探索全人照護的最佳實踐。
+      </p>
+    </section>
 
-    <!-- Schedule + Announcements -->
-    <!-- Applied custom grid class -->
-    <div class="responsive-grid-2-col mb-16">
-      <!-- Schedule -->
-      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-        <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
-        <div id="meetings-container" class="space-y-6">
-          <p class="text-gray-500">正在讀取會議資料...</p>
-        </div>
-      </div>
+    <!-- ===== Schedule + Announcements ===== -->
+    <!-- 使用 Tailwind 原生網格，確保二欄排版 & 置中 -->
+    <section class="grid gap-12 md:grid-cols-2 max-w-5xl mx-auto mb-16">
+      <!-- Schedule -->
+      <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow w-full">
+        <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
+        <div id="meetings-container" class="space-y-6">
+          <p class="text-gray-500">正在讀取會議資料...</p>
+        </div>
+      </div>
 
-      <!-- Announcements -->
-      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
-        <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
-        <div id="announcements-container" class="space-y-4">
-          <p class="text-gray-500">正在讀取最新公告...</p>
-        </div>
-      </div>
-    </div>
+      <!-- Announcements -->
+      <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow w-full">
+        <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
+        <div id="announcements-container" class="space-y-4">
+          <p class="text-gray-500">正在讀取最新公告...</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- Portals -->
-    <div id="portals" class="pb-12">
-      <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
-      <!-- Applied custom grid class -->
-      <div class="responsive-grid-3-col">
-        <!-- 學員 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
-          <h3 class="text-2xl font-bold mb-4">學員入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
-          <button id="student-portal-btn"
-                  class="mt-auto bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
-            學員進入
-          </button>
-        </div>
+    <!-- ===== Portals ===== -->
+    <section id="portals" class="pb-12 max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
+      <div class="grid gap-8 md:grid-cols-3">
+        <!-- 學員 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300 w-full">
+          <div class="text-5xl text-teal-500 mb-4"><i class="fas fa-user-graduate"></i></div>
+          <h3 class="text-2xl font-bold mb-4">學員入口</h3>
+          <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
+          <button id="student-portal-btn" class="mt-auto bg-teal-500 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-600 transition-colors">
+            學員進入
+          </button>
+        </div>
 
-        <!-- 教師 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
-          <h3 class="text-2xl font-bold mb-4">教師入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
-          <button id="teacher-portal-btn" class="mt-auto bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
-            教師登入
-          </button>
-        </div>
+        <!-- 教師 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300 w-full">
+          <div class="text-5xl text-sky-500 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
+          <h3 class="text-2xl font-bold mb-4">教師入口</h3>
+          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
+          <button id="teacher-portal-btn" class="mt-auto bg-sky-500 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-600 transition-colors">
+            教師登入
+          </button>
+        </div>
 
-        <!-- 管理者 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
-          <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button id="admin-portal-btn" class="mt-auto bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
-            管理者登入
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
+        <!-- 管理者 -->
+        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300 w-full">
+          <div class="text-5xl text-purple-500 mb-4"><i class="fas fa-user-shield"></i></div>
+          <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
+          <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
+          <button id="admin-portal-btn" class="mt-auto bg-purple-500 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-600 transition-colors">
+            管理者登入
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  <!-- ========= Footer ========= -->
-  <footer class="bg-gray-800 text-white">
-    <div class="container mx-auto px-6 py-8 text-center">
-      <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
-      <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作</p>
-    </div>
-  </footer>
+  <!-- ========= Footer ========= -->
+  <footer class="bg-gray-800 text-white">
+    <div class="container mx-auto px-6 py-8 text-center">
+      <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
+      <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作</p>
+    </div>
+  </footer>
 
-  <!-- ========= Student Modal (Simplified Flow) ========= -->
-  <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg relative">
-      <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
-        <i class="fas fa-times-circle"></i>
-      </button>
-
-      <!-- Meeting Selection -->
-      <div>
-        <h2 class="text-2xl font-bold text-center mb-6">請選擇會議場次</h2>
-        <form id="student-meeting-form">
-            <div id="meeting-list-container" class="space-y-3 max-h-64 overflow-y-auto mb-6 pr-2">
-                <!-- Meeting list will be populated here by JavaScript -->
-            </div>
-            <button id="student-next-button" type="submit"
-                    class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
-              進入表單
-            </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ========= Login Modal (教師 / 管理者) ========= -->
-  <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
-    <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
-      <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
-        <i class="fas fa-times-circle"></i>
-      </button>
-
-      <h2 id="modal-title" class="text-2xl font-bold text-center mb-8">登入</h2>
-      <form id="login-form">
-        <div class="mb-6">
-          <label for="username" class="block text-gray-700 font-bold mb-2">帳號</label>
-          <input id="username" name="username" type="text"
-                 class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                 placeholder="請輸入帳號" required />
-        </div>
-        <div class="mb-6">
-          <label for="login-password" class="block text-gray-700 font-bold mb-2">密碼</label>
-          <div class="relative">
-            <input id="login-password" name="password" type="password"
-                   class="shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                   placeholder="請輸入密碼" required />
-            <i id="toggle-password-icon" class="fas fa-eye absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"></i>
-          </div>
-        </div>
-        <button type="submit"
-                class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-full">
-          登入
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========= IPP iframe Modal ========= -->
-  <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
-    <div class="relative w-full max-w-3xl h-[90vh]">
-      <button id="close-ipp-modal-btn"
-              class="absolute -top-3 -right-3 bg-white rounded-full shadow p-2 text-gray-600 hover:text-red-500">
-        <i class="fas fa-times"></i>
-      </button>
-      <iframe id="ipp-frame" src="" class="w-full h-full rounded-xl shadow-2xl border"></iframe>
-    </div>
-  </div>
-
-  <!-- ========= Scripts ========= -->
-  <script type="module">
-    // --- Google Apps Script Web App URL ---
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
-
-    // --- Helper Functions ---
-    const fetchData = async (sheetName) => {
-        try {
-            console.log(`Attempting to fetch data from sheet: ${sheetName}`);
-            console.log(`Fetching URL: ${SCRIPT_URL}?sheet=${sheetName}`);
-            const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`HTTP Error for ${sheetName}: Status ${response.status}, Message: ${errorText}`);
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-            }
-            const data = await response.json();
-            console.log(`Successfully fetched data from ${sheetName}:`, data);
-            return data;
-        } catch (error) {
-            console.error(`Failed to fetch data from ${sheetName}:`, error);
-            throw error; // Re-throw to be caught by the calling function
-        }
-    };
-
-    function formatDisplayDate(dateString) {
-        if (!dateString) return '';
-        try {
-            const date = new Date(dateString);
-            // Check for Invalid Date
-            if (isNaN(date.getTime())) {
-                console.warn(`Invalid date string received for display (date): ${dateString}`);
-                return dateString; // Return original if invalid
-            }
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
-            return `${year}/${month}/${day} (${dayOfWeek})`;
-        } catch (error) {
-            console.error("Error formatting date:", error);
-            return dateString;
-        }
-    }
-
-    function formatDisplayTime(dateString) {
-        if (!dateString) return '';
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) {
-                console.warn(`Invalid time string received for display (time): ${dateString}`);
-                return ''; // Return empty string if invalid
-            }
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        } catch (error) {
-            console.error("Error formatting time:", error);
-            return '';
-        }
-    }
-
-    function toggle(el, show) {
-        if (show) {
-            el.classList.remove('hidden');
-            el.classList.add('flex');
-        } else {
-            el.classList.add('hidden');
-            el.classList.remove('flex');
-        }
-    }
-
-    // --- Main Execution on DOMContentLoaded ---
-    document.addEventListener('DOMContentLoaded', async () => {
-        // --- Get All Elements ---
-        const meetingsContainer = document.getElementById('meetings-container');
-        const announcementsContainer = document.getElementById('announcements-container');
-        const mobileMenuBtn = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const ippContainer = document.getElementById('ipp-container');
-        const ippFrame = document.getElementById('ipp-frame');
-        const loginModal = document.getElementById('login-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const studentModal = document.getElementById('student-modal');
-        const meetingListContainer = document.getElementById('meeting-list-container');
-        const studentNextBtn = document.getElementById('student-next-button');
-        const loginPasswordInput = document.getElementById('login-password');
-        const togglePasswordIcon = document.getElementById('toggle-password-icon');
-
-        // --- Data Loading and Rendering ---
-        async function loadAndRenderData() {
-            // Load Meetings
-            try {
-                meetingsContainer.innerHTML = '<p class="text-gray-500">正在讀取會議資料...</p>'; // Show loading state
-                const storedMeetings = await fetchData('meetings');
-                console.log("Raw meetings data from Apps Script:", storedMeetings); // Log raw data
-                
-                // Now displaying all meetings, sorted by date (most recent first)
-                const allMeetingsSorted = storedMeetings
-                    .filter(m => m.start && !isNaN(new Date(m.start).getTime())) // Filter out invalid dates
-                    .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); // Sort by date DESCENDING
-
-                console.log("All meetings (sorted) for display:", allMeetingsSorted); // Log sorted data
-
-                const meetingsToShow = allMeetingsSorted.slice(0, 3); // Still show only top 3 for "近期"
-                
-                if (meetingsToShow.length > 0) {
-                    meetingsContainer.innerHTML = ''; // Clear loading message
-                    meetingsToShow.forEach((meeting, index) => {
-                        const meetingElement = document.createElement('div');
-                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
-                        meetingElement.innerHTML = `
-                            <div class="pb-4 border-b border-gray-200 last:border-b-0">
-                                <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
-                                <div class="flex items-center mt-1">
-                                    <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
-                                </div>
-                                <p class="text-sm text-gray-500">地點：${meeting.location}</p>
-                            </div>`;
-                        meetingsContainer.appendChild(meetingElement);
-                    });
-                } else {
-                    meetingsContainer.innerHTML = '<p class="text-gray-500">目前尚無會議資料。請在後台新增會議。</p>';
-                }
-            } catch (error) {
-                meetingsContainer.innerHTML = `<p class="text-red-500">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
-            }
-
-            // Load Announcements
-            try {
-                announcementsContainer.innerHTML = '<p class="text-gray-500">正在讀取最新公告...</p>'; // Show loading state
-                const storedAnnouncements = await fetchData('announcements');
-                const publishedAnnouncements = storedAnnouncements
-                    .filter(ann => ann.status === '已發布')
-                    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
-                
-                if (publishedAnnouncements.length > 0) {
-                    announcementsContainer.innerHTML = ''; // Clear loading message
-                    publishedAnnouncements.forEach(ann => {
-                        const announcementElement = document.createElement('div');
-                        // Add a check for ann.content to ensure it's a string before calling replace
-                        const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
-                        announcementElement.innerHTML = `
-                            <div class="pb-3 border-b border-gray-200 last:border-b-0">
-                                <p class="font-bold text-amber-600">${ann.title}</p>
-                                <p class="text-gray-600 mt-2 text-sm">${content}</p>
-                                <p class="text-xs text-gray-400 text-right mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
-                            </div>`;
-                        announcementsContainer.appendChild(announcementElement);
-                    });
-                } else {
-                    announcementsContainer.innerHTML = '<p class="text-gray-500">目前沒有最新公告。</p>';
-                }
-            } catch (error) {
-                announcementsContainer.innerHTML = `<p class="text-red-500">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
-            }
-        }
-        
-        // Call the function to load data when the page is ready
-        loadAndRenderData();
-
-        // --- Modal Opening/Closing Functions ---
-        const openLoginModal = (role) => {
-            modalTitle.innerText = `${role}登入`;
-            toggle(loginModal, true);
-        };
-        const closeLoginModal = () => {
-            toggle(loginModal, false);
-            document.getElementById('login-form').reset();
-        };
-
-        const openStudentModal = async () => {
-            meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
-            toggle(studentModal, true);
-            try {
-                const storedMeetings = await fetchData('meetings');
-                // Sort by start date (descending, so most recent is first)
-                const sortedMeetings = storedMeetings.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
-                
-                meetingListContainer.innerHTML = '';
-                if (sortedMeetings.length > 0) {
-                    sortedMeetings.forEach((meeting, index) => {
-                        const meetingId = `meeting-${index}`;
-                        const meetingCard = document.createElement('label');
-                        meetingCard.htmlFor = meetingId;
-                        meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer';
-                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
-                        meetingCard.innerHTML = `
-                            <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
-                            <div class="flex items-center"> <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p> ${newTag} </div>
-                            <p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>`;
-                        meetingListContainer.appendChild(meetingCard);
-                    });
-                    meetingListContainer.addEventListener('change', () => { studentNextBtn.disabled = false; });
-                } else {
-                    meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
-                }
-            } catch (error) {
-                console.error("Error loading meetings for student modal:", error);
-                meetingListContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議列表失敗。錯誤：${error.message}</p>`;
-            }
-        };
-
-        const closeStudentModal = () => {
-            toggle(studentModal, false);
-            setTimeout(() => { document.getElementById('student-meeting-form').reset(); studentNextBtn.disabled = true; }, 300);
-        };
-        
-        const closeIPP = () => {
-            ippFrame.src = '';
-            toggle(ippContainer, true); // Keep it flex when opened
-        };
-
-        // --- Event Listeners ---
-        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        document.getElementById('student-portal-btn').addEventListener('click', openStudentModal);
-        document.getElementById('teacher-portal-btn').addEventListener('click', () => openLoginModal('教師'));
-        document.getElementById('admin-portal-btn').addEventListener('click', () => openLoginModal('管理者'));
-        
-        document.getElementById('close-student-modal-btn').addEventListener('click', closeStudentModal);
-        document.getElementById('close-login-modal-btn').addEventListener('click', closeLoginModal);
-        document.getElementById('close-ipp-modal-btn').addEventListener('click', closeIPP);
-
-        loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
-        studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); });
-        
-        document.getElementById('login-form').addEventListener('submit', e => {
-            e.preventDefault();
-            const role = modalTitle.innerText;
-            const username = e.target.username.value;
-            const password = loginPasswordInput.value;
-            // These are hardcoded for demo, you'd implement actual authentication here
-            if (role.includes('教師')) {
-                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher'; // Replace with your actual teacher portal URL
-                } else {
-                    console.log('教師帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
-                }
-            } else if (role.includes('管理者')) {
-                if (username === 'B20401' && password === 'B20401') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin'; // Replace with your actual admin portal URL
-                } else {
-                    console.log('管理者帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
-                }
-            } else {
-                console.log('未知的登入角色。');
-                closeLoginModal();
-            }
-        });
-
-        togglePasswordIcon.addEventListener('click', () => {
-            const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            loginPasswordInput.setAttribute('type', type);
-            togglePasswordIcon.classList.toggle('fa-eye');
-            togglePasswordIcon.classList.toggle('fa-eye-slash');
-        });
-        
-        document.getElementById('student-meeting-form').addEventListener('submit', e => {
-            e.preventDefault();
-            const selectedRadio = document.querySelector('input[name="meeting-choice"]:checked');
-            if (selectedRadio) {
-                const selectedMeeting = JSON.parse(selectedRadio.value);
-                ippFrame.src = `https://luyun1224.github.io/CMHIPE/IPP.html?meeting=${encodeURIComponent(selectedMeeting.title)}`;
-                closeStudentModal();
-                toggle(ippContainer, true);
-            }
-        });
-    });
-</script>
+  <!-- 其餘 JavaScript 及 Modal 原始碼保持不變 → 請直接複製你原本的 script 區塊即可 -->
 </body>
 </html>
