@@ -71,22 +71,14 @@
     <!-- Applied max-w-7xl to container -->
     <div class="container mx-auto max-w-7xl px-6 py-4 flex justify-between items-center">
       <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
-      <nav class="hidden md:flex space-x-6">
-        <a href="#schedule" class="text-gray-600 hover:text-teal-600">會議時程</a>
-        <a href="#announcements" class="text-gray-600 hover:text-teal-600">最新公告</a>
-        <a href="#portals" class="text-gray-600 hover:text-teal-600">身分入口</a>
-      </nav>
+      <nav class="hidden md:flex space-x-6"></nav>
       <button id="mobile-menu-button" class="md:hidden">
         <i class="fas fa-bars text-2xl text-teal-700"></i>
       </button>
     </div>
 
     <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
-      <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
-      <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
-      <a href="#portals" class="block py-2 text-gray-600 hover:text-teal-600">身分入口</a>
-    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4"></div>
   </header>
 
   <!-- ========= Main ========= -->
@@ -100,9 +92,8 @@
       </p>
     </section>
 
-    <!-- Schedule + Announcements -->
-    <!-- Changed to Tailwind grid classes: grid-cols-1 md:grid-cols-2 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+    <!-- Schedule + Announcements (hidden) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16 hidden">
       <!-- Schedule -->
       <!-- Adjusted min-h- to fit content, removed flex-col to allow content to dictate height -->
       <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
@@ -126,39 +117,15 @@
       </div>
     </div>
 
-    <!-- Portals -->
-    <div id="portals" class="pb-12">
-      <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
-      <!-- Changed to Tailwind grid classes: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 學員 -->
+    <!-- Teacher Login -->
+    <div id="teacher-login" class="pb-12">
+      <h2 class="text-3xl font-bold text-center mb-10">教師登入</h2>
+      <div class="flex justify-center">
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-teal-700 mb-4"><i class="fas fa-user-graduate"></i></div> <!-- Changed to teal-700 -->
-          <h3 class="text-2xl font-bold mb-4">學員入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
-          <button id="student-portal-btn"
-                  class="mt-auto bg-teal-700 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-800 transition-colors"> <!-- Changed to teal-700/800 -->
-            學員進入
-          </button>
-        </div>
-
-        <!-- 教師 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> <!-- Changed to sky-700 -->
-          <h3 class="text-2xl font-bold mb-4">教師入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
-          <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> <!-- Changed to sky-700/800 -->
+          <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div>
+          <p class="text-gray-600 mb-6">請登入以查閱會議資料、管理學員名單。</p>
+          <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors">
             教師登入
-          </button>
-        </div>
-
-        <!-- 管理者 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-purple-900 mb-4"><i class="fas fa-user-shield"></i></div> <!-- Changed to purple-900 for deeper color -->
-          <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button id="admin-portal-btn" class="mt-auto bg-purple-900 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-950 transition-colors"> <!-- Changed to purple-900/950 for deeper color -->
-            管理者登入
           </button>
         </div>
       </div>
@@ -618,9 +585,7 @@
 
         // --- Event Listeners ---
         mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        document.getElementById('student-portal-btn').addEventListener('click', openStudentModal);
         document.getElementById('teacher-portal-btn').addEventListener('click', () => openLoginModal('教師'));
-        document.getElementById('admin-portal-btn').addEventListener('click', () => openLoginModal('管理者'));
         
         document.getElementById('close-student-modal-btn').addEventListener('click', closeStudentModal);
         document.getElementById('close-login-modal-btn').addEventListener('click', closeLoginModal);
@@ -648,22 +613,19 @@
         document.getElementById('login-form').addEventListener('submit', e => {
             e.preventDefault();
             const role = modalTitle.innerText;
-            const username = e.target.username.value;
-            const password = loginPasswordInput.value;
-            // These are hardcoded for demo, you'd implement actual authentication here
+            const username = e.target.username.value.trim();
+            const password = loginPasswordInput.value.trim();
             if (role.includes('教師')) {
-                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher'; // Replace with your actual teacher portal URL
-                } else {
-                    console.log('教師帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
-                }
-            } else if (role.includes('管理者')) {
-                if (username === 'B20401' && password === 'B20401') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin'; // Replace with your actual admin portal URL
-                } else {
-                    console.log('管理者帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
+                try {
+                    const users = await fetchData('users');
+                    const teacher = users.find(u => u.role === '教師' && u.email === username);
+                    if (teacher && password === teacher.email) {
+                        window.location.href = `teacher.html?email=${encodeURIComponent(teacher.email)}`;
+                    } else {
+                        console.log('教師帳號或密碼錯誤。');
+                    }
+                } catch (err) {
+                    console.error('登入失敗', err);
                 }
             } else {
                 console.log('未知的登入角色。');

@@ -499,14 +499,21 @@
         });
         
         // --- App Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            teamCheckboxesContainer.innerHTML = professions.map(p => `
-                <div class="flex items-center">
-                    <input type="checkbox" id="prof-${p}" value="${p}" class="form-input h-4 w-4 text-indigo-600 rounded">
-                    <label for="prof-${p}" class="ml-2 text-sm">${p}</label>
-                </div>`).join('');
-            showPage('login-page');
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            teamCheckboxesContainer.innerHTML = professions.map(p => `
+                <div class="flex items-center">
+                    <input type="checkbox" id="prof-${p}" value="${p}" class="form-input h-4 w-4 text-indigo-600 rounded">
+                    <label for="prof-${p}" class="ml-2 text-sm">${p}</label>
+                </div>`).join('');
+            const params = new URLSearchParams(window.location.search);
+            const emailParam = params.get('email');
+            if (emailParam) {
+                emailInput.value = emailParam;
+                handleLogin();
+            } else {
+                showPage('login-page');
+            }
+        });
     </script>
 </body>
 </html>
