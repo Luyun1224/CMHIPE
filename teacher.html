@@ -181,6 +181,168 @@
                         </fieldset>
                         <fieldset>
                              <legend>潛在可能成為IPE內容 (CC-KAS)</legend>
-                             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                <div class="space-y-4"><h4 class="font-semibold text-center text-gray-600">Core-KAS (核心)</h4>
-                                    <div><label for="core_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="core_knowledge" rows="2" class="form-input w-full px-3
+<div class="space-y-4"><h4 class="font-semibold text-center text-gray-600">Core-KAS (核心)</h4>
+    <div><label for="core_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="core_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+    <div><label for="core_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="core_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+    <div><label for="core_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="core_skill" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+</div>
+<div class="space-y-4"><h4 class="font-semibold text-center text-gray-600">Contextualized-KAS (情境)</h4>
+    <div><label for="contextualized_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="contextualized_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+    <div><label for="contextualized_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="contextualized_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+    <div><label for="contextualized_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="contextualized_skill" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
+</div>
+</div>
+</fieldset>
+<div class="mt-8 text-center">
+    <button id="save-edit-btn" class="btn-primary px-8">儲存</button>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
+        let teacherEmail = '';
+        let currentForm = null;
+
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const editFormPage = document.getElementById('edit-form-page');
+        const emailInput = document.getElementById('email');
+        const teacherEmailDisplay = document.getElementById('teacher-email-display');
+        const sessionList = document.getElementById('session-list');
+        const formSubtitle = document.getElementById('form-subtitle');
+
+        // edit inputs
+        const careNeedsInput = document.getElementById('careNeeds');
+        const goalSettingInput = document.getElementById('goalSetting');
+        const strategyInput = document.getElementById('strategy');
+        const teamInput = document.getElementById('team');
+        const executionInput = document.getElementById('execution');
+        const coreKnowledgeInput = document.getElementById('core_knowledge');
+        const contextualizedKnowledgeInput = document.getElementById('contextualized_knowledge');
+        const coreAttitudeInput = document.getElementById('core_attitude');
+        const contextualizedAttitudeInput = document.getElementById('contextualized_attitude');
+        const coreSkillInput = document.getElementById('core_skill');
+        const contextualizedSkillInput = document.getElementById('contextualized_skill');
+
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const backBtn = document.getElementById('back-to-dashboard-btn');
+        const saveBtn = document.getElementById('save-edit-btn');
+
+        const teacherEmailList = [];
+
+        async function fetchSheet(sheet) {
+            const res = await fetch(`${SCRIPT_URL}?sheet=${sheet}`);
+            if (!res.ok) throw new Error('Network error');
+            return await res.json();
+        }
+
+        async function loadTeacherEmails() {
+            const data = await fetchSheet('ipp');
+            data.forEach(r => {
+                if (r['信箱'] && !teacherEmailList.includes(r['信箱'])) {
+                    teacherEmailList.push(r['信箱']);
+                }
+            });
+        }
+
+        async function loadForms() {
+            const data = await fetchSheet('ipp');
+            const forms = data.filter(r => r['teacher_email'] === teacherEmail || r['信箱'] === teacherEmail);
+            sessionList.innerHTML = '';
+            forms.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'session-item flex justify-between items-center';
+                div.innerHTML = `<span>${f.session_name || ''}</span><button class="edit-btn bg-indigo-600 text-white px-3 py-1 rounded">編輯</button>`;
+                div.querySelector('.edit-btn').addEventListener('click', () => openEditForm(f));
+                sessionList.appendChild(div);
+            });
+        }
+
+        function show(page) {
+            loginPage.classList.add('hidden');
+            dashboardPage.classList.add('hidden');
+            editFormPage.classList.add('hidden');
+            page.classList.remove('hidden');
+        }
+
+        function openEditForm(form) {
+            currentForm = form;
+            formSubtitle.textContent = form.session_name || '';
+            careNeedsInput.value = form.care_needs || '';
+            goalSettingInput.value = form.goal_setting || '';
+            strategyInput.value = form.teamwork_strategy || '';
+            teamInput.value = form.teamwork_details || '';
+            executionInput.value = form.execution || '';
+            coreKnowledgeInput.value = form.core_knowledge || '';
+            contextualizedKnowledgeInput.value = form.contextualized_knowledge || '';
+            coreAttitudeInput.value = form.core_attitude || '';
+            contextualizedAttitudeInput.value = form.contextualized_attitude || '';
+            coreSkillInput.value = form.core_skill || '';
+            contextualizedSkillInput.value = form.contextualized_skill || '';
+            show(editFormPage);
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            teacherEmail = emailInput.value.trim();
+            if (!teacherEmail) return;
+            if (teacherEmailList.length === 0) await loadTeacherEmails();
+            if (teacherEmailList.includes(teacherEmail)) {
+                localStorage.setItem('teacherEmail', teacherEmail);
+                teacherEmailDisplay.textContent = teacherEmail;
+                await loadForms();
+                show(dashboardPage);
+            } else {
+                alert('信箱未找到');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('teacherEmail');
+            location.reload();
+        });
+
+        backBtn.addEventListener('click', () => {
+            show(dashboardPage);
+        });
+
+        saveBtn.addEventListener('click', async () => {
+            if (!currentForm) return;
+            currentForm.care_needs = careNeedsInput.value;
+            currentForm.goal_setting = goalSettingInput.value;
+            currentForm.teamwork_strategy = strategyInput.value;
+            currentForm.teamwork_details = teamInput.value;
+            currentForm.execution = executionInput.value;
+            currentForm.core_knowledge = coreKnowledgeInput.value;
+            currentForm.contextualized_knowledge = contextualizedKnowledgeInput.value;
+            currentForm.core_attitude = coreAttitudeInput.value;
+            currentForm.contextualized_attitude = contextualizedAttitudeInput.value;
+            currentForm.core_skill = coreSkillInput.value;
+            currentForm.contextualized_skill = contextualizedSkillInput.value;
+
+            const formData = new FormData();
+            Object.keys(currentForm).forEach(k => formData.append(k, currentForm[k]));
+            formData.append('action', 'update');
+            await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+            await loadForms();
+            show(dashboardPage);
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const saved = localStorage.getItem('teacherEmail');
+            if (saved) {
+                teacherEmail = saved;
+                emailInput.value = saved;
+                teacherEmailDisplay.textContent = saved;
+                await loadForms();
+                show(dashboardPage);
+            }
+        });
+    </script>
+</body>
+</html>
