@@ -146,7 +146,7 @@
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> <!-- Changed to sky-700 -->
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料、管理學員名單。</p>
+          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料。</p>
           <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> <!-- Changed to sky-700/800 -->
             教師登入
           </button>
@@ -645,29 +645,38 @@
         closeAllAnnouncementsModalBtn.addEventListener('click', () => toggle(allAnnouncementsModal, false));
         allAnnouncementsModal.addEventListener('click', e => { if (e.target === allAnnouncementsModal) toggle(allAnnouncementsModal, false); });
         
-        document.getElementById('login-form').addEventListener('submit', e => {
+        document.getElementById('login-form').addEventListener('submit', async e => {
             e.preventDefault();
             const role = modalTitle.innerText;
-            const username = e.target.username.value;
-            const password = loginPasswordInput.value;
-            // These are hardcoded for demo, you'd implement actual authentication here
+            const username = e.target.username.value.trim();
+            const password = loginPasswordInput.value.trim();
+
             if (role.includes('教師')) {
-                if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
+                // 教師登入：帳號密碼皆為教師信箱
+                if (
+                    teacherEmailList.length === 0
+                ) {
+                    // 若信箱清單尚未載入，重新嘗試載入
+                    await loadTeacherEmails();
+                }
+                if (
+                    teacherEmailList.includes(username) &&
+                    username === password
+                ) {
                     localStorage.setItem('teacherEmail', username);
                     window.location.href = 'teacher.html';
                 } else {
-                    console.log('教師帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
+                    // 顯示錯誤訊息（可自訂 UI，這裡用 alert 示意）
+                    alert('教師帳號或密碼錯誤，請輸入學員填寫的教師信箱（帳號密碼皆為該信箱）');
                 }
             } else if (role.includes('管理者')) {
                 if (username === 'B20401' && password === 'B20401') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin'; // Replace with your actual admin portal URL
+                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
                 } else {
-                    console.log('管理者帳號或密碼錯誤。');
-                    // Implement a custom alert or message display here instead of window.alert
+                    // ...existing code...
                 }
             } else {
-                console.log('未知的登入角色。');
+                // ...existing code...
                 closeLoginModal();
             }
         });
