@@ -240,10 +240,18 @@
         const modalCloseBtn = document.getElementById('modal-close-btn');
         
         // --- App State ---
-        let currentTeacher = null;
-        let currentRowId = null; // 使用行號作為唯一ID
-        let originalFormData = {};
-        const professions = ["西醫", "護理", "藥劑", "營養", "醫檢", "放射", "社工", "職能治療", "物理治療", "語言治療", "臨床心理", "呼吸治療", "其他"];
+        let currentTeacher = null;
+        let currentRowId = null; // 使用索引作為唯一ID
+        let originalFormData = {};
+        const professions = ["西醫", "護理", "藥劑", "營養", "醫檢", "放射", "社工", "職能治療", "物理治療", "語言治療", "臨床心理", "呼吸治療", "其他"];
+
+        function getStoredForms() {
+            return JSON.parse(localStorage.getItem('submittedForms') || '[]');
+        }
+
+        function saveStoredForms(data) {
+            localStorage.setItem('submittedForms', JSON.stringify(data));
+        }
 
         // --- Page Navigation ---
         function showPage(pageId) {
@@ -255,104 +263,81 @@
         }
 
         // --- Login/Logout ---
-        function handleLogin() {
-            const email = emailInput.value.trim(); // 移除首尾空白
-            if (!email || !email.includes('@')) {
-                showModal("請輸入有效的電子信箱。");
-                return;
-            }
+        function handleLogin() {
+            const email = emailInput.value.trim();
+            if (!email || !email.includes('@')) {
+                showModal("請輸入有效的電子信箱。");
+                return;
+            }
 
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>登入中...';
 
-            // 調用 Apps Script 進行驗證
-            google.script.run
-                .withSuccessHandler(isVerified => {
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '登入';
-                    if (isVerified) {
-                        currentTeacher = { email: email };
-                        teacherEmailDisplay.textContent = `登入身分: ${currentTeacher.email}`;
-                        showPage('teacher-dashboard');
-                        fetchMeetings();
-                    } else {
-                        showModal("登入失敗：無效的教師帳號或未授權。");
-                    }
-                })
-                .withFailureHandler(onFailure)
-                .verifyTeacherEmail(email);
-        }
+            setTimeout(() => {
+                currentTeacher = { email };
+                localStorage.setItem('teacherEmail', email);
+                teacherEmailDisplay.textContent = `登入身分: ${currentTeacher.email}`;
+                showPage('teacher-dashboard');
+                fetchMeetings();
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '登入';
+            }, 300);
+        }
 
-        function handleLogout() {
-            currentTeacher = null;
-            showPage('login-page');
-            meetingList.innerHTML = '';
-            emailInput.value = ''; // 清空輸入框
-        }
+        function handleLogout() {
+            currentTeacher = null;
+            localStorage.removeItem('teacherEmail');
+            showPage('login-page');
+            meetingList.innerHTML = '';
+            emailInput.value = '';
+        }
 
         // --- Data Fetching & Rendering ---
-        function fetchMeetings() {
-            if (!currentTeacher) return;
-            meetingList.innerHTML = `<div class="text-center py-8"><div class="loader inline-block"></div><p class="mt-4 text-gray-500">正在載入會議資料...</p></div>`;
+        function fetchMeetings() {
+            if (!currentTeacher) return;
+            const forms = getStoredForms();
+            renderMeetingList(forms);
+        }
 
-            // 使用 google.script.run 呼叫後端函式
-            google.script.run
-                .withSuccessHandler(renderMeetingList)
-                .withFailureHandler(onFailure)
-                .getFormsForTeacher(currentTeacher.email);
-        }
+        function renderMeetingList(meetings) {
+            meetingList.innerHTML = "";
+            if (!meetings || meetings.length === 0) {
+                meetingList.innerHTML = `<div class="text-center py-6 bg-gray-50 rounded-lg"><p class="text-gray-500">目前沒有需要您審核的表單。</p></div>`;
+                return;
+            }
+            meetings.forEach((meeting, idx) => {
+                const studentName = meeting.participant_name || meeting.name || `學員${idx + 1}`;
+                const formattedDate = meeting.discussion_date || meeting.date || "";
+                const status = meeting.status || "待審核";
 
-        function renderMeetingList(meetings) {
-            meetingList.innerHTML = '';
-            if (!meetings || meetings.length === 0) {
-                meetingList.innerHTML = `<div class="text-center py-6 bg-gray-50 rounded-lg"><p class="text-gray-500">目前沒有需要您審核的表單。</p></div>`;
-                return;
-            }
-            meetings.forEach(meeting => {
-                // Apps Script 傳回的日期是 ISO 字串，需要轉換
-                const meetingDate = new Date(meeting.meetingDate);
-                const formattedDate = meetingDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
-                const formattedTime = meetingDate.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+                let statusHtml = "";
+                let actionButton = "";
 
-                let statusHtml = '';
-                let actionButton = '';
+                if (status === "待審核") {
+                    statusHtml = `<span class="px-3 py-1 text-sm font-medium text-yellow-800 bg-yellow-100 rounded-full">待老師審核</span>`;
+                    actionButton = `<button class="btn-secondary review-btn" data-row-id="${idx}" data-student-name="${studentName}">審核表單</button>`;
+                } else {
+                    statusHtml = `<span class="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">已審核</span>`;
+                    actionButton = `<button class="bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed" disabled>已送出</button>`;
+                }
 
-                switch(meeting.status) {
-                    case '待審核':
-                        statusHtml = `<span class="px-3 py-1 text-sm font-medium text-yellow-800 bg-yellow-100 rounded-full">待老師審核</span>`;
-                        actionButton = `<button class="btn-secondary review-btn" data-row-id="${meeting.id}" data-student-name="${meeting.studentName}">審核表單</button>`;
-                        break;
-                    case '已審核':
-                        statusHtml = `<span class="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">已審核</span>`;
-                        actionButton = `<button class="bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed" disabled>已送出</button>`;
-                        break;
-                }
+                meetingList.innerHTML += `<div class="card flex flex-col md:flex-row items-start md:items-center justify-between p-5 space-y-3 md:space-y-0"><div class="flex-grow"><p class="font-bold text-lg">${studentName} - IPP 會議</p><p class="text-gray-500 text-sm">${formattedDate}</p></div><div class="flex items-center space-x-4">${statusHtml}${actionButton}</div></div>`;
+            });
+        }
 
-                meetingList.innerHTML += `
-                    <div class="card flex flex-col md:flex-row items-start md:items-center justify-between p-5 space-y-3 md:space-y-0">
-                        <div class="flex-grow">
-                            <p class="font-bold text-lg">${meeting.studentName} - IPP 會議</p>
-                            <p class="text-gray-500 text-sm"><i class="far fa-calendar-alt mr-2"></i>${formattedDate} ${formattedTime}</p>
-                        </div>
-                        <div class="flex items-center space-x-4">${statusHtml}${actionButton}</div>
-                    </div>`;
-            });
-        }
 
-        function showEditForm(rowId, studentName) {
-            currentRowId = rowId;
+        function showEditForm(rowId, studentName) {
+            currentRowId = rowId;
 
-            showPage('edit-form-page');
-            formContent.classList.add('hidden');
-            formLoader.classList.remove('hidden');
-            formSubtitle.textContent = `學員: ${studentName} | 審核老師: ${currentTeacher.email}`;
+            showPage('edit-form-page');
+            formContent.classList.add('hidden');
+            formLoader.classList.remove('hidden');
+            formSubtitle.textContent = `學員: ${studentName} | 審核老師: ${currentTeacher.email}`;
 
-            // 使用 google.script.run 呼叫後端函式
-            google.script.run
-                .withSuccessHandler(renderFormFieldsAndDiff)
-                .withFailureHandler(onFailure)
-                .getFormDataByRowId(currentRowId);
-        }
+            const forms = getStoredForms();
+            const data = forms[rowId];
+            renderFormFieldsAndDiff(data);
+        }
 
         function renderFormFieldsAndDiff(data) {
             if (!data) {
@@ -442,30 +427,24 @@
             return data;
         }
         
-        function submitForm() {
-            if (!currentRowId) return;
-            submitFormBtn.disabled = true;
-            submitFormBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>送出中...';
-            
-            const updatedData = getCurrentFormData();
+        function submitForm() {
+            if (currentRowId === null) return;
+            submitFormBtn.disabled = true;
+            submitFormBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>送出中...';
 
-            // 使用 google.script.run 呼叫後端函式
-            google.script.run
-                .withSuccessHandler(onSubmissionSuccess)
-                .withFailureHandler(onFailure)
-                .updateFormAndLogHistory(currentRowId, updatedData, currentTeacher.email);
-        }
+            const updatedData = getCurrentFormData();
+            const forms = getStoredForms();
+            forms[currentRowId] = { ...forms[currentRowId], ...updatedData, status: '已審核' };
+            saveStoredForms(forms);
+            onSubmissionSuccess({ success: true, message: '表單已更新' });
+        }
         
-        function onSubmissionSuccess(response) {
-            if (response.success) {
-                showModal(response.message);
-                goBackToDashboard();
-            } else {
-                onFailure(response.message);
-            }
-            submitFormBtn.disabled = false;
-            submitFormBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>送出給管理者';
-        }
+        function onSubmissionSuccess(response) {
+            showModal(response.message || '表單已更新');
+            submitFormBtn.disabled = false;
+            submitFormBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>送出給管理者';
+            goBackToDashboard();
+        }
 
         function onFailure(error) {
             console.error("發生錯誤:", error);
@@ -499,14 +478,22 @@
         });
         
         // --- App Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            teamCheckboxesContainer.innerHTML = professions.map(p => `
-                <div class="flex items-center">
-                    <input type="checkbox" id="prof-${p}" value="${p}" class="form-input h-4 w-4 text-indigo-600 rounded">
-                    <label for="prof-${p}" class="ml-2 text-sm">${p}</label>
-                </div>`).join('');
-            showPage('login-page');
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            teamCheckboxesContainer.innerHTML = professions.map(p => `
+                <div class="flex items-center">
+                    <input type="checkbox" id="prof-${p}" value="${p}" class="form-input h-4 w-4 text-indigo-600 rounded">
+                    <label for="prof-${p}" class="ml-2 text-sm">${p}</label>
+                </div>`).join('');
+            const savedEmail = localStorage.getItem('teacherEmail');
+            if (savedEmail) {
+                currentTeacher = { email: savedEmail };
+                teacherEmailDisplay.textContent = `登入身分: ${savedEmail}`;
+                showPage('teacher-dashboard');
+                fetchMeetings();
+            } else {
+                showPage('login-page');
+            }
+        });
     </script>
 </body>
 </html>
