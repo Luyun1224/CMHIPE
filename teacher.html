@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPP 系統 - 老師審核</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
     <style>
         body {
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
@@ -17,6 +16,7 @@
             background-color: white;
             border-radius: 1rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
         }
         .btn-primary {
             background-color: #4f46e5;
@@ -33,20 +33,6 @@
             background-color: #a5b4fc;
             cursor: not-allowed;
         }
-        .diff-container del {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            text-decoration: line-through;
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-        .diff-container ins {
-            background-color: #dcfce7;
-            color: #166534;
-            text-decoration: none;
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #4f46e5;
@@ -58,26 +44,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
         }
         fieldset {
             border: 1px solid #e5e7eb;
@@ -93,14 +59,16 @@
         }
         .session-item {
             cursor: pointer;
-            padding: 0.75rem 1rem;
+            padding: 1rem 1.25rem;
             border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             transition: all 0.2s ease-in-out;
         }
         .session-item:hover {
             background-color: #f3f4f6;
             border-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
     </style>
 </head>
@@ -108,106 +76,63 @@
     
     <div id="app" class="min-h-screen flex flex-col items-center justify-center p-4">
         
-        <!-- Login Page -->
         <div id="login-page" class="w-full max-w-md">
             <div class="card p-8">
                 <div class="text-center mb-8">
-                    <i class="fas fa-chalkboard-teacher text-5xl text-blue-500"></i>
+                    <i class="fas fa-chalkboard-teacher text-5xl text-indigo-500"></i>
                     <h1 class="text-3xl font-bold mt-4">老師入口</h1>
-                    <p class="text-gray-500 mt-2">請使用您的電子信箱登入</p>
+                    <p class="text-gray-500 mt-2">請使用您被授權的電子信箱登入</p>
                 </div>
                 <div class="space-y-6">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">電子信箱</label>
                         <input type="email" id="email" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
-                    <button id="login-btn" class="w-full btn-primary">登入</button>
+                    <button id="login-btn" class="w-full btn-primary flex items-center justify-center">
+                        <span id="login-btn-text">登入</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Dashboard Page -->
-        <div id="dashboard-page" class="hidden w-full max-w-6xl">
+        <div id="dashboard-page" class="hidden w-full max-w-4xl">
             <div class="card p-8">
-                 <div class="flex justify-between items-center mb-6">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                         <h1 class="text-3xl font-bold">待審核 IPP 表單</h1>
-                         <p class="text-gray-500 mt-2" id="teacher-email-display"></p>
+                        <h1 class="text-3xl font-bold">待審核 IPP 表單</h1>
+                        <p class="text-gray-500 mt-2" id="teacher-email-display"></p>
                     </div>
-                     <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors">
+                    <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors">
                         <i class="fas fa-sign-out-alt mr-2"></i>登出
                     </button>
                 </div>
                 <div id="session-list" class="space-y-3">
-                     <!-- Sessions will be loaded here -->
-                </div>
+                    </div>
             </div>
         </div>
 
-
-        <!-- Edit Form Page -->
         <div id="edit-form-page" class="hidden w-full max-w-6xl">
             <div class="card p-8">
-                 <div class="flex justify-between items-center mb-6">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                         <h1 class="text-3xl font-bold">審核 IPP 表單</h1>
-                         <p class="text-gray-500 mt-2" id="form-subtitle"></p>
+                        <h1 class="text-3xl font-bold">審核 IPP 表單</h1>
+                        <p class="text-gray-500 mt-2" id="form-subtitle"></p>
                     </div>
-                     <button id="back-to-dashboard-btn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                    <button id="back-to-dashboard-btn" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
                         <i class="fas fa-arrow-left mr-2"></i>返回列表
                     </button>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Left Panel: Form Inputs -->
-                    <div id="form-inputs-container" class="space-y-6">
-                        <h2 class="text-2xl font-bold border-b pb-3">表單內容 (可修改)</h2>
-                        <div>
-                            <label for="careNeeds" class="block text-lg font-semibold text-gray-800 mb-2">照護需求 (Sense)</label>
-                            <textarea id="careNeeds" rows="4" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"></textarea>
-                        </div>
-                        <fieldset><legend>參與職類 (Team)</legend><div id="team-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div></fieldset>
-                        <div>
-                            <label for="goalSetting" class="block text-lg font-semibold text-gray-800 mb-2">目標設定 (Patient-centered)</label>
-                            <textarea id="goalSetting" rows="4" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"></textarea>
-                        </div>
-                        <fieldset>
-                            <legend>團隊合作 (IPP Team work重點)</legend>
-                            <div class="space-y-4">
-                                <div><label for="strategy" class="block text-md font-medium text-gray-700 mb-1">具體策略</label><textarea id="strategy" rows="3" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-                                <div><label for="team" class="block text-md font-medium text-gray-700 mb-1">團隊</label><textarea id="team" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-                                <div><label for="execution" class="block text-md font-medium text-gray-700 mb-1">執行細節</label><textarea id="execution" rows="3" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                             <legend>潛在可能成為IPE內容 (CC-KAS)</legend>
-<div class="space-y-4"><h4 class="font-semibold text-center text-gray-600">Core-KAS (核心)</h4>
-    <div><label for="core_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="core_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-    <div><label for="core_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="core_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-    <div><label for="core_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="core_skill" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-</div>
-<div class="space-y-4"><h4 class="font-semibold text-center text-gray-600">Contextualized-KAS (情境)</h4>
-    <div><label for="contextualized_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="contextualized_knowledge" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-    <div><label for="contextualized_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="contextualized_attitude" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-    <div><label for="contextualized_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="contextualized_skill" rows="2" class="form-input w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea></div>
-</div>
-</div>
-</fieldset>
-<div class="mt-8 text-center">
-    <button id="save-edit-btn" class="btn-primary px-8">儲存</button>
-</div>
-                    </div>
-                </div>
+                <div id="form-container"></div>
             </div>
         </div>
-
     </div>
 
     <script type="module">
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
         let teacherEmail = '';
-        let currentForm = null;
 
+        // DOM Elements
         const loginPage = document.getElementById('login-page');
         const dashboardPage = document.getElementById('dashboard-page');
         const editFormPage = document.getElementById('edit-form-page');
@@ -215,55 +140,13 @@
         const teacherEmailDisplay = document.getElementById('teacher-email-display');
         const sessionList = document.getElementById('session-list');
         const formSubtitle = document.getElementById('form-subtitle');
-
-        // edit inputs
-        const careNeedsInput = document.getElementById('careNeeds');
-        const goalSettingInput = document.getElementById('goalSetting');
-        const strategyInput = document.getElementById('strategy');
-        const teamInput = document.getElementById('team');
-        const executionInput = document.getElementById('execution');
-        const coreKnowledgeInput = document.getElementById('core_knowledge');
-        const contextualizedKnowledgeInput = document.getElementById('contextualized_knowledge');
-        const coreAttitudeInput = document.getElementById('core_attitude');
-        const contextualizedAttitudeInput = document.getElementById('contextualized_attitude');
-        const coreSkillInput = document.getElementById('core_skill');
-        const contextualizedSkillInput = document.getElementById('contextualized_skill');
-
+        const formContainer = document.getElementById('form-container');
         const loginBtn = document.getElementById('login-btn');
+        const loginBtnText = document.getElementById('login-btn-text');
         const logoutBtn = document.getElementById('logout-btn');
         const backBtn = document.getElementById('back-to-dashboard-btn');
-        const saveBtn = document.getElementById('save-edit-btn');
-
-        const teacherEmailList = [];
-
-        async function fetchSheet(sheet) {
-            const res = await fetch(`${SCRIPT_URL}?sheet=${sheet}`);
-            if (!res.ok) throw new Error('Network error');
-            return await res.json();
-        }
-
-        async function loadTeacherEmails() {
-            const data = await fetchSheet('ipp');
-            data.forEach(r => {
-                if (r['信箱'] && !teacherEmailList.includes(r['信箱'])) {
-                    teacherEmailList.push(r['信箱']);
-                }
-            });
-        }
-
-        async function loadForms() {
-            const data = await fetchSheet('ipp');
-            const forms = data.filter(r => r['teacher_email'] === teacherEmail || r['信箱'] === teacherEmail);
-            sessionList.innerHTML = '';
-            forms.forEach(f => {
-                const div = document.createElement('div');
-                div.className = 'session-item flex justify-between items-center';
-                div.innerHTML = `<span>${f.session_name || ''}</span><button class="edit-btn bg-indigo-600 text-white px-3 py-1 rounded">編輯</button>`;
-                div.querySelector('.edit-btn').addEventListener('click', () => openEditForm(f));
-                sessionList.appendChild(div);
-            });
-        }
-
+        
+        // --- UTILITY FUNCTIONS ---
         function show(page) {
             loginPage.classList.add('hidden');
             dashboardPage.classList.add('hidden');
@@ -271,39 +154,244 @@
             page.classList.remove('hidden');
         }
 
-        function openEditForm(form) {
-            currentForm = form;
-            formSubtitle.textContent = form.session_name || '';
-            careNeedsInput.value = form.care_needs || '';
-            goalSettingInput.value = form.goal_setting || '';
-            strategyInput.value = form.teamwork_strategy || '';
-            teamInput.value = form.teamwork_details || '';
-            executionInput.value = form.execution || '';
-            coreKnowledgeInput.value = form.core_knowledge || '';
-            contextualizedKnowledgeInput.value = form.contextualized_knowledge || '';
-            coreAttitudeInput.value = form.core_attitude || '';
-            contextualizedAttitudeInput.value = form.contextualized_attitude || '';
-            coreSkillInput.value = form.core_skill || '';
-            contextualizedSkillInput.value = form.contextualized_skill || '';
-            show(editFormPage);
+        function showLoader(button, text) {
+            button.disabled = true;
+            text.innerHTML = `<div class="loader w-6 h-6 border-2 mx-auto"></div>`;
         }
 
-        loginBtn.addEventListener('click', async () => {
-            teacherEmail = emailInput.value.trim();
-            if (!teacherEmail) return;
-            if (teacherEmailList.length === 0) await loadTeacherEmails();
-            if (teacherEmailList.includes(teacherEmail)) {
-                localStorage.setItem('teacherEmail', teacherEmail);
-                teacherEmailDisplay.textContent = teacherEmail;
-                await loadForms();
-                show(dashboardPage);
-            } else {
-                alert('信箱未找到');
-            }
-        });
+        function hideLoader(button, originalText) {
+            button.disabled = false;
+            text.innerHTML = originalText;
+        }
 
+        // --- CORE LOGIC FUNCTIONS ---
+
+        /**
+         * 1. LOGIN: Verify teacher email against the backend
+         */
+        async function handleLogin() {
+            teacherEmail = emailInput.value.trim();
+            if (!teacherEmail) {
+                alert('請輸入電子信箱');
+                return;
+            }
+
+            showLoader(loginBtn, loginBtnText);
+
+            try {
+                const url = `${SCRIPT_URL}?action=verifyTeacher&email=${encodeURIComponent(teacherEmail)}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+                const result = await response.json();
+
+                if (result.isVerified) {
+                    localStorage.setItem('teacherEmail', teacherEmail);
+                    teacherEmailDisplay.textContent = `歡迎，${teacherEmail}`;
+                    await loadFormsForTeacher(teacherEmail);
+                    show(dashboardPage);
+                } else {
+                    alert('登入失敗，請確認您的信箱是否正確，或您是否具有教師權限。');
+                }
+            } catch (error) {
+                console.error('Login Error:', error);
+                alert('登入過程中發生錯誤，請稍後再試。');
+            } finally {
+                hideLoader(loginBtn, '登入');
+            }
+        }
+        
+        /**
+         * 2. DASHBOARD: Load forms assigned to the logged-in teacher
+         */
+        async function loadFormsForTeacher(email) {
+            sessionList.innerHTML = `<div class="flex justify-center p-4"><div class="loader"></div></div>`;
+            try {
+                const url = `${SCRIPT_URL}?action=getFormsForTeacher&email=${encodeURIComponent(email)}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch forms');
+                const forms = await response.json();
+
+                sessionList.innerHTML = '';
+                if (forms.length === 0) {
+                    sessionList.innerHTML = '<div class="text-center p-4 text-gray-500">目前沒有待您審核的表單。</div>';
+                    return;
+                }
+
+                forms.forEach(form => {
+                    const div = document.createElement('div');
+                    div.className = 'session-item';
+                    div.setAttribute('data-id', form.id);
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-lg text-indigo-700">${form.session_name || '未命名會談'}</h3>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    <i class="fas fa-user mr-2"></i>學員: ${form.participant_name || 'N/A'}
+                                </p>
+                            </div>
+                            <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-edit mr-2"></i>審核
+                            </button>
+                        </div>
+                    `;
+                    div.addEventListener('click', () => openEditForm(form.id));
+                    sessionList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Load Forms Error:', error);
+                sessionList.innerHTML = '<div class="text-center p-4 text-red-500">載入表單失敗，請重新整理頁面。</div>';
+            }
+        }
+
+        /**
+         * 3. EDIT: Open a single form by its rowId and populate the fields
+         */
+        async function openEditForm(rowId) {
+            show(editFormPage);
+            formContainer.innerHTML = `<div class="flex justify-center p-8"><div class="loader"></div></div>`;
+
+            try {
+                const url = `${SCRIPT_URL}?action=getFormDataByRowId&rowId=${rowId}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch form data');
+                const formData = await response.json();
+                
+                formSubtitle.textContent = `學員: ${formData.participant_name || 'N/A'} | 日期: ${new Date(formData.discussion_date).toLocaleDateString()}`;
+
+                // All possible professions for the checkboxes. 
+                // This should ideally be fetched from a central list, but hardcoding based on your script for now.
+                const allProfessions = [
+                    '醫師', '牙醫師', '護理師', '藥師', '醫檢師', '物理治療師', '職能治療師', '呼吸治療師', 
+                    '醫事放射師', '營養師', '臨床心理師', '諮商心理師', '社工師', '語言治療師', '聽力師'
+                ];
+                
+                formContainer.innerHTML = `
+                    <div class="space-y-6">
+                         <div>
+                            <label for="careNeeds" class="block text-lg font-semibold text-gray-800 mb-2">照護需求 (Sense)</label>
+                            <textarea id="careNeeds" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm">${formData.care_needs || ''}</textarea>
+                        </div>
+                        <fieldset>
+                            <legend>參與職類 (Team)</legend>
+                            <div id="professions-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                ${allProfessions.map(p => `
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" name="professions" value="${p}" class="rounded text-indigo-600 focus:ring-indigo-500"
+                                            ${formData.professions.includes(p) ? 'checked' : ''}>
+                                        <span>${p}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </fieldset>
+                        <div>
+                            <label for="goalSetting" class="block text-lg font-semibold text-gray-800 mb-2">目標設定 (Patient-centered)</label>
+                            <textarea id="goalSetting" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm">${formData.goal_setting || ''}</textarea>
+                        </div>
+                        <fieldset>
+                            <legend>團隊合作 (IPP Team work重點)</legend>
+                            <div class="space-y-4">
+                                <div><label for="teamwork_strategy" class="block text-md font-medium text-gray-700 mb-1">具體策略</label><textarea id="teamwork_strategy" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.teamwork_strategy || ''}</textarea></div>
+                                <div><label for="teamwork_details" class="block text-md font-medium text-gray-700 mb-1">團隊/執行細節</label><textarea id="teamwork_details" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.teamwork_details || ''}</textarea></div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>潛在可能成為IPE內容 (CC-KAS)</legend>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-center text-gray-600">Core-KAS (核心)</h4>
+                                    <div><label for="core_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="core_knowledge" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.core_knowledge || ''}</textarea></div>
+                                    <div><label for="core_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="core_attitude" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.core_attitude || ''}</textarea></div>
+                                    <div><label for="core_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="core_skill" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.core_skill || ''}</textarea></div>
+                                </div>
+                                <div class="space-y-4">
+                                    <h4 class="font-semibold text-center text-gray-600">Contextualized-KAS (情境)</h4>
+                                    <div><label for="contextualized_knowledge" class="block text-md font-medium text-gray-700 mb-1">知識</label><textarea id="contextualized_knowledge" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.contextualized_knowledge || ''}</textarea></div>
+                                    <div><label for="contextualized_attitude" class="block text-md font-medium text-gray-700 mb-1">態度</label><textarea id="contextualized_attitude" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.contextualized_attitude || ''}</textarea></div>
+                                    <div><label for="contextualized_skill" class="block text-md font-medium text-gray-700 mb-1">技能</label><textarea id="contextualized_skill" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${formData.contextualized_skill || ''}</textarea></div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="mt-8 text-center">
+                            <button id="save-edit-btn" data-row-id="${rowId}" class="btn-primary px-8 flex items-center justify-center min-w-[120px]">
+                                <span id="save-btn-text">儲存並送出</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Attach event listener to the newly created save button
+                document.getElementById('save-edit-btn').addEventListener('click', handleSave);
+
+            } catch (error) {
+                console.error('Open Edit Form Error:', error);
+                formContainer.innerHTML = '<div class="text-center p-4 text-red-500">無法載入表單資料，請返回列表再試一次。</div>';
+            }
+        }
+        
+        /**
+         * 4. SAVE: Collect data from the form and send it to the backend for update
+         */
+        async function handleSave(event) {
+            const saveBtn = event.currentTarget;
+            const saveBtnText = document.getElementById('save-btn-text'); // Assume the span exists
+            const rowId = saveBtn.dataset.rowId;
+
+            const updatedData = {
+                care_needs: document.getElementById('careNeeds').value,
+                professions: Array.from(document.querySelectorAll('input[name="professions"]:checked')).map(el => el.value),
+                goal_setting: document.getElementById('goalSetting').value,
+                teamwork_strategy: document.getElementById('teamwork_strategy').value,
+                teamwork_details: document.getElementById('teamwork_details').value,
+                core_knowledge: document.getElementById('core_knowledge').value,
+                core_attitude: document.getElementById('core_attitude').value,
+                core_skill: document.getElementById('core_skill').value,
+                contextualized_knowledge: document.getElementById('contextualized_knowledge').value,
+                contextualized_attitude: document.getElementById('contextualized_attitude').value,
+                contextualized_skill: document.getElementById('contextualized_skill').value,
+            };
+
+            showLoader(saveBtn, saveBtnText);
+            
+            try {
+                // Apps Script doPost works well with URLSearchParams for simple key-value data
+                const body = new URLSearchParams();
+                body.append('action', 'updateFormAndLogHistory');
+                body.append('rowId', rowId);
+                body.append('editorEmail', teacherEmail);
+                body.append('updatedData', JSON.stringify(updatedData));
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: body,
+                });
+                if (!response.ok) throw new Error('Failed to save data');
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('表單已成功更新！');
+                    await loadFormsForTeacher(teacherEmail);
+                    show(dashboardPage);
+                } else {
+                    alert(`儲存失敗：${result.message}`);
+                }
+            } catch (error) {
+                console.error('Save Error:', error);
+                alert('儲存時發生錯誤，請稍後再試。');
+            } finally {
+                hideLoader(saveBtn, '儲存並送出');
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        loginBtn.addEventListener('click', handleLogin);
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+        
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('teacherEmail');
+            teacherEmail = '';
+            emailInput.value = '';
             location.reload();
         });
 
@@ -311,35 +399,13 @@
             show(dashboardPage);
         });
 
-        saveBtn.addEventListener('click', async () => {
-            if (!currentForm) return;
-            currentForm.care_needs = careNeedsInput.value;
-            currentForm.goal_setting = goalSettingInput.value;
-            currentForm.teamwork_strategy = strategyInput.value;
-            currentForm.teamwork_details = teamInput.value;
-            currentForm.execution = executionInput.value;
-            currentForm.core_knowledge = coreKnowledgeInput.value;
-            currentForm.contextualized_knowledge = contextualizedKnowledgeInput.value;
-            currentForm.core_attitude = coreAttitudeInput.value;
-            currentForm.contextualized_attitude = contextualizedAttitudeInput.value;
-            currentForm.core_skill = coreSkillInput.value;
-            currentForm.contextualized_skill = contextualizedSkillInput.value;
-
-            const formData = new FormData();
-            Object.keys(currentForm).forEach(k => formData.append(k, currentForm[k]));
-            formData.append('action', 'update');
-            await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-            await loadForms();
-            show(dashboardPage);
-        });
-
+        // Check for saved login on page load
         document.addEventListener('DOMContentLoaded', async () => {
-            const saved = localStorage.getItem('teacherEmail');
-            if (saved) {
-                teacherEmail = saved;
-                emailInput.value = saved;
-                teacherEmailDisplay.textContent = saved;
-                await loadForms();
+            const savedEmail = localStorage.getItem('teacherEmail');
+            if (savedEmail) {
+                teacherEmail = savedEmail;
+                teacherEmailDisplay.textContent = `歡迎，${savedEmail}`;
+                await loadFormsForTeacher(savedEmail);
                 show(dashboardPage);
             }
         });
