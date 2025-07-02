@@ -146,9 +146,9 @@
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
           <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> <!-- Changed to sky-700 -->
           <h3 class="text-2xl font-bold mb-4">教師入口</h3>
-          <p class="text-gray-600 mb-6 flex-grow">請登入以查閱會議資料。</p>
+          <p class="text-gray-600 mb-6 flex-grow">直接進入以查閱會議資料。</p>
           <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> <!-- Changed to sky-700/800 -->
-            教師登入
+            教師進入
           </button>
         </div>
 
@@ -619,7 +619,9 @@
         // --- Event Listeners ---
         mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         document.getElementById('student-portal-btn').addEventListener('click', openStudentModal);
-        document.getElementById('teacher-portal-btn').addEventListener('click', () => openLoginModal('教師'));
+        document.getElementById('teacher-portal-btn').addEventListener('click', () => {
+            window.location.href = 'teacher.html';
+        });
         document.getElementById('admin-portal-btn').addEventListener('click', () => openLoginModal('管理者'));
         
         document.getElementById('close-student-modal-btn').addEventListener('click', closeStudentModal);
