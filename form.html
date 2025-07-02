@@ -411,6 +411,24 @@
                 })
                 .then(data => {
                     console.log('Submission successful:', data);
+                    // Save submitted data to localStorage for teacher review
+                    const submitted = {};
+                    finalFormData.forEach((value, key) => {
+                        if (submitted[key]) {
+                            if (Array.isArray(submitted[key])) {
+                                submitted[key].push(value);
+                            } else {
+                                submitted[key] = [submitted[key], value];
+                            }
+                        } else {
+                            submitted[key] = value;
+                        }
+                    });
+                    submitted.status = '待審核';
+                    const all = JSON.parse(localStorage.getItem('submittedForms') || '[]');
+                    all.push(submitted);
+                    localStorage.setItem('submittedForms', JSON.stringify(all));
+
                     localStorage.removeItem(storageKey_ipp);
                     clearDraft();
                     successMessage.classList.remove('hidden'); // Show success modal

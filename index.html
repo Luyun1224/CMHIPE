@@ -653,7 +653,8 @@
             // These are hardcoded for demo, you'd implement actual authentication here
             if (role.includes('教師')) {
                 if (username === 'admin@gmail.com' && password === 'admin@gmail.com') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/teacher'; // Replace with your actual teacher portal URL
+                    localStorage.setItem('teacherEmail', username);
+                    window.location.href = 'teacher.html';
                 } else {
                     console.log('教師帳號或密碼錯誤。');
                     // Implement a custom alert or message display here instead of window.alert
