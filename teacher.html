@@ -241,16 +241,26 @@
         
         // --- App State ---
         let currentTeacher = null;
-        let currentRowId = null; // 使用索引作為唯一ID
+        let currentRowId = null; // Google Sheets row ID
+        let editingIndex = null; // index in local array
         let originalFormData = {};
+        let formsData = [];
         const professions = ["西醫", "護理", "藥劑", "營養", "醫檢", "放射", "社工", "職能治療", "物理治療", "語言治療", "臨床心理", "呼吸治療", "其他"];
 
-        function getStoredForms() {
-            return JSON.parse(localStorage.getItem('submittedForms') || '[]');
-        }
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZfGne5drRfNiM8aBei2v4wp4_da93tz3zzneq59SfNB_WHfllLxC4CLW2G4MYHrLQSQ/exec';
 
-        function saveStoredForms(data) {
-            localStorage.setItem('submittedForms', JSON.stringify(data));
+        async function fetchFormsFromSheet() {
+            if (!currentTeacher) return [];
+            try {
+                const resp = await fetch(`${SCRIPT_URL}?sheet=submissions&teacher=${encodeURIComponent(currentTeacher.email)}`);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+                formsData = data;
+                return data;
+            } catch (err) {
+                onFailure(err);
+                return [];
+            }
         }
 
         // --- Page Navigation ---
@@ -293,9 +303,9 @@
         }
 
         // --- Data Fetching & Rendering ---
-        function fetchMeetings() {
+        async function fetchMeetings() {
             if (!currentTeacher) return;
-            const forms = getStoredForms();
+            const forms = await fetchFormsFromSheet();
             renderMeetingList(forms);
         }
 
@@ -327,15 +337,15 @@
 
 
         function showEditForm(rowId, studentName) {
-            currentRowId = rowId;
+            editingIndex = rowId;
+            currentRowId = formsData[rowId]?.id || null;
 
             showPage('edit-form-page');
             formContent.classList.add('hidden');
             formLoader.classList.remove('hidden');
             formSubtitle.textContent = `學員: ${studentName} | 審核老師: ${currentTeacher.email}`;
 
-            const forms = getStoredForms();
-            const data = forms[rowId];
+            const data = formsData[rowId];
             renderFormFieldsAndDiff(data);
         }
 
@@ -427,16 +437,26 @@
             return data;
         }
         
-        function submitForm() {
+        async function submitForm() {
             if (currentRowId === null) return;
             submitFormBtn.disabled = true;
             submitFormBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>送出中...';
 
             const updatedData = getCurrentFormData();
-            const forms = getStoredForms();
-            forms[currentRowId] = { ...forms[currentRowId], ...updatedData, status: '已審核' };
-            saveStoredForms(forms);
-            onSubmissionSuccess({ success: true, message: '表單已更新' });
+            try {
+                const payload = { id: currentRowId, teacher_email: currentTeacher.email, ...updatedData };
+                const resp = await fetch(`${SCRIPT_URL}?action=update&sheet=submissions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const result = await resp.json();
+                formsData[editingIndex] = { ...formsData[editingIndex], ...updatedData, status: '已審核' };
+                onSubmissionSuccess(result);
+            } catch (err) {
+                onFailure(err);
+            }
         }
         
         function onSubmissionSuccess(response) {
