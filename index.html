@@ -5,70 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>奇美醫院跨領域全人照護討論會</title>
 
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Font：Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
   <style>
-    body { font-family: 'Noto Sans TC', sans-serif; background-color:#f8fafc; }
+    [cite_start]body { font-family: 'Noto Sans TC', sans-serif; [cite: 557] [cite_start]background-color:#f8fafc; [cite: 558] }
     /* Custom style for radio button cards */
     .meeting-card:has(input:checked) {
-        background-color: #f0fdfa; /* teal-50 */
-        border-color: #14b8a6; /* teal-500 */
+        [cite_start]background-color: #f0fdfa; [cite: 558] /* teal-50 */
+        [cite_start]border-color: #14b8a6; [cite: 559] /* teal-500 */
     }
 
     /* Ensure portal cards equal height and grid layout */
     .portal-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%; /* Ensure they stretch to container height */
+        [cite_start]display: flex; [cite: 560] [cite_start]flex-direction: column; [cite: 561]
+        [cite_start]height: 100%; [cite: 561] /* Ensure they stretch to container height */
     }
     .portal-card p {
-        flex-grow: 1; /* Allow paragraph to take available space */
+        [cite_start]flex-grow: 1; [cite: 561] /* Allow paragraph to take available space */
     }
 
     /* Base styling for content containers within schedule/announcements */
     #meetings-container,
     #announcements-container {
-        overflow-y: auto; /* Allows scrolling if content overflows */
-        padding: 1rem; /* Consistent padding */
-        display: flex; /* Use flex to center child elements when empty */
-        flex-direction: column; /* Stack children vertically */
+        [cite_start]overflow-y: auto; [cite: 562] /* Allows scrolling if content overflows */
+        [cite_start]padding: 1rem; [cite: 563] /* Consistent padding */
+        [cite_start]display: flex; [cite: 564] /* Use flex to center child elements when empty */
+        [cite_start]flex-direction: column; [cite: 565] /* Stack children vertically */
     }
     /* Styles for the *initial* loading/no data message within these containers */
     #meetings-container p:first-child,
     #announcements-container p:first-child {
-        text-align: center; /* Center the loading/no data message */
-        width: 100%; /* Ensure it spans full width */
-        margin: auto; /* Push to center vertically */
+        [cite_start]text-align: center; [cite: 566] /* Center the loading/no data message */
+        [cite_start]width: 100%; [cite: 567] /* Ensure it spans full width */
+        [cite_start]margin: auto; [cite: 568] /* Push to center vertically */
     }
     /* Styles for individual meeting/announcement items when loaded */
     #meetings-container > div,
     #announcements-container > div {
-        width: 100%; /* Ensure they take full width */
+        [cite_start]width: 100%; [cite: 569] /* Ensure they take full width */
     }
 
     /* Styling for modal content containers */
     #all-meetings-list-container,
     #all-announcements-list-container {
-        max-height: 70vh; /* Limit height of scrollable list in modal */
-        overflow-y: auto;
-        padding-right: 1rem; /* Space for scrollbar */
+        [cite_start]max-height: 70vh; [cite: 570] /* Limit height of scrollable list in modal */
+        [cite_start]overflow-y: auto; [cite: 571]
+        [cite_start]padding-right: 1rem; [cite: 571] /* Space for scrollbar */
     }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-  <!-- ========= Header ========= -->
   <header class="bg-white shadow-md sticky top-0 z-40">
-    <!-- Applied max-w-7xl to container -->
     <div class="container mx-auto max-w-7xl px-6 py-4 flex justify-between items-center">
       <h1 class="text-2xl md:text-3xl font-bold text-teal-700">奇美醫院跨領域全人照護討論會</h1>
       <nav class="hidden md:flex space-x-6">
@@ -81,7 +75,6 @@
       </button>
     </div>
 
-    <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
       <a href="#schedule" class="block py-2 text-gray-600 hover:text-teal-600">會議時程</a>
       <a href="#announcements" class="block py-2 text-gray-600 hover:text-teal-600">最新公告</a>
@@ -89,10 +82,7 @@
     </div>
   </header>
 
-  <!-- ========= Main ========= -->
-  <!-- Applied max-w-7xl to container -->
   <main class="container mx-auto max-w-7xl px-6 py-12">
-    <!-- Hero -->
     <section class="text-center mb-16">
       <h2 class="text-4xl font-bold mb-4">促進合作，提升照護品質</h2>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -100,96 +90,72 @@
       </p>
     </section>
 
-    <!-- Schedule + Announcements -->
-    <!-- Changed to Tailwind grid classes: grid-cols-1 md:grid-cols-2 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-      <!-- Schedule -->
-      <!-- Adjusted min-h- to fit content, removed flex-col to allow content to dictate height -->
       <div id="schedule" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-teal-500 pl-4">近期會議時程</h3>
         <a id="meetings-more-link" href="#" class="absolute top-8 right-8 text-sm text-teal-600 hover:underline hidden">More </a>
-        <!-- Removed min-h, space-y, and flex-col for meetings-container to allow content to shrink its height -->
         <div id="meetings-container">
-          <p class="text-gray-500 text-center">正在讀取會議資料...</p>
+           [cite_start]<p class="text-gray-500 text-center">正在讀取會議資料...</p> [cite: 576]
         </div>
       </div>
 
-      <!-- Announcements -->
-      <!-- Adjusted min-h- to fit content, removed flex-col to allow content to dictate height -->
       <div id="announcements" class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
         <h3 class="text-2xl font-bold mb-6 border-l-4 border-amber-500 pl-4">最新公告</h3>
         <a id="announcements-more-link" href="#" class="absolute top-8 right-8 text-sm text-amber-600 hover:underline hidden">More </a>
-        <!-- Removed min-h, space-y, and flex-col for announcements-container to allow content to shrink its height -->
         <div id="announcements-container">
           <p class="text-gray-500 text-center">正在讀取最新公告...</p>
         </div>
       </div>
     </div>
 
-    <!-- Portals -->
     <div id="portals" class="pb-12">
       <h2 class="text-3xl font-bold text-center mb-10">身份入口</h2>
-      <!-- Changed to Tailwind grid classes: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- 學員 -->
+      [cite_start]<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> [cite: 578]
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-teal-700 mb-4"><i class="fas fa-user-graduate"></i></div> <!-- Changed to teal-700 -->
-          <h3 class="text-2xl font-bold mb-4">學員入口</h3>
+          <div class="text-5xl text-teal-700 mb-4"><i class="fas fa-user-graduate"></i></div> <h3 class="text-2xl font-bold mb-4">學員入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請進入以填寫 IPP 表單及會議問卷。</p>
           <button id="student-portal-btn"
-                  class="mt-auto bg-teal-700 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-800 transition-colors"> <!-- Changed to teal-700/800 -->
-            學員進入
+                   [cite_start]class="mt-auto bg-teal-700 text-white font-bold py-2 px-6 rounded-full hover:bg-teal-800 transition-colors"> [cite: 579] 學員進入
           </button>
         </div>
 
-        <!-- 教師 -->
         <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> <!-- Changed to sky-700 -->
-          <h3 class="text-2xl font-bold mb-4">教師入口</h3>
+          [cite_start]<div class="text-5xl text-sky-700 mb-4"><i class="fas fa-chalkboard-teacher"></i></div> [cite: 579] <h3 class="text-2xl font-bold mb-4">教師入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">直接進入以查閱會議資料。</p>
-          <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> <!-- Changed to sky-700/800 -->
-            教師進入
+          <button id="teacher-portal-btn" class="mt-auto bg-sky-700 text-white font-bold py-2 px-6 rounded-full hover:bg-sky-800 transition-colors"> 教師進入
           </button>
         </div>
 
-        <!-- 管理者 -->
-        <div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300">
-          <div class="text-5xl text-purple-900 mb-4"><i class="fas fa-user-shield"></i></div> <!-- Changed to purple-900 for deeper color -->
-          <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
+        [cite_start]<div class="bg-white p-8 rounded-xl shadow text-center portal-card hover:-translate-y-2 transition duration-300"> [cite: 581]
+          <div class="text-5xl text-purple-900 mb-4"><i class="fas fa-user-shield"></i></div> <h3 class="text-2xl font-bold mb-4">管理者入口</h3>
           <p class="text-gray-600 mb-6 flex-grow">請登入以進行會議管理與權限維護。</p>
-          <button id="admin-portal-btn" class="mt-auto bg-purple-900 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-950 transition-colors"> <!-- Changed to purple-900/950 for deeper color -->
-            管理者登入
-          </button>
+          <button id="admin-portal-btn" class="mt-auto bg-purple-900 text-white font-bold py-2 px-6 rounded-full hover:bg-purple-950 transition-colors"> 管理者登入
+           [cite_start]</button> [cite: 582]
         </div>
       </div>
     </div>
   </main>
 
-  <!-- ========= Footer ========= -->
   <footer class="bg-gray-800 text-white">
-    <!-- Applied max-w-7xl to container -->
     <div class="container mx-auto max-w-7xl px-6 py-8 text-center">
-      <p>&copy; 2025 奇美醫院跨領域全人照護討論會</p>
+      <p>&copy; [cite_start]2025 奇美醫院跨領域全人照護討論會</p> [cite: 583]
       <p class="text-sm text-gray-400 mt-1">奇美醫院教學中心製作</p>
     </div>
   </footer>
 
-  <!-- ========= Student Modal (Simplified Flow) ========= -->
   <div id="student-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg relative">
       <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
       </button>
 
-      <!-- Meeting Selection -->
       <div>
-        <h2 class="text-2xl font-bold text-center mb-6">請選擇會議場次</h2>
+        [cite_start]<h2 class="text-2xl font-bold text-center mb-6">請選擇會議場次</h2> [cite: 584]
         <form id="student-meeting-form">
             <div id="meeting-list-container" class="space-y-3 max-h-64 overflow-y-auto mb-6 pr-2">
-                <!-- Meeting list will be populated here by JavaScript -->
-            </div>
+                </div>
             <button id="student-next-button" type="submit"
-                    class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+                     [cite_start]class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed" disabled> [cite: 585]
               進入表單
             </button>
         </form>
@@ -198,10 +164,9 @@
   </div>
 
 
-  <!-- ========= Login Modal (教師 / 管理者) ========= -->
   <div id="login-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative">
-      <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
+      [cite_start]<button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl"> [cite: 586]
         <i class="fas fa-times-circle"></i>
       </button>
 
@@ -211,131 +176,123 @@
           <label for="username" class="block text-gray-700 font-bold mb-2">帳號</label>
           <input id="username" name="username" type="text"
                  class="login-input shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2"
-                 placeholder="請輸入帳號" required />
+                 [cite_start]placeholder="請輸入帳號" required /> [cite: 587]
         </div>
         <div class="mb-6">
           <label for="login-password" class="block text-gray-700 font-bold mb-2">密碼</label>
           <div class="relative">
             <input id="login-password" name="password" type="password"
-                   class="login-input shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2"
+                   [cite_start]class="login-input shadow border rounded-lg w-full py-3 px-4 focus:outline-none focus:ring-2" [cite: 588]
                    placeholder="請輸入密碼" required />
             <i id="toggle-password-icon" class="fas fa-eye absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600"></i>
           </div>
         </div>
         <button type="submit" id="login-submit-btn"
                 class="w-full text-white font-bold py-3 rounded-full">
-          登入
+           [cite_start]登入 [cite: 589]
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ========= IPP iframe Modal ========= -->
   <div id="ipp-container" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="relative w-full max-w-3xl h-[90vh]">
       <button id="close-ipp-modal-btn"
               class="absolute -top-3 -right-3 bg-white rounded-full shadow p-2 text-gray-600 hover:text-red-500">
         <i class="fas fa-times"></i>
       </button>
-      <iframe id="ipp-frame" src="" class="w-full h-full rounded-xl shadow-2xl border"></iframe>
+       [cite_start]<iframe id="ipp-frame" src="" class="w-full h-full rounded-xl shadow-2xl border"></iframe> [cite: 590]
     </div>
   </div>
 
-  <!-- ========= All Meetings Modal ========= -->
   <div id="all-meetings-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl relative">
       <button id="close-all-meetings-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
       </button>
       <h2 class="text-2xl font-bold text-center mb-6">所有會議場次</h2>
-      <div id="all-meetings-list-container"> <!-- Removed space-y-6 here -->
-        <p class="text-gray-500 text-center">正在讀取所有會議資料...</p>
+      [cite_start]<div id="all-meetings-list-container"> <p class="text-gray-500 text-center">正在讀取所有會議資料...</p> [cite: 591]
       </div>
     </div>
   </div>
 
-  <!-- ========= All Announcements Modal ========= -->
   <div id="all-announcements-modal" class="hidden fixed inset-0 bg-black/60 z-50 justify-center items-center p-4">
     <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-xl relative">
       <button id="close-all-announcements-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-2xl">
         <i class="fas fa-times-circle"></i>
       </button>
       <h2 class="text-2xl font-bold text-center mb-6">所有最新公告</h2>
-      <div id="all-announcements-list-container"> <!-- Removed space-y-4 here -->
-        <p class="text-gray-500 text-center">正在讀取所有最新公告...</p>
+      [cite_start]<div id="all-announcements-list-container"> <p class="text-gray-500 text-center">正在讀取所有最新公告...</p> [cite: 592]
       </div>
     </div>
   </div>
 
-  <!-- ========= Scripts ========= -->
   <script type="module">
     // --- Google Apps Script Web App URL ---
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec';
-
+    [cite_start]const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTjmqLEDV4DNObByihiqli7pxrQP0iUj1mylttYGxlc_UZiKToQPgxYmHtBnj_aMvw9Q/exec'; [cite: 592]
     // --- Helper Functions ---
     const fetchData = async (sheetName) => {
         try {
-            console.log(`Attempting to fetch data from sheet: ${sheetName}`);
-            console.log(`Fetching URL: ${SCRIPT_URL}?sheet=${sheetName}`);
+            [cite_start]console.log(`Attempting to fetch data from sheet: ${sheetName}`); [cite: 593]
+            [cite_start]console.log(`Fetching URL: ${SCRIPT_URL}?sheet=${sheetName}`); [cite: 594]
             const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error(`HTTP Error for ${sheetName}: Status ${response.status}, Message: ${errorText}`);
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                [cite_start]const errorText = await response.text(); [cite: 594]
+                [cite_start]console.error(`HTTP Error for ${sheetName}: Status ${response.status}, Message: ${errorText}`); [cite: 595]
+                [cite_start]throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`); [cite: 595]
             }
-            const data = await response.json();
-            console.log(`Successfully fetched data from ${sheetName}:`, data);
+            [cite_start]const data = await response.json(); [cite: 596]
+            [cite_start]console.log(`Successfully fetched data from ${sheetName}:`, data); [cite: 597]
             return data;
         } catch (error) {
-            console.error(`Failed to fetch data from ${sheetName}:`, error);
+            [cite_start]console.error(`Failed to fetch data from ${sheetName}:`, error); [cite: 597]
             throw error; // Re-throw to be caught by the calling function
         }
     };
-
     function formatDisplayDate(dateString) {
-        if (!dateString) return '';
+        [cite_start]if (!dateString) return ''; [cite: 599]
         try {
-            const date = new Date(dateString);
+            [cite_start]const date = new Date(dateString); [cite: 600]
             // Check for Invalid Date
-            if (isNaN(date.getTime())) {
-                console.warn(`Invalid date string received for display (date): ${dateString}`);
+            [cite_start]if (isNaN(date.getTime())) { [cite: 601]
+                [cite_start]console.warn(`Invalid date string received for display (date): ${dateString}`); [cite: 601]
                 return dateString; // Return original if invalid
             }
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
-            return `${year}/${month}/${day} (${dayOfWeek})`;
+            [cite_start]const year = date.getFullYear(); [cite: 602]
+            [cite_start]const month = (date.getMonth() + 1).toString().padStart(2, '0'); [cite: 603]
+            [cite_start]const day = date.getDate().toString().padStart(2, '0'); [cite: 603]
+            [cite_start]const dayOfWeek = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()]; [cite: 604]
+            [cite_start]return `${year}/${month}/${day} (${dayOfWeek})`; [cite: 604]
         } catch (error) {
-            console.error("Error formatting date:", error);
+            [cite_start]console.error("Error formatting date:", error); [cite: 605]
             return dateString;
         }
     }
 
     function formatDisplayTime(dateString) {
-        if (!dateString) return '';
+        [cite_start]if (!dateString) return ''; [cite: 606]
         try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) {
-                console.warn(`Invalid time string received for display (time): ${dateString}`);
+            [cite_start]const date = new Date(dateString); [cite: 607]
+            [cite_start]if (isNaN(date.getTime())) { [cite: 608]
+                [cite_start]console.warn(`Invalid time string received for display (time): ${dateString}`); [cite: 608]
                 return ''; // Return empty string if invalid
             }
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
+            [cite_start]const hours = date.getHours().toString().padStart(2, '0'); [cite: 609]
+            [cite_start]const minutes = date.getMinutes().toString().padStart(2, '0'); [cite: 610]
+            [cite_start]return `${hours}:${minutes}`; [cite: 610]
         } catch (error) {
-            console.error("Error formatting time:", error);
+            [cite_start]console.error("Error formatting time:", error); [cite: 610]
             return '';
         }
     }
 
     function toggle(el, show) {
         if (show) {
-            el.classList.remove('hidden');
-            el.classList.add('flex');
+            [cite_start]el.classList.remove('hidden'); [cite: 611]
+            [cite_start]el.classList.add('flex'); [cite: 612]
         } else {
             el.classList.add('hidden');
-            el.classList.remove('flex');
+            [cite_start]el.classList.remove('flex'); [cite: 612]
         }
     }
 
@@ -347,339 +304,312 @@
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const ippContainer = document.getElementById('ipp-container');
-        const ippFrame = document.getElementById('ipp-frame');
+        [cite_start]const ippFrame = document.getElementById('ipp-frame'); [cite: 614]
         const loginModal = document.getElementById('login-modal');
         const modalTitle = document.getElementById('modal-title');
         const studentModal = document.getElementById('student-modal');
         const meetingListContainer = document.getElementById('meeting-list-container');
         const studentNextBtn = document.getElementById('student-next-button');
-        const loginPasswordInput = document.getElementById('login-password');
-        const togglePasswordIcon = document.getElementById('toggle-password-icon');
+        [cite_start]const loginPasswordInput = document.getElementById('login-password'); [cite: 614]
+        [cite_start]const togglePasswordIcon = document.getElementById('toggle-password-icon'); [cite: 615]
         const meetingsMoreLink = document.getElementById('meetings-more-link');
-        const announcementsMoreLink = document.getElementById('announcements-more-link');
-        
+        [cite_start]const announcementsMoreLink = document.getElementById('announcements-more-link'); [cite: 615]
         // Login form elements for dynamic styling
-        const loginInputs = document.querySelectorAll('#login-form .login-input');
-        const loginSubmitBtn = document.getElementById('login-submit-btn');
+        [cite_start]const loginInputs = document.querySelectorAll('#login-form .login-input'); [cite: 616]
+        [cite_start]const loginSubmitBtn = document.getElementById('login-submit-btn'); [cite: 617]
 
         // New elements for "More" modals
-        const allMeetingsModal = document.getElementById('all-meetings-modal');
-        const closeAllMeetingsModalBtn = document.getElementById('close-all-meetings-modal-btn');
+        [cite_start]const allMeetingsModal = document.getElementById('all-meetings-modal'); [cite: 617]
+        [cite_start]const closeAllMeetingsModalBtn = document.getElementById('close-all-meetings-modal-btn'); [cite: 618]
         const allMeetingsListContainer = document.getElementById('all-meetings-list-container');
 
         const allAnnouncementsModal = document.getElementById('all-announcements-modal');
         const closeAllAnnouncementsModalBtn = document.getElementById('close-all-announcements-modal-btn');
-        const allAnnouncementsListContainer = document.getElementById('all-announcements-list-container');
-
-
+        [cite_start]const allAnnouncementsListContainer = document.getElementById('all-announcements-list-container'); [cite: 618]
         // --- Data Loading and Rendering ---
         async function loadAndRenderData() {
             // Load Meetings
             try {
-                meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議資料...</p>'; // Show loading state
-                const storedMeetings = await fetchData('meetings');
+                [cite_start]meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議資料...</p>'; [cite: 619] // Show loading state
+                [cite_start]const storedMeetings = await fetchData('meetings'); [cite: 620]
                 console.log("Raw meetings data from Apps Script:", storedMeetings); // Log raw data
                 
                 // Sort by date (most recent first)
                 const allMeetingsSorted = storedMeetings
                     .filter(m => m.start && !isNaN(new Date(m.start).getTime())) // Filter out invalid dates
-                    .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); // Sort by date DESCENDING
+                     [cite_start].sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); [cite: 622]
+                // Sort by date DESCENDING
 
-                console.log("All meetings (sorted) for display:", allMeetingsSorted); // Log sorted data
+                [cite_start]console.log("All meetings (sorted) for display:", allMeetingsSorted); [cite: 623]
+                // Log sorted data
 
-                const meetingsToShow = allMeetingsSorted.slice(0, 1); // Show only top 1 for "近期"
+                [cite_start]const meetingsToShow = allMeetingsSorted.slice(0, 1); [cite: 624] // Show only top 1 for "近期"
                 
                 // Show "More" link if there is more than 1 meeting
                 if (allMeetingsSorted.length > 1) {
-                    meetingsMoreLink.classList.remove('hidden');
+                    [cite_start]meetingsMoreLink.classList.remove('hidden'); [cite: 625]
                 } else {
-                    meetingsMoreLink.classList.add('hidden');
+                    [cite_start]meetingsMoreLink.classList.add('hidden'); [cite: 626]
                 }
 
                 if (meetingsToShow.length > 0) {
-                    meetingsContainer.innerHTML = ''; // Clear loading message
+                    [cite_start]meetingsContainer.innerHTML = ''; [cite: 627] // Clear loading message
                     meetingsToShow.forEach((meeting, index) => {
                         const meetingElement = document.createElement('div');
                         // Use a flex container for alignment to match the image, and pb-4/border-b for separation
-                        // last:border-b-0 ensures no border on the last item
+                         // last:border-b-0 ensures no border on the last item
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingElement.innerHTML = `
-                            <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
+                           [cite_start]<div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start"> [cite: 630]
                                 <div class="flex items-center">
-                                    <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
+                                    [cite_start]<p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p> [cite: 631]
                                 </div>
                                 <div class="flex items-center mt-1">
-                                    <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
+                                     [cite_start]<p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag} [cite: 632]
                                 </div>
                                 <p class="text-sm text-gray-500">地點：${meeting.location}</p>
-                            </div>`;
+                             [cite_start]</div>`; [cite: 633]
                         meetingsContainer.appendChild(meetingElement);
                     });
                 } else {
-                    meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。請在後台新增會議。</p>';
+                    [cite_start]meetingsContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。請在後台新增會議。</p>'; [cite: 633]
                 }
             } catch (error) {
-                meetingsContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
+                [cite_start]meetingsContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議資料時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`; [cite: 634]
             }
 
             // Load Announcements
             try {
-                announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取最新公告...</p>'; // Show loading state
-                const storedAnnouncements = await fetchData('announcements');
+                [cite_start]announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取最新公告...</p>'; [cite: 635] // Show loading state
+                [cite_start]const storedAnnouncements = await fetchData('announcements'); [cite: 636]
                 const publishedAnnouncements = storedAnnouncements
                     .filter(ann => ann.status === '已發布')
-                    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
-                
-                const announcementsToShow = publishedAnnouncements.slice(0, 1); // Show only top 1 for "最新"
+                    [cite_start].sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()); [cite: 637]
+                [cite_start]const announcementsToShow = publishedAnnouncements.slice(0, 1); [cite: 638] // Show only top 1 for "最新"
 
                 // Show "More" link if there is more than 1 announcement
                 if (publishedAnnouncements.length > 1) {
-                    announcementsMoreLink.classList.remove('hidden');
+                    [cite_start]announcementsMoreLink.classList.remove('hidden'); [cite: 638]
                 } else {
-                    announcementsMoreLink.classList.add('hidden');
+                    [cite_start]announcementsMoreLink.classList.add('hidden'); [cite: 639]
                 }
 
                 if (announcementsToShow.length > 0) {
-                    announcementsContainer.innerHTML = ''; // Clear loading message
+                    [cite_start]announcementsContainer.innerHTML = ''; [cite: 640] // Clear loading message
                     announcementsToShow.forEach((ann, index) => { // Added index for NEW tag logic
                         const announcementElement = document.createElement('div');
                         // Use a flex container for alignment to match the image, and pb-3/border-b for separation
-                        // last:border-b-0 ensures no border on the last item
+                         // last:border-b-0 ensures no border on the last item
                         const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : ''; // New tag for announcements
                         announcementElement.innerHTML = `
                             <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
-                                <div class="flex items-center">
+                               [cite_start]<div class="flex items-center"> [cite: 644]
                                     <p class="font-bold text-amber-600">${ann.title}</p> ${newTag}
                                 </div>
-                                <p class="text-gray-600 mt-2 text-sm">${content}</p>
+                               [cite_start]<p class="text-gray-600 mt-2 text-sm">${content}</p> [cite: 645]
                                 <p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
-                            </div>`;
+                            [cite_start]</div>`; [cite: 646]
                         announcementsContainer.appendChild(announcementElement);
                     });
                 } else {
-                    announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>';
+                    [cite_start]announcementsContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>'; [cite: 646]
                 }
             } catch (error) {
-                announcementsContainer.innerHTML = `<p class="text-red-500 text-center">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`;
+                [cite_start]announcementsContainer.innerHTML = `<p class="text-red-500 text-center">讀取公告時發生錯誤。請檢查 Google Sheets 或網路連線。錯誤：${error.message}</p>`; [cite: 647]
             }
         }
         
         // Call the function to load data when the page is ready
-        loadAndRenderData();
-
+        [cite_start]loadAndRenderData(); [cite: 648]
         // --- Functions to open "All" Modals ---
         const openAllMeetingsModal = async () => {
-            allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有會議資料...</p>';
-            toggle(allMeetingsModal, true);
+            [cite_start]allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有會議資料...</p>'; [cite: 649]
+            [cite_start]toggle(allMeetingsModal, true); [cite: 650]
             try {
-                const storedMeetings = await fetchData('meetings');
+                [cite_start]const storedMeetings = await fetchData('meetings'); [cite: 650]
                 const allMeetingsSorted = storedMeetings
                     .filter(m => m.start && !isNaN(new Date(m.start).getTime()))
-                    .sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
-
+                    [cite_start].sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); [cite: 651]
                 if (allMeetingsSorted.length > 0) {
-                    allMeetingsListContainer.innerHTML = ''; // Clear loading message
+                    [cite_start]allMeetingsListContainer.innerHTML = ''; [cite: 652] // Clear loading message
                     allMeetingsSorted.forEach((meeting, index) => {
                         const meetingElement = document.createElement('div');
                         // Apply styling for spacing, border, and alignment within the modal
-                        const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
+                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
                         meetingElement.innerHTML = `
                             <div class="pb-4 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
-                                <div class="flex items-center">
+                                 [cite_start]<div class="flex items-center"> [cite: 655]
                                     <p class="font-bold text-teal-600">${formatDisplayDate(meeting.start)} ${formatDisplayTime(meeting.start)} - ${formatDisplayTime(meeting.end)}</p>
                                 </div>
-                                <div class="flex items-center mt-1">
+                                 [cite_start]<div class="flex items-center mt-1"> [cite: 656]
                                     <p class="text-gray-700 font-semibold">${meeting.title}</p> ${newTag}
-                                </div>
+                                 [cite_start]</div> [cite: 657]
                                 <p class="text-sm text-gray-500">地點：${meeting.location}</p>
-                            </div>`;
+                            [cite_start]</div>`; [cite: 658]
                         allMeetingsListContainer.appendChild(meetingElement);
                     });
                 } else {
-                    allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。</p>';
+                    [cite_start]allMeetingsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前尚無會議資料。</p>'; [cite: 658]
                 }
             } catch (error) {
-                console.error("Error loading all meetings:", error);
-                allMeetingsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有會議資料時發生錯誤。錯誤：${error.message}</p>`;
+                [cite_start]console.error("Error loading all meetings:", error); [cite: 659]
+                [cite_start]allMeetingsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有會議資料時發生錯誤。錯誤：${error.message}</p>`; [cite: 660]
             }
         };
-
         const openAllAnnouncementsModal = async () => {
-            allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有最新公告...</p>';
-            toggle(allAnnouncementsModal, true);
+            [cite_start]allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取所有最新公告...</p>'; [cite: 661]
+            [cite_start]toggle(allAnnouncementsModal, true); [cite: 662]
             try {
-                const storedAnnouncements = await fetchData('announcements');
+                [cite_start]const storedAnnouncements = await fetchData('announcements'); [cite: 662]
                 const publishedAnnouncements = storedAnnouncements
                     .filter(ann => ann.status === '已發布')
-                    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
-
+                    [cite_start].sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()); [cite: 663]
                 if (publishedAnnouncements.length > 0) {
-                    allAnnouncementsListContainer.innerHTML = ''; // Clear loading message
+                    [cite_start]allAnnouncementsListContainer.innerHTML = ''; [cite: 664] // Clear loading message
                     publishedAnnouncements.forEach((ann, index) => { // Added index for NEW tag logic
                         const announcementElement = document.createElement('div');
                         // Apply styling for spacing, border, and alignment within the modal
-                        const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
+                         const content = typeof ann.content === 'string' ? ann.content.replace(/\n/g, '<br>') : '';
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : ''; // New tag for announcements in modal
-                        announcementElement.innerHTML = `
+                         announcementElement.innerHTML = `
                             <div class="pb-3 border-b border-gray-200 last:border-b-0 mb-4 flex flex-col items-start">
                                 <div class="flex items-center">
-                                    <p class="font-bold text-amber-600">${ann.title}</p> ${newTag}
+                                   [cite_start]<p class="font-bold text-amber-600">${ann.title}</p> ${newTag} [cite: 668]
                                 </div>
                                 <p class="text-gray-600 mt-2 text-sm">${content}</p>
-                                <p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p>
-                            </div>`;
+                                 [cite_start]<p class="text-xs text-gray-400 mt-2">發布於 ${formatDisplayDate(ann.publishDate)}</p> [cite: 669]
+                            [cite_start]</div>`; [cite: 670]
                         allAnnouncementsListContainer.appendChild(announcementElement);
                     });
                 } else {
-                    allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>';
+                    [cite_start]allAnnouncementsListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有最新公告。</p>'; [cite: 670]
                 }
             } catch (error) {
-                console.error("Error loading all announcements:", error);
-                allAnnouncementsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有公告時發生錯誤。錯誤：${error.message}</p>`;
+                [cite_start]console.error("Error loading all announcements:", error); [cite: 671]
+                [cite_start]allAnnouncementsListContainer.innerHTML = `<p class="text-red-500 text-center">讀取所有公告時發生錯誤。錯誤：${error.message}</p>`; [cite: 672]
             }
         };
-
         // --- Modal Opening/Closing Functions ---
         const openLoginModal = (role) => {
-            modalTitle.innerText = `${role}登入`;
-            toggle(loginModal, true);
+            [cite_start]modalTitle.innerText = `${role}登入`; [cite: 673]
+            [cite_start]toggle(loginModal, true); [cite: 674]
 
             // Reset classes first to avoid conflicts
             loginInputs.forEach(input => {
                 input.classList.remove('focus:ring-teal-700', 'focus:ring-sky-700', 'focus:ring-purple-900');
             });
-            loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950');
+            [cite_start]loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950'); [cite: 675]
 
             if (role.includes('教師')) {
                 loginInputs.forEach(input => {
                     input.classList.add('focus:ring-sky-700');
                 });
-                loginSubmitBtn.classList.add('bg-sky-700', 'hover:bg-sky-800');
+                [cite_start]loginSubmitBtn.classList.add('bg-sky-700', 'hover:bg-sky-800'); [cite: 676]
             } else if (role.includes('管理者')) {
                 loginInputs.forEach(input => {
                     input.classList.add('focus:ring-purple-900');
                 });
-                loginSubmitBtn.classList.add('bg-purple-900', 'hover:bg-purple-950');
+                [cite_start]loginSubmitBtn.classList.add('bg-purple-900', 'hover:bg-purple-950'); [cite: 677]
             }
         };
-
         const closeLoginModal = () => {
-            toggle(loginModal, false);
-            document.getElementById('login-form').reset();
+            [cite_start]toggle(loginModal, false); [cite: 678]
+            [cite_start]document.getElementById('login-form').reset(); [cite: 678]
             // Clear dynamic classes when closing the modal
             loginInputs.forEach(input => {
                 input.classList.remove('focus:ring-teal-700', 'focus:ring-sky-700', 'focus:ring-purple-900');
-            });
-            loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950');
+            [cite_start]}); [cite: 679]
+            [cite_start]loginSubmitBtn.classList.remove('bg-teal-700', 'hover:bg-teal-800', 'bg-sky-700', 'hover:bg-sky-800', 'bg-purple-900', 'hover:bg-purple-950'); [cite: 680]
         };
 
         const openStudentModal = async () => {
-            meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>';
-            toggle(studentModal, true);
+            [cite_start]meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">正在讀取會議列表...</p>'; [cite: 680]
+            [cite_start]toggle(studentModal, true); [cite: 681]
             try {
-                const storedMeetings = await fetchData('meetings');
+                [cite_start]const storedMeetings = await fetchData('meetings'); [cite: 681]
                 // Sort by start date (descending, so most recent is first)
-                const sortedMeetings = storedMeetings.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime());
-                
-                meetingListContainer.innerHTML = '';
+                [cite_start]const sortedMeetings = storedMeetings.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()); [cite: 682]
+                [cite_start]meetingListContainer.innerHTML = ''; [cite: 683]
                 if (sortedMeetings.length > 0) {
                     sortedMeetings.forEach((meeting, index) => {
                         const meetingId = `meeting-${index}`;
                         const meetingCard = document.createElement('label');
-                        meetingCard.htmlFor = meetingId;
-                        meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer';
+                        [cite_start]meetingCard.htmlFor = meetingId; [cite: 684]
+                        [cite_start]meetingCard.className = 'meeting-card block p-4 border-2 border-gray-200 rounded-lg hover:bg-gray-100 cursor-pointer'; [cite: 684]
                         const newTag = index === 0 ? '<span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full align-middle">NEW</span>' : '';
-                        meetingCard.innerHTML = `
+                         meetingCard.innerHTML = `
                             <input type="radio" name="meeting-choice" id="${meetingId}" class="hidden" value='${JSON.stringify(meeting)}'>
                             <div class="flex items-center"> <p class="font-semibold text-gray-800 pointer-events-none">${meeting.title}</p> ${newTag} </div>
-                            <p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>`;
+                             [cite_start]<p class="text-sm text-gray-500 pointer-events-none mt-1">${formatDisplayDate(meeting.start)}</p>`; [cite: 686]
                         meetingListContainer.appendChild(meetingCard);
                     });
-                    meetingListContainer.addEventListener('change', () => { studentNextBtn.disabled = false; });
+                    [cite_start]meetingListContainer.addEventListener('change', () => { studentNextBtn.disabled = false; }); [cite: 687]
                 } else {
-                    meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>';
+                    [cite_start]meetingListContainer.innerHTML = '<p class="text-gray-500 text-center">目前沒有可供選擇的會議場次。</p>'; [cite: 687]
                 }
             } catch (error) {
-                console.error("Error loading meetings for student modal:", error);
-                meetingListContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議列表失敗。錯誤：${error.message}</p>`;
+                [cite_start]console.error("Error loading meetings for student modal:", error); [cite: 688]
+                [cite_start]meetingListContainer.innerHTML = `<p class="text-red-500 text-center">讀取會議列表失敗。錯誤：${error.message}</p>`; [cite: 689]
             }
         };
-
         const closeStudentModal = () => {
-            toggle(studentModal, false);
-            setTimeout(() => { document.getElementById('student-meeting-form').reset(); studentNextBtn.disabled = true; }, 300);
+            [cite_start]toggle(studentModal, false); [cite: 690]
+            [cite_start]setTimeout(() => { document.getElementById('student-meeting-form').reset(); studentNextBtn.disabled = true; }, 300); [cite: 691]
         };
-        
         const closeIPP = () => {
-            ippFrame.src = '';
-            toggle(ippContainer, false); // Keep it flex when opened
+            [cite_start]ippFrame.src = ''; [cite: 692]
+            [cite_start]toggle(ippContainer, false); [cite: 693] // Keep it flex when opened
         };
-
         // --- Event Listeners ---
         mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         document.getElementById('student-portal-btn').addEventListener('click', openStudentModal);
         document.getElementById('teacher-portal-btn').addEventListener('click', () => {
             window.location.href = 'teacher.html';
-        });
-        document.getElementById('admin-portal-btn').addEventListener('click', () => openLoginModal('管理者'));
+        [cite_start]}); [cite: 695]
+        [cite_start]document.getElementById('admin-portal-btn').addEventListener('click', () => openLoginModal('管理者')); [cite: 696]
         
         document.getElementById('close-student-modal-btn').addEventListener('click', closeStudentModal);
         document.getElementById('close-login-modal-btn').addEventListener('click', closeLoginModal);
         document.getElementById('close-ipp-modal-btn').addEventListener('click', closeIPP);
 
-        loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
-        studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); });
-        ippContainer.addEventListener('click', e => { if (e.target === ippContainer) closeIPP(); }); // Close IPP modal on outside click
+        [cite_start]loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); }); [cite: 696]
+        [cite_start]studentModal.addEventListener('click', e => { if (e.target === studentModal) closeStudentModal(); }); [cite: 697]
+        [cite_start]ippContainer.addEventListener('click', e => { if (e.target === ippContainer) closeIPP(); }); [cite: 697]
+        // Close IPP modal on outside click
 
         // Event listeners for new "More" modals
         meetingsMoreLink.addEventListener('click', (e) => {
             e.preventDefault(); // Prevent default link behavior (jumping to anchor)
             openAllMeetingsModal();
-        });
+        [cite_start]}); [cite: 698]
         announcementsMoreLink.addEventListener('click', (e) => {
             e.preventDefault(); // Prevent default link behavior (jumping to anchor)
             openAllAnnouncementsModal();
-        });
-        closeAllMeetingsModalBtn.addEventListener('click', () => toggle(allMeetingsModal, false));
-        allMeetingsModal.addEventListener('click', e => { if (e.target === allMeetingsModal) toggle(allMeetingsModal, false); });
-
-        closeAllAnnouncementsModalBtn.addEventListener('click', () => toggle(allAnnouncementsModal, false));
-        allAnnouncementsModal.addEventListener('click', e => { if (e.target === allAnnouncementsModal) toggle(allAnnouncementsModal, false); });
+        [cite_start]}); [cite: 699]
+        [cite_start]closeAllMeetingsModalBtn.addEventListener('click', () => toggle(allMeetingsModal, false)); [cite: 700]
+        [cite_start]allMeetingsModal.addEventListener('click', e => { if (e.target === allMeetingsModal) toggle(allMeetingsModal, false); }); [cite: 700]
+        [cite_start]closeAllAnnouncementsModalBtn.addEventListener('click', () => toggle(allAnnouncementsModal, false)); [cite: 701]
+        [cite_start]allAnnouncementsModal.addEventListener('click', e => { if (e.target === allAnnouncementsModal) toggle(allAnnouncementsModal, false); }); [cite: 701]
         
+        // ##### REVISED AND CORRECTED CODE #####
         document.getElementById('login-form').addEventListener('submit', async e => {
             e.preventDefault();
             const role = modalTitle.innerText;
             const username = e.target.username.value.trim();
             const password = loginPasswordInput.value.trim();
 
-            if (role.includes('教師')) {
-                // 教師登入：帳號密碼皆為教師信箱
-                if (
-                    teacherEmailList.length === 0
-                ) {
-                    // 若信箱清單尚未載入，重新嘗試載入
-                    await loadTeacherEmails();
-                }
-                if (
-                    teacherEmailList.includes(username) &&
-                    username === password
-                ) {
-                    localStorage.setItem('teacherEmail', username);
-                    window.location.href = 'teacher.html';
-                } else {
-                    // 顯示錯誤訊息（可自訂 UI，這裡用 alert 示意）
-                    alert('教師帳號或密碼錯誤，請輸入學員填寫的教師信箱（帳號密碼皆為該信箱）');
-                }
-            } else if (role.includes('管理者')) {
+            // 只保留管理者登入的邏輯
+            if (role.includes('管理者')) {
                 if (username === 'B20401' && password === 'B20401') {
-                    window.location.href = 'https://luyun1224.github.io/CMHIPE/admin';
+                    [cite_start]window.location.href = 'https://luyun1224.github.io/CMHIPE/admin'; [cite: 706]
                 } else {
-                    // ...existing code...
+                    // 新增管理者登入失敗的提示
+                    alert('管理者帳號或密碼錯誤。');
                 }
             } else {
-                // ...existing code...
-                closeLoginModal();
+                // 對於任何非預期的角色，直接關閉視窗即可
+                [cite_start]closeLoginModal(); [cite: 707]
             }
         });
 
@@ -688,8 +618,7 @@
             loginPasswordInput.setAttribute('type', type);
             togglePasswordIcon.classList.toggle('fa-eye');
             togglePasswordIcon.classList.toggle('fa-eye-slash');
-        });
-        
+        [cite_start]}); [cite: 708]
         document.getElementById('student-meeting-form').addEventListener('submit', e => {
             e.preventDefault();
             const selectedRadio = document.querySelector('input[name="meeting-choice"]:checked');
@@ -697,10 +626,10 @@
                 const selectedMeeting = JSON.parse(selectedRadio.value);
                 ippFrame.src = `https://luyun1224.github.io/CMHIPE/IPP.html?meeting=${encodeURIComponent(selectedMeeting.title)}`;
                 closeStudentModal();
-                toggle(ippContainer, true);
+                 [cite_start]toggle(ippContainer, true); [cite: 710]
             }
-        });
+        [cite_start]}); [cite: 709]
     });
-</script>
+  </script>
 </body>
 </html>
